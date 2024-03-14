@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>마루의 곳간</title>
+  </head>
+  <body>
+    <!--navigation-->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-9">
+                <a class="navbar-brand" href="/">마루의 애니메이션 추천해주는 곳간</a>
+                </div>
+                <div class="col-md-auto">
+                    <a href="/mypage" class="btn btn-success">마이페이지</a>
+                    <a href="/login" class="btn btn-outline-success">로그인</a>
+                </div>
+                
+                <div class="col-8">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                         <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/">애니메이션</a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">예정</a>
+                          </li>
+                          
+                          <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="qna">QnA</a>
+                          </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-4">
+                        <form class="d-flex">
+                            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-outline-success" type="submit">Search</button>
+                        </form>
+                </div>
+            </div>
+                
+        </div>
+    </nav>
+
+      {{#msg}}
+      <div class="alert alert-primary alert-dismissible">
+        {{msg}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"
+        aria-label="Close"></button>
+      </div>
+      {{/msg}}
