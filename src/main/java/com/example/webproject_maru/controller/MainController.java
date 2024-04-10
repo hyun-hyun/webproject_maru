@@ -13,13 +13,4 @@ public class MainController {
         return "main";
     }
 
-    @GetMapping("/login")
-    public String goLogin(){
-        return "members/login";
-    }
-    
-    @GetMapping("/join")
-    public String goJoin(){
-        return "members/join";
-    }
 }
