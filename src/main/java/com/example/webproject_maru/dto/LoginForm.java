@@ -1,5 +1,7 @@
 package com.example.webproject_maru.dto;
 
+import com.example.webproject_maru.entity.Member;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +11,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class LoginForm {
     private Long id;
-    private String pswd;
     private String email;
-    private String updateDate;
+    private String pswd;
+    //private String updateDate;
+
+
 }

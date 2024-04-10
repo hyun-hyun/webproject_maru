@@ -10,6 +10,7 @@ import com.example.webproject_maru.dto.LoginForm;
 import com.example.webproject_maru.dto.MemberForm;
 import com.example.webproject_maru.repository.MemberRepository;
 import com.example.webproject_maru.service.JoinService;
+import com.example.webproject_maru.service.LoginService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,6 +22,7 @@ public class MemberController {
     
     @Autowired
     private JoinService joinService;
+    private LoginService loginService;
 
     @GetMapping ("/join")
     public String goJoin(){
@@ -29,7 +31,7 @@ public class MemberController {
 
     @PostMapping("/joinProc")
     public String joinProcess(MemberForm memberForm){
-        //log.info(memberForm.getNickname());
+        log.info(memberForm.getNickname());
         joinService.joinProcess(memberForm);
 
         return "members/joined";
@@ -39,12 +41,12 @@ public class MemberController {
     public String goLogin(){
         return "members/login";
     }
-
+/* loginProcessingUrl과 2에서 작성한 action 태그 값만 같으면 스프링 시큐리티가 알아서 처리
     @PostMapping("/loginProc")
     public String loginProcess(LoginForm loginForm){
         System.out.println(loginForm.getEmail());
-        //joinService.joinProcess(loginForm);
+        //loginService.loginProcess(loginForm.getEmail());
 
         return "redirect:/";
-    }
+    }*/
 }

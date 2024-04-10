@@ -22,4 +22,14 @@
             ]]>
         </query>
     </named-native-query>
+
+    <named-native-query
+            name="Member.findByEmail"
+            result-class="com.example.webproject_maru.entity.Member">
+        <query>
+            <![CDATA[
+                SELECT * FROM member WHERE email = :email
+            ]]>
+        </query>
+    </named-native-query>
 </entity-mappings>
