@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import com.example.webproject_maru.dto.CustomUserDetails;
 import com.example.webproject_maru.dto.LoginForm;
@@ -30,12 +31,18 @@ public class LoginService implements UserDetailsService {
 		Member memberData = memberRepository.findByEmail(email);
 		
         if (memberData != null) {
-
             return new CustomUserDetails(memberData);
         }
 		return null;
 	}
+    
+    public String getNickname(String email){
+        Member memberData = memberRepository.findByEmail(email);
+        String memberNickname=memberData.getNickname();
+        return memberNickname;
+    }
 }
+
 /*
 public class LoginService {
     @Autowired

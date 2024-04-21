@@ -16,30 +16,29 @@ public class SpringSecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/**").permitAll()
+                        //.requestMatchers("/", "/**").permitAll()
 
-                        .requestMatchers("/", "/login", "/loginProc","/join", "/joined").permitAll()
+                        .requestMatchers("/", "/login", "/loginProc","/join","/joinProc", "/joined").permitAll()
                         //h2용
                         .requestMatchers("/h2-console/**").permitAll() 
 
-                        .requestMatchers("/admin").hasRole("ADMIN")
-                        .requestMatchers("/my/**").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/user/**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/images/**").permitAll()//이미지파일들 security filter 예외
                         .anyRequest().authenticated() //어떠한 요청이라도 인증 필요
-                );
+                )
 
 
-        http
                 .formLogin((auth) -> auth.loginPage("/login") // form방식 로그인 사용, 커스텀 로그인 페이지 지정
                         .loginProcessingUrl("/loginProc") // submit 받을 url
                         .defaultSuccessUrl("/") // 로그인 성공 시 이동할 경로
-                        .failureUrl("/login") // 로그인 실패 시 이동할 경로
-                      //  .usernameParameter("userNickName") // 아이디 파라미터 설정
+                        .failureUrl("/login?error=true") // 로그인 실패 시 이동할 경로
+                      //  .usernameParameter("userEmail") // 아이디 파라미터 설정
                      //   .passwordParameter("password") // 패스워드 파라미터 설정
                         .permitAll() //로그인없이 접속 가능
-                );
+                )
 
-        http
+
                 .csrf((auth) -> auth.disable())
                 .headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin));//h2콘솔접속용
 

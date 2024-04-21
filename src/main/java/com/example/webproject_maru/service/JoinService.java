@@ -27,6 +27,7 @@ public class JoinService {
         //DB에 이미 동일한 nickname, email을 가진 회원이 존재하는지?
         Boolean isNick=memberRepository.existsByNickname(memberForm.getNickname());
         Boolean isEmail=memberRepository.existsByEmail(memberForm.getEmail());
+        
         if((isNick!=null)||(isEmail!=null)){
             log.info("중복member 존재");
             return;
@@ -42,11 +43,11 @@ public class JoinService {
 
 
 
-        // LocalDateTime SeoulNow = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-        // data.setAppendDate(SeoulNow);
-        // data.setUpdateDate(SeoulNow);
+        LocalDateTime SeoulNow = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        data.setAppendDate(SeoulNow);
+        data.setUpdateDate(SeoulNow);
 
-        // data.setRole("ROLE_USER");
+        data.setRole("ROLE_ADMIN");
 
         memberRepository.save(data);
     }

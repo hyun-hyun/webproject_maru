@@ -25,13 +25,10 @@ public class Member{
     private String nickname;
     private String email;
     private String pswd;
-    // @Column
-    // private LocalDateTime appendDate;
-    // @Column
-    // private LocalDateTime updateDate;
-    // @Column
-    // private String role;
-    public Member toEntity(){
-        return new Member(id, nickname, email, pswd);
-    }
+    @Column
+    private LocalDateTime appendDate;
+    @Column
+    private LocalDateTime updateDate;
+    @Column
+    private String role;
 }

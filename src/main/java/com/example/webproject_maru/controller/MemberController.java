@@ -2,9 +2,11 @@ package com.example.webproject_maru.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.webproject_maru.dto.LoginForm;
 import com.example.webproject_maru.dto.MemberForm;
@@ -22,7 +24,7 @@ public class MemberController {
     
     @Autowired
     private JoinService joinService;
-    private LoginService loginService;
+    //private LoginService loginService;
 
     @GetMapping ("/join")
     public String goJoin(){
@@ -38,7 +40,10 @@ public class MemberController {
     }
 
     @GetMapping("/login")
-    public String goLogin(){
+    public String goLogin(@RequestParam(name = "error", required = false)String error, Model model){
+        if (error != null) {
+            model.addAttribute("error", true);
+        }
         return "members/login";
     }
 /* loginProcessingUrl과 2에서 작성한 action 태그 값만 같으면 스프링 시큐리티가 알아서 처리
