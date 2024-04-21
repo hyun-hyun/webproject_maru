@@ -42,7 +42,7 @@ public class MemberController {
     @GetMapping("/login")
     public String goLogin(@RequestParam(name = "error", required = false)String error, Model model){
         if (error != null) {
-            model.addAttribute("error", true);
+            model.addAttribute("loginError", true);
         }
         return "members/login";
     }
