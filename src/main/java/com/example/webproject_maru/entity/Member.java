@@ -23,7 +23,9 @@ public class Member{
     private Long id;
     @Column(unique = true)
     private String nickname;
+    @Column(unique = true)
     private String email;
+    @Column
     private String pswd;
     @Column
     private LocalDateTime appendDate;

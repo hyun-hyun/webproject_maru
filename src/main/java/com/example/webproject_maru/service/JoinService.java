@@ -22,26 +22,42 @@ public class JoinService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    Boolean isNick;
+    Boolean isEmail;
     public void joinProcess(MemberForm memberForm){
-
+/*
         //DB에 이미 동일한 nickname, email을 가진 회원이 존재하는지?
-        Boolean isNick=memberRepository.existsByNickname(memberForm.getNickname());
-        Boolean isEmail=memberRepository.existsByEmail(memberForm.getEmail());
+        if(memberRepository.existsByNickname(memberForm.getNickname())!=null){
+            isNick=true;
+            log.info("join의 isNick=1");
+        }
+        else{
+            isNick=false;
+            log.info("join의 isNick=0");
+
+        }
+        if(memberRepository.existsByEmail(memberForm.getEmail())!=null){
+            isEmail=true;
+        }
+        else{
+            isEmail=false;
+        }
         
-        if((isNick!=null)||(isEmail!=null)){
+        if(isNick!=null){
             log.info("중복member 존재");
-            return;
+        }
+
+        else if((isEmail!=null)){
+            log.info("중복member 존재");
         }
         log.info("중복member 존재없음!");
-
+*/
 
         Member data=new Member();
 
         data.setNickname(memberForm.getNickname());
         data.setEmail(memberForm.getEmail());
         data.setPswd(bCryptPasswordEncoder.encode(memberForm.getPswd()));
-
-
 
         LocalDateTime SeoulNow = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         data.setAppendDate(SeoulNow);
@@ -50,5 +66,29 @@ public class JoinService {
         data.setRole("ROLE_ADMIN");
 
         memberRepository.save(data);
+    }
+
+    public Boolean getIsNick(MemberForm memberForm){
+        if(memberRepository.existsByNickname(memberForm.getNickname()).size()==0){
+            isNick=false;
+            log.info("getttttttttt의 isNick=0");
+
+        }
+        else{
+            isNick=true;
+            log.info("getttttttttt의 isNick=1");
+
+        }
+        return isNick;
+    }
+
+    public Boolean getIsEmail(MemberForm memberForm){
+        if(memberRepository.existsByEmail(memberForm.getEmail()).size()==0){
+            isEmail=false;
+        }
+        else{
+            isEmail=true;
+        }
+        return isEmail;
     }
 }

@@ -6,10 +6,20 @@
         <label class="form-label">닉네임</label>
         <input type="text" class="form-control" name="nickname">
     </div>
+    {{#nicknameError}}
+    <div class="alert alert-danger">
+      이미 등록된 닉네임입니다. 다른 닉네임으로 시도하세요.
+    </div>
+    {{/nicknameError}}
     <div class="mb-3">
         <label class="form-label">이메일</label>
         <input type="email" class="form-control" name="email">
     </div>
+    {{#emailError}}
+    <div class="alert alert-danger">
+        이미 등록된 이메일입니다. 다른 이메일으로 시도하세요.
+    </div>
+    {{/emailError}}
     <div class="mb-3">
         <label class="form-label">비밀번호</label>
         <input type="password" class="form-control" name="pswd">

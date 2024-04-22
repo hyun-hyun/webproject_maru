@@ -32,11 +32,27 @@ public class MemberController {
     }
 
     @PostMapping("/joinProc")
-    public String joinProcess(MemberForm memberForm){
+    public String joinProcess(MemberForm memberForm, Model model){
         log.info(memberForm.getNickname());
-        joinService.joinProcess(memberForm);
+        
+        Boolean nicknameError=joinService.getIsNick(memberForm);
+        Boolean emailError=joinService.getIsEmail(memberForm);
 
-        return "members/joined";
+        if(nicknameError==true){
+            model.addAttribute("nicknameError", true);
+        }
+
+        if(emailError==true){
+            model.addAttribute("emailError", true);
+        }
+
+        if(nicknameError==false && emailError==false){
+            joinService.joinProcess(memberForm);
+            return "members/login";
+        } 
+        else{
+            return "members/join";
+        }
     }
 
     @GetMapping("/login")

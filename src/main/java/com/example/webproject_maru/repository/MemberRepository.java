@@ -1,6 +1,6 @@
 package com.example.webproject_maru.repository;
 
-import java.util.ArrayList;
+import java.util.*;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
@@ -11,8 +11,8 @@ public interface MemberRepository extends JpaRepository<Member,Long>{
     @Override
     ArrayList<Member> findAll();//Iterabel -> ArrayList수정
 
-    Boolean existsByNickname(String nickname);
-    Boolean existsByEmail(String email);
+    List<Member> existsByNickname(String nickname);
+    List<Member> existsByEmail(String email);
 
     Member findByEmail(String email);
 }
