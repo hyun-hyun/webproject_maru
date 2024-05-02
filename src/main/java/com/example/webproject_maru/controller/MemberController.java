@@ -1,6 +1,12 @@
 package com.example.webproject_maru.controller;
 
+import org.hibernate.mapping.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,12 +14,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.webproject_maru.dto.CustomUserDetails;
 import com.example.webproject_maru.dto.LoginForm;
 import com.example.webproject_maru.dto.MemberForm;
 import com.example.webproject_maru.repository.MemberRepository;
 import com.example.webproject_maru.service.JoinService;
 import com.example.webproject_maru.service.LoginService;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -22,9 +30,14 @@ public class MemberController {
     //@Autowired
     //private MemberRepository memberRepository;
     
+    private HttpSession httpSession;//세션설정
+
     @Autowired
     private JoinService joinService;
     //private LoginService loginService;
+
+    @Autowired
+    private LoginService loginService;
 
     @GetMapping ("/join")
     public String goJoin(){
@@ -60,6 +73,12 @@ public class MemberController {
         if (error != null) {
             model.addAttribute("loginError", true);
         }
+        // else{
+        //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //     UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        //     String username = userDetails.getUsername();
+        // }
+        
         return "members/login";
     }
 /* loginProcessingUrl과 2에서 작성한 action 태그 값만 같으면 스프링 시큐리티가 알아서 처리
@@ -70,4 +89,5 @@ public class MemberController {
 
         return "redirect:/";
     }*/
+
 }

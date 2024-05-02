@@ -1,8 +1,8 @@
 {{>layouts/header}}
 <div class="container">
-  
-  {{id}}
-  {{role}}
+{{#nickname}}
+  {{nickname}}님, 이메일 {{id}}, 권한 {{role}}으로 로그인중입니다.
+{{/nickname}}
   <hr>
     <div class="row">
         <div class="col-md-6">

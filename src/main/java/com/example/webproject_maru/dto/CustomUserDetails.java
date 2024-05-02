@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.example.webproject_maru.entity.Member;
 
 public class CustomUserDetails implements UserDetails {
-    private Member member;
+    public final Member member;
     public CustomUserDetails(Member member) {
 
         this.member = member;
@@ -31,6 +31,11 @@ public class CustomUserDetails implements UserDetails {
 
         return collection;
     }
+
+    public String getNickname(){
+        return member.getNickname();
+    }
+
     @Override
     public String getPassword() {
         return member.getPswd();

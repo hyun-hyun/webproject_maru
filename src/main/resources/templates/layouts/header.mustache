@@ -16,14 +16,22 @@
         <div class="container-fluid">
             <div class="row align-items-center">
                 <div class="col-9">
-                <a class="navbar-brand" href="/">마루의 애니메이션 추천해주는 곳간</a>
+                <a class="navbar-brand" href="/"><h2>마루의 애니메이션 추천해주는 곳간</h2></a>
                 </div>
+                {{#nickname}}
                 <div class="col-md-auto">
-                  
-                    <a href="/mypage" class="btn btn-success">마이페이지</a>
+                    <a href="user/mypage" class="btn btn-success">마이페이지</a>
+                    <a href="/logout" class="btn btn-outline-success">로그아웃</a>
+                </div>
+                {{/nickname}}
+
+                {{^nickname}}
+                <div class="col-md-auto">
+                    <a href="/join" class="btn btn-success">회원가입</a>
                     <a href="/login" class="btn btn-outline-success">로그인</a>
                 </div>
-                
+                {{/nickname}}
+                <hr>
                 <div class="col-8">
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>

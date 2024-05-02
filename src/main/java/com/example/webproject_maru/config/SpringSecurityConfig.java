@@ -6,6 +6,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+
+import jakarta.servlet.http.HttpSession;
 
 @Configuration
 @EnableWebSecurity
@@ -38,6 +41,21 @@ public class SpringSecurityConfig {
                         .permitAll() //로그인없이 접속 가능
                 )
 
+                .logout((logout) -> logout.logoutUrl("/logout")//form action url
+                        //.logoutSuccessUrl("/")
+                        .addLogoutHandler((request, response, authentication) -> { 
+                                // 사실 굳이 내가 세션 무효화하지 않아도 됨. 
+                                // LogoutFilter가 내부적으로 해줌.
+                                HttpSession session = request.getSession();
+                                if (session != null) {
+                                    session.invalidate();
+                                }
+                            })  // 로그아웃 핸들러 추가
+                            .logoutSuccessHandler((request, response, authentication) -> {
+                                response.sendRedirect("/");
+                            }) // 로그아웃 성공 핸들러
+                            .deleteCookies("remember-me") // 로그아웃 후 삭제할 쿠키 지정
+                )
 
                 .csrf((auth) -> auth.disable())
                 .headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin));//h2콘솔접속용

@@ -5,11 +5,13 @@ import java.util.Iterator;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.example.webproject_maru.dto.CustomUserDetails;
 import com.example.webproject_maru.service.LoginService;
 
 
@@ -27,12 +29,29 @@ public class MainController {
         GrantedAuthority auth = iter.next();
         String role = auth.getAuthority();
 
-       // String nickname=LoginService.getNickname(email);
-
         model.addAttribute("id", email);
         model.addAttribute("role", role);
 
+        if(email!="anonymousUser"){
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            String nickname = userDetails.getNickname();
+        model.addAttribute("nickname", nickname);
+
+        }
+
+       // String nickname=LoginService.getNickname(email);
+
+
+
+
         return "main";
+    }
+
+    @GetMapping("/user/mypage")
+    public String myPage(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        String nickname = userDetails.member.getNickname();
+        model.addAttribute("nickname", nickname);
+        return "user/mypage";
     }
 
     @GetMapping("/admin/member")

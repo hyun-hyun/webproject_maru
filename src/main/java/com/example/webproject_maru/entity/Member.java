@@ -33,4 +33,9 @@ public class Member{
     private LocalDateTime updateDate;
     @Column
     private String role;
+
+
+    public String getNickname(){
+        return nickname;
+    }
 }
