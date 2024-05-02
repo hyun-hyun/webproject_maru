@@ -1,0 +1,17 @@
+{{>/layouts/header}}
+<h1>Articles</h1>
+<h2>글쓰기</h2>
+<form class="container" action="/articles/create" method="post">
+    <div class="mb-3">
+        <label class="form-label">제목</label>
+        <input type="text" class="form-control" name="title">{{!name으로 DTO클래스와 연결}}
+    </div>
+    <div class="mb-3">
+        <label class="form-label">내용</label>
+        <textarea class="form-control" row="3" name="content"></textarea>
+    </div> 
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <a href="/articles" class="btn btn-sm btn-outline-success">Back</a>
+</form>
+
+{{>layouts/footer}}

@@ -2,7 +2,22 @@
 <div class="container">
 {{#nickname}}
   {{nickname}}님, 이메일 {{id}}, 권한 {{role}}으로 로그인중입니다.
+  <hr>
 {{/nickname}}
+
+  {{#write}}
+  <div>
+    <strong>글쓰기 가능(해당권한 : manager, admin)</strong>
+    <a href="/write/anime" class="btn btn-outline-success">글쓰기</a>
+  </div>
+  {{/write}}
+  {{#admin}}
+  <div>
+    <strong>관리자권한(admin)</strong>
+    <a href="/admin/member" class="btn btn-outline-success">회원관리</a>
+    준비중
+  </div>
+  {{/admin}}
   <hr>
     <div class="row">
         <div class="col-md-6">
