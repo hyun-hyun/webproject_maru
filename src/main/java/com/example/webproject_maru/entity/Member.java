@@ -32,6 +32,8 @@ public class Member{
     @Column
     private LocalDateTime updateDate;
     @Column
+    private LocalDateTime loginDate;
+    @Column
     private String role;
 
 

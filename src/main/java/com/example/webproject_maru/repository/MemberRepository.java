@@ -3,7 +3,6 @@ package com.example.webproject_maru.repository;
 import java.util.*;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.CrudRepository;
 
 import com.example.webproject_maru.entity.Member;
 

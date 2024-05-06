@@ -13,7 +13,7 @@ public class LoginForm {
     private Long id;
     private String email;
     private String pswd;
-    //private String updateDate;
+    private String loginDate;
 
 
 }

@@ -3,6 +3,8 @@ package com.example.webproject_maru.service;
 
 
 import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -31,16 +33,15 @@ public class LoginService implements UserDetailsService {
 		Member memberData = memberRepository.findByEmail(email);
 		
         if (memberData != null) {
+            LocalDateTime SeoulNow = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+            memberData.setLoginDate(SeoulNow);
+            memberRepository.save(memberData);
             return new CustomUserDetails(memberData);
         }
 		return null;
 	}
+
     
-    public String getNickname(String email){
-        Member memberData = memberRepository.findByEmail(email);
-        String memberNickname=memberData.getNickname();
-        return memberNickname;
-    }
 }
 
 /*
