@@ -1,17 +1,54 @@
 {{>/layouts/header}}
-<h1>Articles</h1>
-<h2>글쓰기</h2>
-<form class="container" action="/articles/create" method="post">
+
+<form class="container" action="/articles/create" method="post" enctype="multipart/form-data"><!-- 이미지 파일 데이터에 알맞는 enctype 설정 -->
+    <h1>Articles</h1>
+    <h2>글쓰기</h2>
     <div class="mb-3">
         <label class="form-label">제목</label>
         <input type="text" class="form-control" name="title">{{!name으로 DTO클래스와 연결}}
+        <label class="form-label">방영날짜</label>
+        <input type="date" class="form-control" name="broad_date">
+        <label class="form-label">작품 대표 이미지</label>
+        <div class="addImage" id="image-show"> <!-- 이미지 띄울 공간 -->
+        </div>
+        <input type="file" accept="image/*" onchange="loadFile(this)">
     </div>
     <div class="mb-3">
-        <label class="form-label">내용</label>
+
+    <!--종합추천점수-->
+    <label class="form-label">종합추천점수</label>
+    <button type="button" onclick="alert('사이즈지정해서 평과결과 뜨게하기')"class="btn btn-primary">자세히보기</button>
+    </div>
+
+    <div class="mb-3">
+    <!--관련태그-->
+    <label class="form-label">관련태그</label>
+    </div>
+
+
+    <div class="mb-3">
+        <label class="form-label">줄거리</label>
         <textarea class="form-control" row="3" name="content"></textarea>
     </div> 
     <button type="submit" class="btn btn-primary">Submit</button>
     <a href="/articles" class="btn btn-sm btn-outline-success">Back</a>
 </form>
+<script>
+    function loadFile(input) {
+        let file = input.files[0]; // 선택된 파일 가져오기
 
+        let newImage = document.createElement("img"); //새 이미지 추가
+
+        //이미지 source 가져오기
+        newImage.src = URL.createObjectURL(file);
+        newImage.id = "img-id"
+        newImage.style.width = "100%";
+        newImage.style.height = "100%";
+        newImage.style.objectFit = "cover";
+
+        //이미지를 image-show div에 추가
+        let container = document.getElementById('image-show');
+        container.appendChild(newImage);
+    }
+</script>
 {{>layouts/footer}}
