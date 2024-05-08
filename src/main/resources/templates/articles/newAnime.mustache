@@ -1,23 +1,27 @@
 {{>/layouts/header}}
 
-<form class="container" action="/articles/create" method="post" enctype="multipart/form-data"><!-- 이미지 파일 데이터에 알맞는 enctype 설정 -->
+<form class="container" action="/write/article/anime/create" method="post" enctype="multipart/form-data"><!-- 이미지 파일 데이터에 알맞는 enctype 설정 -->
     <h1>Articles</h1>
     <h2>글쓰기</h2>
     <div class="mb-3">
-        <label class="form-label">제목</label>
+        <!--catagory-->
+        <label class="form-label">카테고리 : anime</label>
+        <input type="hidden" name="catagory" value="anime">
+        <label class="form-label">작품명</label>
         <input type="text" class="form-control" name="title">{{!name으로 DTO클래스와 연결}}
         <label class="form-label">방영날짜</label>
         <input type="date" class="form-control" name="broad_date">
         <label class="form-label">작품 대표 이미지</label>
         <div class="addImage" id="image-show"> <!-- 이미지 띄울 공간 -->
         </div>
-        <input type="file" accept="image/*" onchange="loadFile(this)">
+        <!--배열로 여러 파일 받을 경우 multiple="multiple" 추가하고 MultipartFile[]같이 받음-->
+        <input type="file" accept="images/pic/anime/*" onchange="loadFile(this)" name="main_pic_name">
     </div>
     <div class="mb-3">
 
     <!--종합추천점수-->
     <label class="form-label">종합추천점수</label>
-    <button type="button" onclick="alert('사이즈지정해서 평과결과 뜨게하기')"class="btn btn-primary">자세히보기</button>
+    <button type="button" onclick="alert('사이즈지정해서 평가결과 뜨게하기')"class="btn btn-primary">자세히보기</button>
     </div>
 
     <div class="mb-3">
@@ -28,7 +32,7 @@
 
     <div class="mb-3">
         <label class="form-label">줄거리</label>
-        <textarea class="form-control" row="3" name="content"></textarea>
+        <textarea class="form-control" row="3" name="story"></textarea>
     </div> 
     <button type="submit" class="btn btn-primary">Submit</button>
     <a href="/articles" class="btn btn-sm btn-outline-success">Back</a>
@@ -48,6 +52,7 @@
 
         //이미지를 image-show div에 추가
         let container = document.getElementById('image-show');
+        container.innerHTML = '';//기존 이미지 제거
         container.appendChild(newImage);
     }
 </script>

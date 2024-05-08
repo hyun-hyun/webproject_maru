@@ -1,0 +1,28 @@
+{{>layouts/header}}
+<h1>Articles</h1>
+<h2>상세페이지</h2>
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Title</th>
+        <th scope="col">Content</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#article}} {{!모델에 등록한 article Entity 출력}}
+      <tr>
+        <th>{{id}}</th>
+        <td>{{title}}</td>
+        <td>{{broad_date}}</td>
+        <td>{{story}}</td>
+      </tr>
+      
+    </tbody>
+  </table>
+  <a href="/articles/anime/{{id}}/edit" class="btn btn-primary">Edit</a>
+  <a href="/articles/anime/{{id}}/delete" class="btn btn-sm btn-outline-danger">Deletes</a>
+  <a href="/articles/anime" class="btn btn-sm btn-outline-success">Go to Article List</a>
+  {{/article}}
+
+{{>layouts/footer}}

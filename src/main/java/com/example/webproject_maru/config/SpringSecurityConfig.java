@@ -27,7 +27,7 @@ public class SpringSecurityConfig {
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/write/**").hasAnyRole("ADMIN", "MANAGER")
-                        .requestMatchers("/user/**").hasAnyRole("ADMIN", "MANAGER", "USER")
+                        .requestMatchers("/user/**", "/articles/**").hasAnyRole("ADMIN", "MANAGER", "USER")
                         .requestMatchers("/images/**").permitAll()//이미지파일들 security filter 예외
                         .anyRequest().authenticated() //어떠한 요청이라도 인증 필요
                 )

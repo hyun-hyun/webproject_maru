@@ -29,8 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberController {
     //@Autowired
     //private MemberRepository memberRepository;
-    
-    private HttpSession httpSession;//세션설정
 
     @Autowired
     private JoinService joinService;
