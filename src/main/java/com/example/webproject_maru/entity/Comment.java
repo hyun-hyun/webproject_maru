@@ -1,5 +1,7 @@
 package com.example.webproject_maru.entity;
 
+import java.time.LocalDateTime;
+
 import com.example.webproject_maru.dto.CommentForm;
 
 import jakarta.persistence.Column;
@@ -33,6 +35,8 @@ public class Comment {
     private String nickname;//댓글 단 사람
     @Column
     private String body;//댓글 내용
+    private LocalDateTime appendTime;
+    private LocalDateTime updateTime;
     public static Comment createComment(CommentForm commentForm, Article article) {//static이므로 객체생성 안해도 호출가능
         //예외 발생
         if(commentForm.getId()!=null)
@@ -44,7 +48,10 @@ public class Comment {
             commentForm.getId(),
             article,
             commentForm.getNickname(),
-            commentForm.getBody()
+            commentForm.getBody(),
+            commentForm.getAppendTime(),
+            commentForm.getUpdateTime()
+            
         );
     }
 }

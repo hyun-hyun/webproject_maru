@@ -35,12 +35,12 @@ public class ArticleService {
             log.info("저장시작");
             Random random=new Random();
             String genR=random.nextInt(10000)+"";
-            String anime_pic_path="C:/Users/LG/Desktop/CodeStudy/Java/webproject_maru/src/main/resources/static/images/pic/anime/";
+            String pic_anime_path="C:/Users/LG/Desktop/CodeStudy/Java/webproject_maru/src/main/resources/static/images/pic/anime/";
 
             //파일을 서버에 저장
-            files[i].transferTo(new File(anime_pic_path+genR+"_"+files[i].getOriginalFilename()));
+            files[i].transferTo(new File(pic_anime_path+genR+"_"+files[i].getOriginalFilename()));
             log.info(genR+"_"+files[i].getOriginalFilename());
-            article.setMain_pic_name(genR+"_"+files[i].getOriginalFilename());
+            article.setMain_pic(genR+"_"+files[i].getOriginalFilename());
 
         }
         }

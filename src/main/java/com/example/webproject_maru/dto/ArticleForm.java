@@ -17,7 +17,7 @@ public class ArticleForm {
     private String title;
     private String genre;
     private LocalDate broad_date;
-    // private MultipartFile main_pic_name;
+    // private MultipartFile main_pic;
 
     //tag
     private String story;
