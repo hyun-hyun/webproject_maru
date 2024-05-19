@@ -1,4 +1,6 @@
 {{>layouts/header}}
+
+<div class="container">
 <h1>Articles</h1>
 <h2>상세페이지</h2>
 <table class="table">
@@ -20,9 +22,31 @@
       
     </tbody>
   </table>
+
+  <link href="/resources/templates/layouts/css.mustache" rel="stylesheet"/>
+  <form class="mb-3" name="starform" id="scoreForm" method="post">
+    <fieldset>
+      <span class="text-bold">작품에 대한 만족도를 표시해주세요</span>
+      <input type="radio" name="score" value="5" id="rate1"><label
+        for="rate1">♣</label>
+      <input type="radio" name="score" value="4" id="rate2"><label
+        for="rate2">♣</label>
+      <input type="radio" name="score" value="3" id="rate3"><label
+        for="rate3">♣</label>
+      <input type="radio" name="score" value="2" id="rate4"><label
+        for="rate4">♣</label>
+      <input type="radio" name="score" value="1" id="rate5"><label
+        for="rate5">♣</label>
+    </fieldset>
+    <div>
+      <textarea class="col-auto form-control" type="text" id="score_reason"
+            placeholder="간단하게 해당 점수를 택한 이유를 적어주세요."></textarea>
+    </div>
+  </form>	
+
   <a href="/articles/anime/{{id}}/edit" class="btn btn-primary">Edit</a>
   <a href="/articles/anime/{{id}}/delete" class="btn btn-sm btn-outline-danger">Deletes</a>
   <a href="/articles/anime" class="btn btn-sm btn-outline-success">Go to Article List</a>
   {{/article}}
-
+</div>
 {{>layouts/footer}}
