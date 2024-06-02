@@ -1,28 +1,29 @@
 {{>layouts/header}}
 
 <div class="container">
-<h1>Articles</h1>
-<h2>상세페이지</h2>
-<table class="table">
-    <thead>
-      <tr>
-        <th scope="col">Id</th>
-        <th scope="col">Title</th>
-        <th scope="col">Content</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#article}} {{!모델에 등록한 article Entity 출력}}
-      <tr>
-        <th>{{id}}</th>
-        <td>{{title}}</td>
-        <td>{{broad_date}}</td>
-        <td>{{story}}</td>
-      </tr>
-      
-    </tbody>
-  </table>
+<h1>애니메이션</h1>
+<h2>상세페이지</h2><br>
 
+{{#article}}
+<label class="form-label"><h3>작품명</h3></label><br>
+<h3>{{title}}</h3> <br>
+<label class="form-label">방영날짜</label> {{broad_date}}<br>
+
+<img src="images/pic/conan.jpg" width=150 alt="작품표지"</img>><br>
+<div class="addImage">
+<!--var pic_anime_path="images/pic/anime/";-->
+<img src="images/pic/anime/{{main_pic}}"></img>
+<img src="images/pic/anime/3202_skirt_white.png" width=150 alt="작품표지"></img>
+
+</div>
+
+</br> <!-- 이미지 띄울 공간 -->
+
+
+
+
+
+<!--로그인ㅇ&리뷰x-->
   <link href="/resources/templates/layouts/css.mustache" rel="stylesheet"/>
   <form class="mb-3" name="starform" id="scoreForm" method="post">
     <fieldset>
