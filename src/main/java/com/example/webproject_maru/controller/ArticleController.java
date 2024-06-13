@@ -1,8 +1,11 @@
 package com.example.webproject_maru.controller;
 
+import java.nio.file.Files;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.webproject_maru.dto.ArticleForm;
+import com.example.webproject_maru.dto.CustomUserDetails;
 import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.service.ArticleService;
 
@@ -25,15 +29,18 @@ public class ArticleController {
     private ArticleService articleService;
 
     @GetMapping("/write/article/anime")
-    public String goNewAnime(){
+    public String goNewAnime(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
+        String nickname = userDetails.member.getNickname();
+        model.addAttribute("nickname", nickname);
+
         return "articles/newAnime";
     }
 
-    @PostMapping("/write/article/anime/create")
-    public String createArticle(ArticleForm form, @RequestParam("main_pic") MultipartFile[] mfile) {//폼 데이터를 DTO로 받기
+    @PostMapping("/write/article/{catagory}/create")
+    public String createArticle(ArticleForm form, @RequestParam("main_pic") MultipartFile[] mfile, @PathVariable String catagory) {//폼 데이터를 DTO로 받기
         log.info(form.toString());
 
-        Article saved=articleService.create(form, mfile);
+        Article saved=articleService.create(form, mfile, catagory);
         /*
         //System.out.println(form.toString());//DTO에 잘 담겼는지 확인        
         //1. DTO -> entity
@@ -50,8 +57,12 @@ public class ArticleController {
     }
 
     @GetMapping("/articles/anime/{id}") //컨트롤러 변수{}, 뷰 변수{{}}
-    public String show(@PathVariable Long id, Model model){//매개변수로 url의 id받아오기
+    public String show(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails, Model model){//매개변수로 url의 id받아오기
         log.info("id= "+id);//id잘 받았는지 확인
+
+        String nickname = userDetails.member.getNickname();
+        model.addAttribute("nickname", nickname);
+
         //1. id조회해서 데이터(entity, Optional<Article>) 가져오기
         Article articleEntity=articleService.findByIdArticle(id);
         //2. 모델에 데이터 등록
@@ -62,7 +73,10 @@ public class ArticleController {
     }
 
     @GetMapping("/articles/anime")
-    public String index(Model model){
+    public String index(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
+        String nickname = userDetails.member.getNickname();
+        model.addAttribute("nickname", nickname);
+
         //1. 모든 데이터 가져오기 list<entity>
         ArrayList<Article> articleEntityList=articleService.findArticles();
         //2. 모델에 데이터 등록

@@ -62,7 +62,9 @@ public class MainController {
     }
 
     @GetMapping("/admin/member")
-    public String adminMember(){
+    public String adminMember(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
+        String nickname = userDetails.member.getNickname();
+        model.addAttribute("nickname", nickname);
         return "admins/adminMember";
     }
 }

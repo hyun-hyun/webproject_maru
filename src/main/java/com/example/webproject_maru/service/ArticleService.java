@@ -2,12 +2,16 @@ package com.example.webproject_maru.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,7 +28,10 @@ public class ArticleService {
     @Autowired
     private ArticleRepository articleRepository;
 
-    public Article create(ArticleForm dto, MultipartFile[] files) {
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+
+    public Article create(ArticleForm dto, MultipartFile[] files,String catagory) {
         Article article=dto.toEntity();
         if(article.getId() !=null) {
             return null;
@@ -36,10 +43,15 @@ public class ArticleService {
             log.info("저장시작");
             Random random=new Random();
             String genR=random.nextInt(10000)+"";
-            String pic_anime_path="C:/Users/LG/Desktop/CodeStudy/Java/webproject_maru/src/main/resources/static/images/pic/anime/";
-
+            //String pic_anime_path="C:/Users/LG/Desktop/CodeStudy/Java/webproject_maru/src/main/resources/static/images/pic/anime/";
+            //String pic_anime_path="anime/";
             //파일을 서버에 저장
-            files[i].transferTo(new File(pic_anime_path+genR+"_"+files[i].getOriginalFilename()));
+            //files[i].transferTo(new File(uploadDir+pic_anime_path+genR+"_"+files[i].getOriginalFilename()));
+            Path filePath = Paths.get(uploadDir+catagory+"/"+genR+"_"+files[i].getOriginalFilename());
+            Files.createDirectories(filePath.getParent());
+            files[i].transferTo(filePath);
+            //files[i].transferTo(new File(uploadDir+genR+"_"+files[i].getOriginalFilename()));
+
             log.info(genR+"_"+files[i].getOriginalFilename());
             article.setMain_pic(genR+"_"+files[i].getOriginalFilename());
 
