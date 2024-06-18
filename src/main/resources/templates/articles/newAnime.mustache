@@ -11,11 +11,21 @@
         <input type="text" class="form-control" name="title">{{!name으로 DTO클래스와 연결}}
         <label class="form-label">방영날짜</label>
         <input type="date" class="form-control" name="broad_date">
-        <label class="form-label">작품 대표 이미지</label>
-        <div class="addImage" id="image-show"> <!-- 이미지 띄울 공간 -->
-        </div>
+        <label class="form-label">작품 대표 이미지~~</label>
+        <div class="addImage" id="image-show"> <!-- 이미지 띄울 공간 --></div>
         <!--배열로 여러 파일 받을 경우 multiple="multiple" 추가하고 MultipartFile[]같이 받음-->
-        <input type="file" accept="images/pic/anime/*" onchange="loadFile(this)" name="main_pic">
+        <input type="file" accept="images/pic/anime/*" onchange="loadFile(this, 'image-show')" name="pic">
+        <label class="form-label">등장인물</label>
+        <div class="addImage_m" id="image-show1"> <!-- 등장인물1 --></div>
+        <input type="file" accept="images/pic/anime/*" onchange="loadFile(this, 'image-show1')" name="pic">
+        <div class="addImage_m" id="image-show2"> <!-- 등장인물2 --></div>
+        <input type="file" accept="images/pic/anime/*" onchange="loadFile(this, 'image-show2')" name="pic">
+        <div class="addImage_m" id="image-show3"> <!-- 등장인물3 --></div>
+        <input type="file" accept="images/pic/anime/*" onchange="loadFile(this,'image-show3')" name="pic">
+        <div class="addImage_m" id="image-show4"> <!-- 등장인물4 --></div>
+        <input type="file" accept="images/pic/anime/*" onchange="loadFile(this, 'image-show4')" name="pic">
+        <div class="addImage_m" id="image-show5"> <!-- 등장인물5 --></div>
+        <input type="file" accept="images/pic/anime/*" onchange="loadFile(this, 'image-show5')" name="pic">
     </div>
     <div class="mb-3">
 
@@ -38,7 +48,7 @@
     <a href="/articles" class="btn btn-sm btn-outline-success">Back</a>
 </form>
 <script>
-    function loadFile(input) {
+    function loadFile(input, imageShowId) {
         let file = input.files[0]; // 선택된 파일 가져오기
 
         let newImage = document.createElement("img"); //새 이미지 추가
@@ -51,7 +61,7 @@
         newImage.style.objectFit = "cover";
 
         //이미지를 image-show div에 추가
-        let container = document.getElementById('image-show');
+        let container = document.getElementById(imageShowId);
         container.innerHTML = '';//기존 이미지 제거
         container.appendChild(newImage);
     }

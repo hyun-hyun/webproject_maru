@@ -37,7 +37,7 @@ public class ArticleController {
     }
 
     @PostMapping("/write/article/{catagory}/create")
-    public String createArticle(ArticleForm form, @RequestParam("main_pic") MultipartFile[] mfile, @PathVariable String catagory) {//폼 데이터를 DTO로 받기
+    public String createArticle(ArticleForm form, @RequestParam("pic") MultipartFile[] mfile, @PathVariable String catagory) {//폼 데이터를 DTO로 받기
         log.info(form.toString());
 
         Article saved=articleService.create(form, mfile, catagory);

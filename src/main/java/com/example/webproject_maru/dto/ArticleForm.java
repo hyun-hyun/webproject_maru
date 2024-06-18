@@ -40,6 +40,6 @@ public class ArticleForm {
     public Article toEntity() {
         // return new Article(id, catagory, title, genre, broad_date, null, story, null, null, null, null, null, null, null, null, null, null);
         return new Article(id, catagory, title, genre, broad_date, story);
-    }
+    } 
 
 }

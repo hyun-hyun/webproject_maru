@@ -28,19 +28,26 @@ public class Article {
     private String genre;
     private LocalDate broad_date;
     private String main_pic;
+    private String main_pic_name;
+
     private Integer score;
     private String score_reason;
     //tag
     private String story;
     private String sub_pic1;
+    private String sub_pic1_name;
 
     private String sub_pic2;
+    private String sub_pic2_name;
 
     private String sub_pic3;
+    private String sub_pic3_name;
     
     private String sub_pic4;
+    private String sub_pic4_name;
     
     private String sub_pic5;
+    private String sub_pic5_name;
 
     private String nickname;
     private LocalDateTime appendTime;
