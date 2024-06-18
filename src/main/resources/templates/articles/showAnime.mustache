@@ -9,14 +9,30 @@
 <h3>{{title}}</h3> <br>
 <label class="form-label">방영날짜</label> {{broad_date}}<br>
 
-<div class="addImage">
-<!--var pic_anime_path="images/pic/anime/";-->
+<label class="form-label">작품 대표 이미지</label>
 <img src="../../images/pic/anime/{{main_pic}}" class="addImage" alt="작품표지"></img>
-</br>
-<img src="../../images/pic/anime/{{sub_pic1}}" class="addImage_m" alt="등장인물1"></img>
-
-
+<br>
+<label class="form-label">등장인물</label>
+<div class="image-container">
+  {{#sub_pic1}}
+  <img src="../../images/pic/anime/{{sub_pic1}}" class="addImage_m" alt="등장인물1"></img>
+  {{/sub_pic1}}
+  {{#sub_pic2}}
+  <img src="../../images/pic/anime/{{sub_pic2}}" class="addImage_m" alt="등장인물2"></img>
+  {{/sub_pic2}}
+  {{#sub_pic3}}
+  <img src="../../images/pic/anime/{{sub_pic3}}" class="addImage_m" alt="등장인물3"></img>
+  {{/sub_pic3}}
+  {{#sub_pic4}}
+  <img src="../../images/pic/anime/{{sub_pic4}}" class="addImage_m" alt="등장인물4"></img>
+  {{/sub_pic4}}
+  {{#sub_pic5}}
+  <img src="../../images/pic/anime/{{sub_pic5}}" class="addImage_m" alt="등장인물5"></img>
+  {{/sub_pic5}}
 </div>
+
+
+
 
 </br> 
 

@@ -1,9 +1,11 @@
 package com.example.webproject_maru.controller;
 
 import java.nio.file.Files;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -37,9 +39,12 @@ public class ArticleController {
     }
 
     @PostMapping("/write/article/{catagory}/create")
-    public String createArticle(ArticleForm form, @RequestParam("pic") MultipartFile[] mfile, @PathVariable String catagory) {//폼 데이터를 DTO로 받기
+    public String createArticle(ArticleForm form, @RequestParam("pic") MultipartFile[] mfile, 
+                                // @RequestParam("broad_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate broadDate,
+                                @PathVariable String catagory) {//폼 데이터를 DTO로 받기
         log.info(form.toString());
 
+        
         Article saved=articleService.create(form, mfile, catagory);
         /*
         //System.out.println(form.toString());//DTO에 잘 담겼는지 확인        

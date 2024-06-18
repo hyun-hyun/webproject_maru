@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -39,10 +40,9 @@ public class ArticleService {
             return null;
         }
         
-
         try{
+        // article.setBroad_date(b_date);
 
-        
         for(int i=0;i<files.length;i++){
             if(!files[i].isEmpty()){
                 log.info("저장시작");

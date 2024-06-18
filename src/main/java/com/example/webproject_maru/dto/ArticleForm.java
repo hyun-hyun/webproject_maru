@@ -17,29 +17,17 @@ public class ArticleForm {
     private String title;
     private String genre;
     private LocalDate broad_date;
-    // private MultipartFile main_pic;
 
     //tag
     private String story;
 
-    // private String sub_pic1_path;
-    // private String sub_pic1_name;
-
-    // private String sub_pic2_path;
-    // private String sub_pic2_name;
-
-    // private String sub_pic3_path;
-    // private String sub_pic3_name;
-    
-    // private String sub_pic4_path;
-    // private String sub_pic4_name;
-    
-    // private String sub_pic5_path;
-    // private String sub_pic5_name;
 
     public Article toEntity() {
         // return new Article(id, catagory, title, genre, broad_date, null, story, null, null, null, null, null, null, null, null, null, null);
         return new Article(id, catagory, title, genre, broad_date, story);
+        // return new Article(id, catagory, title, genre, story);
+
     } 
+
 
 }

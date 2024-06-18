@@ -53,6 +53,8 @@ public class Article {
     private LocalDateTime appendTime;
     private LocalDateTime updateTime;
     
+    // public Article (Long id, String catagory, String title, String genre, String story){
+
     public Article (Long id, String catagory, String title, String genre, LocalDate broad_date, String story){
         this.id=id;
         this.catagory=catagory;
