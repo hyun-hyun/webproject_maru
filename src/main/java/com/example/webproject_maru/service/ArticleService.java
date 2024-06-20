@@ -77,8 +77,8 @@ public class ArticleService {
                     case 2 : article.setSub_pic2_name(files[2].getOriginalFilename());
                             article.setSub_pic2(saveFileName);
                             break;
-                    case 3 : article.setSub_pic1_name(files[3].getOriginalFilename());
-                            article.setSub_pic1(saveFileName);
+                    case 3 : article.setSub_pic3_name(files[3].getOriginalFilename());
+                            article.setSub_pic3(saveFileName);
                             break;
                     case 4 : article.setSub_pic4_name(files[4].getOriginalFilename());
                             article.setSub_pic4(saveFileName);
