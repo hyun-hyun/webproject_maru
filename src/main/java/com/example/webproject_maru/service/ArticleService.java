@@ -18,7 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.webproject_maru.dto.ArticleForm;
+import com.example.webproject_maru.dto.ReviewForm;
 import com.example.webproject_maru.entity.Article;
+import com.example.webproject_maru.entity.Review;
 import com.example.webproject_maru.repository.ArticleRepository;
 
 import jakarta.transaction.Transactional;
@@ -125,4 +127,6 @@ public class ArticleService {
         Article articleEntity=articleRepository.findById(id).orElse(null);
         return articleEntity;
     }
+
+    
 }

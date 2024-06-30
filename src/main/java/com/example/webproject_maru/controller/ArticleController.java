@@ -18,8 +18,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.webproject_maru.dto.ArticleForm;
 import com.example.webproject_maru.dto.CustomUserDetails;
+import com.example.webproject_maru.dto.ReviewForm;
 import com.example.webproject_maru.entity.Article;
+import com.example.webproject_maru.entity.Review;
 import com.example.webproject_maru.service.ArticleService;
+import com.example.webproject_maru.service.ReviewService;
+
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -77,6 +81,7 @@ public class ArticleController {
         return "articles/showAnime";
     }
 
+
     @GetMapping("/articles/anime")
     public String index(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
         String nickname = userDetails.member.getNickname();
@@ -90,4 +95,5 @@ public class ArticleController {
         return "articles/listAnime";
     }
 
+    
 }

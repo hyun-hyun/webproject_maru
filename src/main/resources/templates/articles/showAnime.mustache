@@ -7,12 +7,14 @@
 {{#article}}
 <label class="form-label"><h3>작품명</h3></label><br>
 <h3>{{title}}</h3> <br>
-<label class="form-label">방영날짜</label> {{broad_date}}<br>
+<label class="form-label">방영날짜 </label> {{broad_date}}<br>
 
 <label class="form-label">작품 대표 이미지</label>
+<br>
 <img src="../../images/pic/anime/{{main_pic}}" class="addImage" alt="작품표지"></img>
 <br>
 <label class="form-label">등장인물</label>
+<br>
 <div class="image-container">
   {{#sub_pic1}}
   <img src="../../images/pic/anime/{{sub_pic1}}" class="addImage_m" alt="등장인물1"></img>
@@ -42,7 +44,11 @@
 
 <!--로그인ㅇ&리뷰x-->
   <!--<link href="/resources/templates/layouts/css.mustache" rel="stylesheet"/>-->
-  <form class="mb-3" name="starform" id="scoreForm" method="post">
+  <form class="mb-3" name="starform" action="/write/article/{{id}}/create_r" id="scoreForm" method="post">
+
+    <input type="hidden" name="member_id" value=""><br>
+    <input type="hidden" name="article_id" value="{{id}}"><br>
+
     <fieldset>
       <span class="text-bold">작품에 대한 만족도를 표시해주세요</span>
       <input type="radio" name="score" value="5" id="rate1"><label
@@ -60,6 +66,8 @@
       <textarea class="col-auto form-control" type="text" id="score_reason"
             placeholder="간단하게 해당 점수를 택한 이유를 적어주세요."></textarea>
     </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+
   </form>	
 
   <a href="/articles/anime/{{id}}/edit" class="btn btn-primary">Edit</a>

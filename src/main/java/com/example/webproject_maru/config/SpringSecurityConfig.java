@@ -21,7 +21,7 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         //.requestMatchers("/", "/**").permitAll()
 
-                        .requestMatchers("/", "/login", "/loginProc","/join","/joinProc", "/joined","/articles/**").permitAll()
+                        .requestMatchers("/", "/login", "/loginProc","/join","/joinProc", "/joined","/articles/*").permitAll()
                         //h2용
                         .requestMatchers("/h2-console/**").permitAll() 
 
