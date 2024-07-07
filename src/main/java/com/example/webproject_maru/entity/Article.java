@@ -10,6 +10,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -50,13 +52,17 @@ public class Article {
     private String sub_pic5;
     private String sub_pic5_name;
 
-    private String nickname;
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @Column
     private LocalDateTime appendTime;
     private LocalDateTime updateTime;
     
     // public Article (Long id, String catagory, String title, String genre, String story){
 
-    public Article (Long id, String catagory, String title, String genre, LocalDate broad_date, String story){
+    public Article (Long id, String catagory, String title, String genre, LocalDate broad_date, String story, Member member){
         this.id=id;
         this.catagory=catagory;
         this.title=title;
@@ -64,5 +70,6 @@ public class Article {
         this.broad_date=broad_date;
         // this.main_pic=main_pic;
         this.story=story;
+        this.member=member;
     }
 }

@@ -1,5 +1,7 @@
 package com.example.webproject_maru.entity;
 
+import java.time.LocalDateTime;
+
 import com.example.webproject_maru.dto.ReviewForm;
 
 import jakarta.persistence.Column;
@@ -34,6 +36,8 @@ public class Review {
     @Column
     private Integer score;
     private String score_reason;
+    private LocalDateTime appendTime;
+    private LocalDateTime updateTime;
     
 
     public static Review createReview(ReviewForm dto, Member member, Article article) {//static이므로 객체생성 안해도 호출가능
@@ -50,7 +54,9 @@ public class Review {
             member,
             article,
             dto.getScore(),
-            dto.getScore_reason()
+            dto.getScore_reason(),
+            dto.getAppendTime(),
+            dto.getUpdateTime()
         );
     }
     public void patch(ReviewForm dto) {

@@ -65,6 +65,6 @@ public class MainController {
     public String adminMember(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
         String nickname = userDetails.member.getNickname();
         model.addAttribute("nickname", nickname);
-        return "admins/adminMember";
+        return "admin/adminMember";
     }
 }

@@ -37,7 +37,11 @@ public class ArticleController {
     @GetMapping("/write/article/anime")
     public String goNewAnime(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
         String nickname = userDetails.member.getNickname();
+        Long memgber_id = userDetails.member.getId();
+
         model.addAttribute("nickname", nickname);
+        model.addAttribute("member_id", memgber_id);
+
 
         return "articles/newAnime";
     }
@@ -70,7 +74,9 @@ public class ArticleController {
         log.info("id= "+id);//id잘 받았는지 확인
 
         String nickname = userDetails.member.getNickname();
+        Long memgber_id = userDetails.member.getId();
         model.addAttribute("nickname", nickname);
+        model.addAttribute("member_id", memgber_id);
 
         //1. id조회해서 데이터(entity, Optional<Article>) 가져오기
         Article articleEntity=articleService.findByIdArticle(id);

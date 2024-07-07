@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -20,8 +22,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.webproject_maru.dto.ArticleForm;
 import com.example.webproject_maru.dto.ReviewForm;
 import com.example.webproject_maru.entity.Article;
+import com.example.webproject_maru.entity.Member;
 import com.example.webproject_maru.entity.Review;
 import com.example.webproject_maru.repository.ArticleRepository;
+import com.example.webproject_maru.repository.MemberRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -31,13 +35,18 @@ import lombok.extern.slf4j.Slf4j;
 public class ArticleService {
     @Autowired
     private ArticleRepository articleRepository;
+    @Autowired
+    private MemberRepository memberRepository;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
 
     @Transactional
     public Article create(ArticleForm dto, MultipartFile[] files,String catagory) {
-        Article article=dto.toEntity();
+        Member member=memberRepository.findById(dto.getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException("리뷰 생성 실패!"+
+                        "대상 회원이 없습니다."));//작성자 없으면 에러 메시지 출력
+        Article article=dto.toEntity(member);
         if(article.getId() !=null) {
             return null;
         }
@@ -57,11 +66,6 @@ public class ArticleService {
                 // 파일을 서버에 저장
                 Path filePath = Paths.get(uploadDir+catagory + "/" + saveFileName);
 
-                // Random random=new Random();
-                // String genR=random.nextInt(10000)+"";
-                
-                //파일을 서버에 저장
-                // Path filePath = Paths.get(uploadDir+catagory+"/"+genR+"_"+files[i].getOriginalFilename());
                 Files.createDirectories(filePath.getParent());
                 files[i].transferTo(filePath);
                 //files[i].transferTo(new File(uploadDir+genR+"_"+files[i].getOriginalFilename()));
@@ -93,6 +97,9 @@ public class ArticleService {
             }
 
         }
+        LocalDateTime SeoulNow = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        article.setAppendTime(SeoulNow);
+        article.setUpdateTime(SeoulNow);
         }
         catch (IllegalStateException | IOException e){
         e.printStackTrace();
@@ -101,7 +108,7 @@ public class ArticleService {
 
         return articleRepository.save(article);
     }
-
+/*
     @Transactional
     public List<Article> createArticles(List<ArticleForm> dtos) {
         //1. dto 묶음 -> entity 묶음 변환
@@ -111,13 +118,14 @@ public class ArticleService {
         //2. entity묶음 -> DB 저장
         articleList.stream()
                 .forEach(article->articleRepository.save(article));
+                
         //3. 강제로 에러 발생시키기
         articleRepository.findById(-1L)
                 .orElseThrow(()->new IllegalArgumentException("결제 실패!"));
         //4. 결과 반환
         return articleList;
     }
-
+*/
     public ArrayList<Article> findArticles(){
         ArrayList<Article> articleEntityList=articleRepository.findAll();
         return articleEntityList;

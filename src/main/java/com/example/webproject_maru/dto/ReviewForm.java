@@ -1,5 +1,7 @@
 package com.example.webproject_maru.dto;
 
+import java.time.LocalDateTime;
+
 import com.example.webproject_maru.entity.Review;
 
 import lombok.AllArgsConstructor;
@@ -18,7 +20,8 @@ public class ReviewForm {
     private Long article_id;
     private Integer score;
     private String score_reason;
-
+    private LocalDateTime appendTime;
+    private LocalDateTime updateTime;
 
  
     public static ReviewForm createReviewForm(Review review) {
@@ -27,7 +30,9 @@ public class ReviewForm {
             review.getMember().getId(),
             review.getArticle().getId(),
             review.getScore(),
-            review.getScore_reason()
+            review.getScore_reason(),
+            review.getAppendTime(),
+            review.getUpdateTime()
         );
     }
 }
