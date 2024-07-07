@@ -5,8 +5,7 @@
 <h2>상세페이지</h2><br>
 
 {{#article}}
-<label class="form-label"><h3>작품명</h3></label><br>
-<h3>{{title}}</h3> <br>
+<label class="form-label"><h3>작품명 : {{title}}</h3></label><br>
 <label class="form-label">방영날짜 </label> {{broad_date}}<br>
 
 <label class="form-label">작품 대표 이미지</label>
@@ -42,7 +41,9 @@
 
 <!--로그인ㅇ&리뷰x-->
   <!--<link href="/resources/templates/layouts/css.mustache" rel="stylesheet"/>-->
-  <form class="mb-3" name="starform" action="/articles/anime/{{id}}/create_r" id="scoreForm" method="post">
+  <!--<form class="mb-3" name="starform" action="/articles/{{id}}/create_r" id="scoreForm" method="post">-->
+  <form class="mb-3" name="starform" id="scoreForm">
+
 
     <input type="hidden" id="member-id" value="{{member_id}}"><br>
     <input type="hidden" id="article-id" value="{{id}}"><br>
@@ -61,10 +62,10 @@
         for="rate5">♣</label>
     </fieldset>
     <div>
-      <textarea class="col-auto form-control" type="text" id="score_reason"
+      <textarea class="col-auto form-control" type="text" id="score-reason"
             placeholder="간단하게 해당 점수를 택한 이유를 적어주세요."></textarea>
     </div>
-    <button type="submit" class="btn btn-primary id="review-create-btn">Submit</button>
+    <button type="button" class="btn btn-primary" id="review-create-btn">리뷰 작성</button>
 
   </form>	
 
@@ -81,14 +82,14 @@
     //이벤트 감지되면 이벤트 처리 함수 실행
     reviewCreateBtn.addEventListener("click",function(){
       //라디오 버튼에서 선택된 값을 가져오기
-      const selectedScore=document.querySelector('input[name="score"]:checked');
+      const scoreElement=document.querySelector('input[name="score"]:checked');
       //새 리뷰 객체 생성
       const review={
         //새 리뷰의 멤버id,게시글id,점수,한줄평
         member_id:document.querySelector("#member-id").value,
         article_id:document.querySelector("#article-id").value,
         score:scoreElement ? scoreElement.value : null,
-        score_reason:document.querySelector("#new-review-score").value
+        score_reason:document.querySelector("#score-reason").value
       };
 
       //선택된 라디오 버튼이 없는 경우 경고 메시지를 출력하고 함수 종료
@@ -100,13 +101,13 @@
       //review객체를 확인하기 위해 콘솔에 출력(디버깅용, 추후 삭제하기)
        console.log(review);
       //review객체 서버에 post, 비동기 통신을 위한 fetch API
-      const url="/api/articles/"+article_id+"/create_r"
+      const url="/api/articles/"+review.article_id+"/create_r"
       fetch(url,{
         method:"POST",
         headers:{
           "Content-Type": "application/json"
         },
-        body: JSON.stringfy(review)//review객체를 JSON 문자열로 변환해 전송
+        body: JSON.stringify(review)//review객체를 JSON 문자열로 변환해 전송
       }) 
       .then(response => {
         //HTTP 응답코드에 따른 메시지 출력
