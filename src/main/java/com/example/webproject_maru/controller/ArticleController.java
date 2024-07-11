@@ -3,6 +3,7 @@ package com.example.webproject_maru.controller;
 import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -33,6 +34,8 @@ import lombok.extern.slf4j.Slf4j;
 public class ArticleController {
     @Autowired
     private ArticleService articleService;
+    @Autowired
+    private ReviewService reviewService;
 
     @GetMapping("/write/article/anime")
     public String goNewAnime(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
@@ -74,14 +77,20 @@ public class ArticleController {
         log.info("id= "+id);//id잘 받았는지 확인
 
         String nickname = userDetails.member.getNickname();
-        Long memgber_id = userDetails.member.getId();
+        Long member_id = userDetails.member.getId();
         model.addAttribute("nickname", nickname);
-        model.addAttribute("member_id", memgber_id);
+        model.addAttribute("member_id", member_id);
 
         //1. id조회해서 데이터(entity, Optional<Article>) 가져오기
         Article articleEntity=articleService.findByIdArticle(id);
+        //전체 리뷰 가져오기
+        List<ReviewForm> reviewDtos=reviewService.reviews(id);
+        //사용자 리뷰만 가져오기
+        ReviewForm reviewForm=reviewService.my_review(id, member_id);
         //2. 모델에 데이터 등록
         model.addAttribute("article", articleEntity);
+        model.addAttribute("reviewDtos", reviewDtos);
+        model.addAttribute("my_review", reviewForm);
         // model.addAttribute("commentDtos", commentsDtos);
         //3. 뷰 페이지 반환
         return "articles/showAnime";

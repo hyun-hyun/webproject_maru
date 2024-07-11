@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.webproject_maru.dto.ReviewForm;
+import com.example.webproject_maru.service.ArticleService;
 import com.example.webproject_maru.service.ReviewService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,11 +20,11 @@ public class ReviewApiController {
     @Autowired
     private ReviewService reviewService;
 
-
     @PostMapping("/api/articles/{id}/create_r")
     public ResponseEntity<ReviewForm> createReview(@PathVariable Long id, @RequestBody ReviewForm reviewForm){
         log.info("ReviewApiController들어와서 createReview시작");
         ReviewForm saved=reviewService.create(reviewForm);
+
         return ResponseEntity.status(HttpStatus.OK).body(saved);
         
     }

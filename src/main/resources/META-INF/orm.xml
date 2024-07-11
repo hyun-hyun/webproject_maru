@@ -32,4 +32,14 @@
             ]]>
         </query>
     </named-native-query>
+
+    <named-native-query
+            name="Review.getScoreAverage">
+        <query>
+            <![CDATA[
+                SELECT avg(score) FROM review WHERE article_id = :articleId
+            ]]>
+        </query>
+    </named-native-query>
+
 </entity-mappings>

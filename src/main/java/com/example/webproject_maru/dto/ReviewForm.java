@@ -25,6 +25,9 @@ public class ReviewForm {
 
  
     public static ReviewForm createReviewForm(Review review) {
+        if(review ==null){
+            return null;
+        }
         return new ReviewForm(
             review.getId(),
             review.getMember().getId(),

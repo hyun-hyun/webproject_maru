@@ -10,4 +10,5 @@ import com.example.webproject_maru.entity.Article;
 public interface ArticleRepository extends JpaRepository<Article,Long> {
     @Override
     ArrayList<Article> findAll();//Iterabel -> ArrayList수정
+
 }

@@ -29,27 +29,48 @@ public class Article {
     private String title;
     @Column
     private String genre;
+    @Column
     private LocalDate broad_date;
+    @Column
     private String main_pic;
+    @Column
     private String main_pic_name;
 
+    @Column
     private Integer score;
+    @Column
     private String score_reason;
+    @Column
+    private Double avg_score=0.0;
+    @Column
+    private Integer c_score=0;
+
     //tag
+    @Column
     private String story;
+    @Column
     private String sub_pic1;
+    @Column
     private String sub_pic1_name;
 
+    @Column
     private String sub_pic2;
+    @Column
     private String sub_pic2_name;
 
+    @Column
     private String sub_pic3;
+    @Column
     private String sub_pic3_name;
     
+    @Column
     private String sub_pic4;
+    @Column
     private String sub_pic4_name;
     
+    @Column
     private String sub_pic5;
+    @Column
     private String sub_pic5_name;
 
     @ManyToOne
@@ -58,6 +79,7 @@ public class Article {
 
     @Column
     private LocalDateTime appendTime;
+    @Column
     private LocalDateTime updateTime;
     
     // public Article (Long id, String catagory, String title, String genre, String story){

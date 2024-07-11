@@ -26,6 +26,7 @@ import com.example.webproject_maru.entity.Member;
 import com.example.webproject_maru.entity.Review;
 import com.example.webproject_maru.repository.ArticleRepository;
 import com.example.webproject_maru.repository.MemberRepository;
+import com.example.webproject_maru.repository.ReviewRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -135,6 +136,7 @@ public class ArticleService {
         Article articleEntity=articleRepository.findById(id).orElse(null);
         return articleEntity;
     }
+
 
     
 }

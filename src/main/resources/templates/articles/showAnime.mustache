@@ -5,13 +5,15 @@
 <h2>상세페이지</h2><br>
 
 {{#article}}
-<label class="form-label"><h3>작품명 : {{title}}</h3></label><br>
+<label class="form-label"><h4>작품명</h4><h3> {{title}}</h3></label><br>
 <label class="form-label">방영날짜 </label> {{broad_date}}<br>
 
 <label class="form-label">작품 대표 이미지</label>
 <br>
 <img src="../../images/pic/anime/{{main_pic}}" class="addImage" alt="작품표지"></img>
 <br>
+
+
 <label class="form-label">등장인물</label>
 <br>
 <div class="image-container">
@@ -31,14 +33,37 @@
   <img src="../../images/pic/anime/{{sub_pic5}}" class="addImage_m" alt="등장인물5"></img>
   {{/sub_pic5}}
 </div>
-
-
-
-
 </br> 
 
+<!--전체 리뷰-->
+<p>전체리뷰</p><br>
+전체 평점 : {{avg_score}}/5 리뷰 수 : {{c_score}}<br>
+{{#reviewDtos}}
+작성자 : {{member_id}}<br>
+평점 : {{score}}
+한줄평 : {{score_reason}}<br>
+<br>
+{{/reviewDtos}}
 
 
+<!--나의 리뷰-->
+{{#my_review}}
+<div id="review-section" class="hidden">
+  <div id="reviews">
+    <p>나의 리뷰</p>
+    작성자 : {{member_id}}
+    평점 : {{score}}
+    <form id="scoreForm">
+
+    </form>
+    한줄평 : {{score_reason}}
+  </div>
+  <button id="editBtn">수정</button>
+  <button id="saveBtn" class="hidden">완료</button>
+</div>
+{{/my_review}}
+
+{{^my_review}}
 <!--로그인ㅇ&리뷰x-->
   <!--<link href="/resources/templates/layouts/css.mustache" rel="stylesheet"/>-->
   <!--<form class="mb-3" name="starform" action="/articles/{{id}}/create_r" id="scoreForm" method="post">-->
@@ -65,9 +90,10 @@
       <textarea class="col-auto form-control" type="text" id="score-reason"
             placeholder="간단하게 해당 점수를 택한 이유를 적어주세요."></textarea>
     </div>
-    <button type="button" class="btn btn-primary" id="review-create-btn">리뷰 작성</button>
 
+    <button type="button" class="btn btn-primary" id="reviewCreateBtn">리뷰 작성</button>
   </form>	
+{{/my_review}}
 
   <a href="/articles/anime/{{id}}/edit" class="btn btn-primary">Edit</a>
   <a href="/articles/anime/{{id}}/delete" class="btn btn-sm btn-outline-danger">Deletes</a>
@@ -78,10 +104,10 @@
 <script>
   {
     //리뷰 생성 버튼 변수화
-    const reviewCreateBtn=document.querySelector("#review-create-btn");
+    const reviewCreateBtn=document.querySelector("#reviewCreateBtn");
     //이벤트 감지되면 이벤트 처리 함수 실행
     reviewCreateBtn.addEventListener("click",function(){
-      //라디오 버튼에서 선택된 값을 가져오기
+      //라디오 버튼에서 선택된 값을 가져오기 
       const scoreElement=document.querySelector('input[name="score"]:checked');
       //새 리뷰 객체 생성
       const review={
@@ -114,15 +140,105 @@
         const msg=(response.ok)?"리뷰 작성 완료 :)":"리뷰 작성 중 오류가 발생하였습니다.";
         alert(msg);
         //현재페이지 새로고침
-        window.location.reload();
+        //window.location.reload();
       })
-      .then(data=>{
-        console.log('Success:',data);
-      })
+      .then(data => {
+
+        document.querySelector("#reviewCreateBtn").disabled = true;
+        document.querySelector("#reviewCreateBtn").classList.add('hidden');
+
+        const reviewSection = document.querySelector("#review-section");
+        reviewSection.classList.remove('hidden');
+
+        const reviewsDiv = document.querySelector("#reviews");
+        reviewsDiv.innerHTML = `
+            <div class="review">
+                <p>Member ID: <span id="display_member_id">${review.member_id}</span></p>
+                <p>Article ID: <span id="display_article_id">${review.article_id}</span></p>
+                <p>Score: <span id="display_score">${review.score}</span></p>
+                <p>Reason: <span id="display_score_reason">${review.score_reason}</span></p>
+            </div>
+        `;
+
+        document.querySelector("#editBtn").classList.remove('hidden');
+        document.querySelector("#editBtn").addEventListener("click", function() {
+            reviewsDiv.innerHTML = `
+                <div class="review">
+                    <p>Member ID: <span id="display_member_id">${review.member_id}</span></p>
+                    <p>Article ID: <span id="display_article_id">${review.article_id}</span></p>
+                    <p>Score: 
+                        <input type="radio" name="score" value="5" id="edit_rate1" ${review.score == 5 ? 'checked' : ''}><label for="edit_rate1">♣</label>
+                        <input type="radio" name="score" value="4" id="edit_rate2" ${review.score == 4 ? 'checked' : ''}><label for="edit_rate2">♣</label>
+                        <input type="radio" name="score" value="3" id="edit_rate3" ${review.score == 3 ? 'checked' : ''}><label for="edit_rate3">♣</label>
+                        <input type="radio" name="score" value="2" id="edit_rate4" ${review.score == 2 ? 'checked' : ''}><label for="edit_rate4">♣</label>
+                        <input type="radio" name="score" value="1" id="edit_rate5" ${review.score == 1 ? 'checked' : ''}><label for="edit_rate5">♣</label>
+                    </p>
+                    <p>Reason: <textarea id="edit_score_reason">${review.score_reason}</textarea></p>
+                </div>
+            `;
+            document.querySelector("#editBtn").classList.add('hidden');
+            document.querySelector("#saveBtn").classList.remove('hidden');
+        });
+
+        document.querySelector("#saveBtn").addEventListener("click", function() {
+            const newScoreElement = document.querySelector('input[name="score"]:checked');
+            const newScoreValue = newScoreElement ? newScoreElement.value : review.score;
+            const newScoreReason = document.querySelector("#edit_score_reason").value;
+
+            fetch(`/api/reviews/${data.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ...review, score: newScoreValue, score_reason: newScoreReason })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(updatedData => {
+                alert('리뷰 수정 완료 :)');
+                reviewsDiv.innerHTML = `
+                    <div class="review">
+                        <p>Member ID: <span id="display_member_id">${review.member_id}</span></p>
+                        <p>Article ID: <span id="display_article_id">${review.article_id}</span></p>
+                        <p>Score: <span id="display_score">${newScoreValue}</span></p>
+                        <p>Reason: <span id="display_score_reason">${newScoreReason}</span></p>
+                    </div>
+                `;
+
+                document.querySelector("#editBtn").classList.remove('hidden');
+                document.querySelector("#saveBtn").classList.add('hidden');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    })
       .catch((error)=>{
         console.error('Error:',error);
       });
     })
   }
 </script>
+<style>
+  /* CSS */
+  .review {
+    border: 1px solid #ccc; /* 테두리 선 스타일 */
+    padding: 10px; /* 내부 여백 */
+    margin-bottom: 10px; /* 아래쪽 마진 */
+    background-color: #f9f9f9; /* 배경색 */
+}
+
+.review p {
+    margin: 5px 0; /* 각 정보(멤버 ID, 게시글 ID 등)의 위아래 마진 */
+}
+
+.review span {
+    font-weight: bold; /* 정보(멤버 ID, 게시글 ID 등)의 텍스트를 굵게 설정 */
+    color: #333; /* 텍스트 색상 */
+}
+</style>
 {{>layouts/footer}}
