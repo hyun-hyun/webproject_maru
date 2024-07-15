@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.webproject_maru.dto.ArticleForm;
 import com.example.webproject_maru.dto.CustomUserDetails;
 import com.example.webproject_maru.dto.ReviewForm;
+import com.example.webproject_maru.dto.SubPicForm;
 import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.entity.Review;
 import com.example.webproject_maru.service.ArticleService;
@@ -50,13 +51,23 @@ public class ArticleController {
     }
 
     @PostMapping("/write/article/{catagory}/create")
-    public String createArticle(ArticleForm form, @RequestParam("pic") MultipartFile[] mfile, 
+    public String createArticle(ArticleForm form, @RequestParam("pic") MultipartFile[] mfile,
+                                @RequestParam("realChar") String[] realChars,@RequestParam("realVoiceChar") String[] realVoiceChars,
+                                @RequestParam("korChar") String[] korChars, @RequestParam("korVoiceChar")String[] korVoiceChars,
                                 // @RequestParam("broad_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate broadDate,
                                 @PathVariable String catagory) {//폼 데이터를 DTO로 받기
         log.info(form.toString());
-
-        
-        Article saved=articleService.create(form, mfile, catagory);
+        SubPicForm[] subPicForms=new SubPicForm[5];
+        for(int i=0;i<5;i++){
+            if(realChars[i]!=null && !realChars[i].isEmpty()){
+                subPicForms[i] =new SubPicForm(realChars[i],realVoiceChars[i],korChars[i],korVoiceChars[i]);
+            }
+            else{
+                subPicForms[i]=new SubPicForm(null,null,null,null);
+            }
+        }
+        log.info("서비스 create시작");
+        Article saved=articleService.create(form, mfile, subPicForms, catagory);
         /*
         //System.out.println(form.toString());//DTO에 잘 담겼는지 확인        
         //1. DTO -> entity

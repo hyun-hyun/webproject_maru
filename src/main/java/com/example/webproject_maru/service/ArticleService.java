@@ -21,9 +21,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.webproject_maru.dto.ArticleForm;
 import com.example.webproject_maru.dto.ReviewForm;
+import com.example.webproject_maru.dto.SubPicForm;
 import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.entity.Member;
 import com.example.webproject_maru.entity.Review;
+import com.example.webproject_maru.entity.SubPic;
 import com.example.webproject_maru.repository.ArticleRepository;
 import com.example.webproject_maru.repository.MemberRepository;
 import com.example.webproject_maru.repository.ReviewRepository;
@@ -42,15 +44,47 @@ public class ArticleService {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
+    //게시글 생성
     @Transactional
-    public Article create(ArticleForm dto, MultipartFile[] files,String catagory) {
+    public Article create(ArticleForm dto, MultipartFile[] files, SubPicForm[] subPicForms,String catagory) {
         Member member=memberRepository.findById(dto.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("리뷰 생성 실패!"+
+                .orElseThrow(() -> new IllegalArgumentException("게시글 생성 실패!"+
                         "대상 회원이 없습니다."));//작성자 없으면 에러 메시지 출력
         Article article=dto.toEntity(member);
-        if(article.getId() !=null) {
-            return null;
+            if(article.getId() !=null) {
+                    return null;
+            }
+        
+        for (int i = 0; i < subPicForms.length; i++) {
+            SubPicForm subPicForm = subPicForms[i];
+
+            log.info("subPicForm밑");
+            if(subPicForm != null){
+                SubPic subPic = subPicForm.toEntity();
+                log.info("subPicForm.toEntity");
+                switch (i) {
+                    case 0:
+                        article.setSubPic1(subPic);
+                        break;
+                    case 1:
+                        article.setSubPic2(subPic);
+                        break;
+                    case 2:
+                        article.setSubPic3(subPic);
+                        break;
+                    case 3:
+                        article.setSubPic4(subPic);
+                        break;
+                    case 4:
+                        article.setSubPic5(subPic);
+                        break;
+                    default:
+                        // 예외 처리나 로깅 등
+                        break;
+                }
+            }
         }
+        
         
         try{
         // article.setBroad_date(b_date);
@@ -78,22 +112,42 @@ public class ArticleService {
                     case 0 : article.setMain_pic_name(files[0].getOriginalFilename());
                             article.setMain_pic(saveFileName);
                             break;
-                    case 1 : article.setSub_pic1_name(files[1].getOriginalFilename());
-                            article.setSub_pic1(saveFileName);
+                    case 1 : article.getSubPic1().setName(files[1].getOriginalFilename());
+                            article.getSubPic1().setPic(saveFileName);
                             break;
-                    case 2 : article.setSub_pic2_name(files[2].getOriginalFilename());
-                            article.setSub_pic2(saveFileName);
+                    case 2 : article.getSubPic2().setName(files[2].getOriginalFilename());
+                            article.getSubPic2().setPic(saveFileName);
                             break;
-                    case 3 : article.setSub_pic3_name(files[3].getOriginalFilename());
-                            article.setSub_pic3(saveFileName);
+                    case 3 : article.getSubPic3().setName(files[3].getOriginalFilename());
+                            article.getSubPic3().setPic(saveFileName);
                             break;
-                    case 4 : article.setSub_pic4_name(files[4].getOriginalFilename());
-                            article.setSub_pic4(saveFileName);
+                    case 4 : article.getSubPic4().setName(files[4].getOriginalFilename());
+                            article.getSubPic4().setPic(saveFileName);
                             break;
-                    case 5 : article.setSub_pic5_name(files[5].getOriginalFilename());
-                            article.setSub_pic5(saveFileName);
+                    case 5 : article.getSubPic5().setName(files[5].getOriginalFilename());
+                            article.getSubPic5().setPic(saveFileName);
                             break;
                 }
+                // switch(i){
+                //     case 0 : article.setMain_pic_name(files[0].getOriginalFilename());
+                //             article.setMain_pic(saveFileName);
+                //             break;
+                //     case 1 : article.setSub_pic1_name(files[1].getOriginalFilename());
+                //             article.setSub_pic1(saveFileName);
+                //             break;
+                //     case 2 : article.setSub_pic2_name(files[2].getOriginalFilename());
+                //             article.setSub_pic2(saveFileName);
+                //             break;
+                //     case 3 : article.setSub_pic3_name(files[3].getOriginalFilename());
+                //             article.setSub_pic3(saveFileName);
+                //             break;
+                //     case 4 : article.setSub_pic4_name(files[4].getOriginalFilename());
+                //             article.setSub_pic4(saveFileName);
+                //             break;
+                //     case 5 : article.setSub_pic5_name(files[5].getOriginalFilename());
+                //             article.setSub_pic5(saveFileName);
+                //             break;
+                // }
             
             }
 
