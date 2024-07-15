@@ -1,15 +1,11 @@
 package com.example.webproject_maru.dto;
 
 import java.time.LocalDate;
-import java.util.List;
-
-import org.springframework.web.multipart.MultipartFile;
 
 import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.entity.Member;
-import com.example.webproject_maru.entity.SubPic;
 
-import jakarta.persistence.Embedded;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -27,20 +23,6 @@ public class ArticleForm {
 
     //tag
     private String story;
-
-    // @Embedded
-    // private SubPicForm subpic1Form;
-
-    // @Embedded
-    // private SubPic subPic1;
-    // @Embedded
-    // private SubPic subPic2;
-    // @Embedded
-    // private SubPic subPic3;
-    // @Embedded
-    // private SubPic subPic4;
-    // @Embedded
-    // private SubPic subPic5;
 
 
     public Article toEntity(Member member) {

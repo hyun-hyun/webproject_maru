@@ -3,9 +3,7 @@ package com.example.webproject_maru.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import org.springframework.web.multipart.MultipartFile;
 
-import com.example.webproject_maru.dto.SubPicForm;
 
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
@@ -110,42 +108,7 @@ public class Article {
         @AttributeOverride(name = "korVoiceChar", column = @Column(name = "sub_pic5_kor_voice_char"))
     })
     private SubPic subPic5;
-/* 
-    @Column
-    private String sub_pic1;
-    @Column
-    private String sub_pic1_name;
-    @Column
-    private String sub_pic1_real_char;
-    @Column
-    private String sub_pic1_korea_char;
 
-    @Column
-    private String sub_pic2;
-    @Column
-    private String sub_pic2_name;
-    @Column
-    private String sub_pic2_character;
-
-    @Column
-    private String sub_pic3;
-    @Column
-    private String sub_pic3_name;
-    @Column
-    private String sub_pic3_character;
-    
-    @Column
-    private String sub_pic4;
-    @Column
-    private String sub_pic4_name;
-    @Column
-    private String sub_pic4_character;
-    
-    @Column
-    private String sub_pic5;
-    @Column
-    private String sub_pic5_name;
-*/
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
@@ -155,7 +118,6 @@ public class Article {
     @Column
     private LocalDateTime updateTime;
     
-    // public Article (Long id, String catagory, String title, String genre, String story){
 
     public Article (Long id, String catagory, String title, String genre, LocalDate broad_date, String story, Member member){
         this.id=id;
@@ -163,12 +125,6 @@ public class Article {
         this.title=title;
         this.genre=genre;
         this.broad_date=broad_date;
-        // this.main_pic=main_pic;
-        // this.story=story;
-        // this.member=member;
-        // this.setSubPic1(subPic1);
-        // this.subPic1.setRealVoiceChar(subPic1.getRealVoiceChar());
-        // this.subPic1.setKorChar(subPic1.getKorChar());
-        // this.subPic1.setKorVoiceChar(subPic1.getKorVoiceChar());
+
     }
 }
