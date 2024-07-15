@@ -1,13 +1,9 @@
 package com.example.webproject_maru.controller;
 
-import java.nio.file.Files;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +18,6 @@ import com.example.webproject_maru.dto.CustomUserDetails;
 import com.example.webproject_maru.dto.ReviewForm;
 import com.example.webproject_maru.dto.SubPicForm;
 import com.example.webproject_maru.entity.Article;
-import com.example.webproject_maru.entity.Review;
 import com.example.webproject_maru.service.ArticleService;
 import com.example.webproject_maru.service.ReviewService;
 
@@ -54,7 +49,6 @@ public class ArticleController {
     public String createArticle(ArticleForm form, @RequestParam("pic") MultipartFile[] mfile,
                                 @RequestParam("realChar") String[] realChars,@RequestParam("realVoiceChar") String[] realVoiceChars,
                                 @RequestParam("korChar") String[] korChars, @RequestParam("korVoiceChar")String[] korVoiceChars,
-                                // @RequestParam("broad_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate broadDate,
                                 @PathVariable String catagory) {//폼 데이터를 DTO로 받기
         log.info(form.toString());
         SubPicForm[] subPicForms=new SubPicForm[5];

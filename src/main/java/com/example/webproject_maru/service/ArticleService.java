@@ -1,18 +1,13 @@
 package com.example.webproject_maru.service;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,15 +15,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.webproject_maru.dto.ArticleForm;
-import com.example.webproject_maru.dto.ReviewForm;
 import com.example.webproject_maru.dto.SubPicForm;
 import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.entity.Member;
-import com.example.webproject_maru.entity.Review;
 import com.example.webproject_maru.entity.SubPic;
 import com.example.webproject_maru.repository.ArticleRepository;
 import com.example.webproject_maru.repository.MemberRepository;
-import com.example.webproject_maru.repository.ReviewRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -128,26 +120,6 @@ public class ArticleService {
                             article.getSubPic5().setPic(saveFileName);
                             break;
                 }
-                // switch(i){
-                //     case 0 : article.setMain_pic_name(files[0].getOriginalFilename());
-                //             article.setMain_pic(saveFileName);
-                //             break;
-                //     case 1 : article.setSub_pic1_name(files[1].getOriginalFilename());
-                //             article.setSub_pic1(saveFileName);
-                //             break;
-                //     case 2 : article.setSub_pic2_name(files[2].getOriginalFilename());
-                //             article.setSub_pic2(saveFileName);
-                //             break;
-                //     case 3 : article.setSub_pic3_name(files[3].getOriginalFilename());
-                //             article.setSub_pic3(saveFileName);
-                //             break;
-                //     case 4 : article.setSub_pic4_name(files[4].getOriginalFilename());
-                //             article.setSub_pic4(saveFileName);
-                //             break;
-                //     case 5 : article.setSub_pic5_name(files[5].getOriginalFilename());
-                //             article.setSub_pic5(saveFileName);
-                //             break;
-                // }
             
             }
 
