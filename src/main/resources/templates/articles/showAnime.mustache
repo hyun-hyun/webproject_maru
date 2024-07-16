@@ -13,7 +13,10 @@
 <img src="../../images/pic/anime/{{main_pic}}" class="addImage" alt="작품표지"></img>
 <br>
 
-
+<label class="form-label">줄거리</label>
+<br>
+{{story}}
+<br><br>
 <label class="form-label">등장인물</label>
 <br>
 <div class="image-container">
@@ -73,19 +76,37 @@
 </br> 
 
 <!--전체 리뷰-->
-<p>전체리뷰</p><br>
+<h5>전체리뷰</h5>
 전체 평점 : {{avg_score}}/5 리뷰 수 : {{c_score}}<br>
+<hr>
 {{#reviewDtos}}
-작성자 : {{member_id}}<br>
-평점 : {{score}}
-한줄평 : {{score_reason}}<br>
-<br>
+<div id="scoreForm" class="review">
+    <fieldset disabled>
+        <p>작성자 : {{member_id}}</p>
+        <div>
+            <input type="radio" name="rate-{{id}}" value="5" id="rate5-{{id}}" disabled><label for="rate5-{{id}}">♣</label>
+            <input type="radio" name="rate-{{id}}" value="4" id="rate4-{{id}}" disabled><label for="rate4-{{id}}">♣</label>
+            <input type="radio" name="rate-{{id}}" value="3" id="rate3-{{id}}" disabled><label for="rate3-{{id}}">♣</label>
+            <input type="radio" name="rate-{{id}}" value="2" id="rate2-{{id}}" disabled><label for="rate2-{{id}}">♣</label>
+            <input type="radio" name="rate-{{id}}" value="1" id="rate1-{{id}}" disabled><label for="rate1-{{id}}">♣</label>
+        </div>
+        <div>
+            한줄평 : {{score_reason}}<br>
+        </div>
+      </fieldset>
+    <input type="hidden" class="score-value" value="{{score}}">
+    <input type="hidden" class="review-id" value="{{id}}">
+</div>
+
+<hr>
 {{/reviewDtos}}
 
 
 <!--나의 리뷰-->
 {{#my_review}}
-<div id="review-section" class="hidden">
+<div class="card mb-3">
+  <div class="card-body">
+<div id="review-section">
   <div id="reviews">
     <p>나의 리뷰</p>
     작성자 : {{member_id}}
@@ -98,6 +119,9 @@
   <button id="editBtn">수정</button>
   <button id="saveBtn" class="hidden">완료</button>
 </div>
+</div>
+</div>
+
 {{/my_review}}
 
 {{^my_review}}
@@ -140,6 +164,14 @@
 
 <script>
   {
+
+    document.addEventListener("DOMContentLoaded", function() {
+      document.querySelectorAll(".review").forEach(function(card) {
+          const score = card.querySelector(".score-value").value;
+          const id = card.querySelector(".review-id").value;
+          card.querySelector(`input[name="rate-${id}"][value="${score}"]`).checked = true;
+      });
+
     //리뷰 생성 버튼 변수화
     const reviewCreateBtn=document.querySelector("#reviewCreateBtn");
     //이벤트 감지되면 이벤트 처리 함수 실행
@@ -258,12 +290,15 @@
         console.error('Error:',error);
       });
     })
+    
+  });
+    
   }
 </script>
 <style>
   /* CSS */
   .review {
-    border: 1px solid #ccc; /* 테두리 선 스타일 */
+    /*border: 1px solid #ccc;  테두리 선 스타일 */
     padding: 10px; /* 내부 여백 */
     margin-bottom: 10px; /* 아래쪽 마진 */
     background-color: #f9f9f9; /* 배경색 */

@@ -125,6 +125,7 @@ public class Article {
         this.title=title;
         this.genre=genre;
         this.broad_date=broad_date;
-
+        this.story=story;
+        this.member=member;
     }
 }
