@@ -17,6 +17,7 @@ import lombok.ToString;
 public class ReviewForm {
     private Long id;
     private Long member_id;
+    private String member_nickname;
     private Long article_id;
     private Integer score;
     private String score_reason;
@@ -31,6 +32,7 @@ public class ReviewForm {
         return new ReviewForm(
             review.getId(),
             review.getMember().getId(),
+            review.getMember().getNickname(),
             review.getArticle().getId(),
             review.getScore(),
             review.getScore_reason(),

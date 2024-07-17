@@ -25,9 +25,9 @@
   <div class="image-item">
   <img src="../../images/pic/anime/{{subPic1.pic}}" class="addImage_m" alt="등장인물1"></img>
   {{subPic1.realChar}}<br>
-  {{subPic1.realVoiceChar}}<br>
+  <div class="gray-text">{{subPic1.realVoiceChar}}</div>
   {{subPic1.korChar}}<br>
-  {{subPic1.korVoiceChar}}
+  <div class="gray-text">{{subPic1.korVoiceChar}}</div>
   </div>
   {{/subPic1.realChar}}
 
@@ -35,9 +35,9 @@
   <div class="image-item">
   <img src="../../images/pic/anime/{{subPic2.pic}}" class="addImage_m" alt="등장인물2"></img>
   {{subPic2.realChar}}<br>
-  {{subPic2.realVoiceChar}}<br>
+  <div class="gray-text"{{subPic2.realVoiceChar}}</div>
   {{subPic2.korChar}}<br>
-  {{subPic2.korVoiceChar}}
+  <div class="gray-text"{{subPic2.korVoiceChar}}</div>
   </div>
   {{/subPic2.realChar}}
 
@@ -45,9 +45,9 @@
   <div class="image-item">
   <img src="../../images/pic/anime/{{subPic3.pic}}" class="addImage_m" alt="등장인물3"></img>
   {{subPic3.realChar}}<br>
-  {{subPic3.realVoiceChar}}<br>
+  <div class="gray-text"{{subPic3.realVoiceChar}}</div>
   {{subPic3.korChar}}<br>
-  {{subPic3.korVoiceChar}}
+  <div class="gray-text"{{subPic3.korVoiceChar}}</div>
   </div>
   {{/subPic3.realChar}}
   
@@ -55,9 +55,9 @@
   <div class="image-item">
   <img src="../../images/pic/anime/{{subPic4.pic}}" class="addImage_m" alt="등장인물4"></img>
   {{subPic4.realChar}}<br>
-  {{subPic4.realVoiceChar}}<br>
+  <div class="gray-text"{{subPic4.realVoiceChar}}</div>
   {{subPic4.korChar}}<br>
-  {{subPic4.korVoiceChar}}
+  <div class="gray-text"{{subPic4.korVoiceChar}}</div>
   </div>
   {{/subPic4.realChar}}
 
@@ -65,9 +65,9 @@
   <div class="image-item">
   <img src="../../images/pic/anime/{{subPic5.pic}}" class="addImage_m" alt="등장인물5"></img>
   {{subPic5.realChar}}<br>
-  {{subPic5.realVoiceChar}}<br>
+  <div class="gray-text"{{subPic5.realVoiceChar}}</div>
   {{subPic5.korChar}}<br>
-  {{subPic5.korVoiceChar}}
+  <div class="gray-text"{{subPic5.korVoiceChar}}</div>
   </div>
   {{/subPic5.realChar}}
 
@@ -82,16 +82,17 @@
 {{#reviewDtos}}
 <div id="scoreForm" class="review">
     <fieldset disabled>
-        <p>작성자 : {{member_id}}</p>
-        <div>
-            <input type="radio" name="rate-{{id}}" value="5" id="rate5-{{id}}" disabled><label for="rate5-{{id}}">♣</label>
-            <input type="radio" name="rate-{{id}}" value="4" id="rate4-{{id}}" disabled><label for="rate4-{{id}}">♣</label>
-            <input type="radio" name="rate-{{id}}" value="3" id="rate3-{{id}}" disabled><label for="rate3-{{id}}">♣</label>
-            <input type="radio" name="rate-{{id}}" value="2" id="rate2-{{id}}" disabled><label for="rate2-{{id}}">♣</label>
-            <input type="radio" name="rate-{{id}}" value="1" id="rate1-{{id}}" disabled><label for="rate1-{{id}}">♣</label>
+      
+      <p>작성자 : {{member_nickname}}</p>
+      <div>
+          <input type="radio" name="rate-{{id}}" value="5" id="rate5-{{id}}" disabled><label for="rate5-{{id}}">♣</label>
+          <input type="radio" name="rate-{{id}}" value="4" id="rate4-{{id}}" disabled><label for="rate4-{{id}}">♣</label>
+          <input type="radio" name="rate-{{id}}" value="3" id="rate3-{{id}}" disabled><label for="rate3-{{id}}">♣</label>
+          <input type="radio" name="rate-{{id}}" value="2" id="rate2-{{id}}" disabled><label for="rate2-{{id}}">♣</label>
+          <input type="radio" name="rate-{{id}}" value="1" id="rate1-{{id}}" disabled><label for="rate1-{{id}}">♣</label>
         </div>
         <div>
-            한줄평 : {{score_reason}}<br>
+          <p>한줄평 : {{score_reason}}</p><br>
         </div>
       </fieldset>
     <input type="hidden" class="score-value" value="{{score}}">
@@ -109,8 +110,7 @@
 <div id="review-section">
   <div id="reviews">
     <p>나의 리뷰</p>
-    작성자 : {{member_id}}
-    평점 : {{score}}
+    <p>{{member_nickname}} 평점 : {{score}} 점</p>
     <form id="scoreForm">
 
     </form>
@@ -299,6 +299,7 @@
   /* CSS */
   .review {
     /*border: 1px solid #ccc;  테두리 선 스타일 */
+    text-align: left;
     padding: 10px; /* 내부 여백 */
     margin-bottom: 10px; /* 아래쪽 마진 */
     background-color: #f9f9f9; /* 배경색 */
