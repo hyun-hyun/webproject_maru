@@ -79,11 +79,11 @@
 <h5>전체리뷰</h5>
 전체 평점 : {{avg_score}}/5 리뷰 수 : {{c_score}}<br>
 <hr>
+<span class="review-toggle">전체리뷰 펼치기/접기</span>
+<div class="review-content">
 {{#reviewDtos}}
 <div id="scoreForm" class="review">
     <fieldset disabled>
-      
-      <p>작성자 : {{member_nickname}}</p>
       <div>
           <input type="radio" name="rate-{{id}}" value="5" id="rate5-{{id}}" disabled><label for="rate5-{{id}}">♣</label>
           <input type="radio" name="rate-{{id}}" value="4" id="rate4-{{id}}" disabled><label for="rate4-{{id}}">♣</label>
@@ -92,6 +92,7 @@
           <input type="radio" name="rate-{{id}}" value="1" id="rate1-{{id}}" disabled><label for="rate1-{{id}}">♣</label>
         </div>
         <div>
+          <p>작성자 : {{member_nickname}}</p>
           <p>한줄평 : {{score_reason}}</p><br>
         </div>
       </fieldset>
@@ -101,7 +102,7 @@
 
 <hr>
 {{/reviewDtos}}
-
+</div>
 
 <!--나의 리뷰-->
 {{#my_review}}
@@ -166,6 +167,25 @@
   {
 
     document.addEventListener("DOMContentLoaded", function() {
+      const reviewToggle = document.querySelector('.review-toggle');
+      const reviewContent = document.querySelector('.review-content');
+      //초기에 reviewContent 접은 상태로 설정
+      reviewContent.style.display = 'none';
+
+      reviewToggle.addEventListener('click', function() {
+        reviewContent.classList.toggle('active');
+        if (reviewContent.classList.contains('active')) {
+            reviewToggle.textContent = '전체리뷰 접기';
+            //리뷰 보이게
+            reviewContent.style.display='block';
+        } else {
+              reviewToggle.textContent = '전체리뷰 펼치기';
+              //리뷰 안보이게
+              reviewContent.style.display='none';
+          }
+      });
+
+
       document.querySelectorAll(".review").forEach(function(card) {
           const score = card.querySelector(".score-value").value;
           const id = card.querySelector(".review-id").value;
@@ -297,16 +317,28 @@
 </script>
 <style>
   /* CSS */
-  .review {
-    /*border: 1px solid #ccc;  테두리 선 스타일 */
-    text-align: left;
-    padding: 10px; /* 내부 여백 */
-    margin-bottom: 10px; /* 아래쪽 마진 */
-    background-color: #f9f9f9; /* 배경색 */
+.review {
+ /*border: 1px solid #ccc;  테두리 선 스타일 */
+  text-align: left;
+  padding: 10px; /* 내부 여백 */
+  margin-bottom: 10px; /* 아래쪽 마진 */
+  background-color: #f9f9f9; /* 배경색 */
 }
 
+.review-toggle {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.review-content {
+  max-height: 700px; /* 리뷰 내용 최대 높이 */
+  overflow-y: auto; /* 세로 스크롤 추가 */
+}
 .review p {
-    margin: 5px 0; /* 각 정보(멤버 ID, 게시글 ID 등)의 위아래 마진 */
+  margin: 5px 0; /* 각 정보(멤버 ID, 게시글 ID 등)의 위아래 마진 */
 }
 
 .review span {
