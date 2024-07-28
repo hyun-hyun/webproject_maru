@@ -79,7 +79,7 @@
 <h5>전체리뷰</h5>
 전체 평점 : {{avg_score}}/5 리뷰 수 : {{c_score}}<br>
 <hr>
-<span class="review-toggle">전체리뷰 펼치기/접기</span>
+<span class="review-toggle">전체리뷰 보기</span>
 <div class="review-content">
 {{#reviewDtos}}
 <div id="scoreForm" class="review">
@@ -90,6 +90,7 @@
           <input type="radio" name="rate-{{id}}" value="3" id="rate3-{{id}}" disabled><label for="rate3-{{id}}">♣</label>
           <input type="radio" name="rate-{{id}}" value="2" id="rate2-{{id}}" disabled><label for="rate2-{{id}}">♣</label>
           <input type="radio" name="rate-{{id}}" value="1" id="rate1-{{id}}" disabled><label for="rate1-{{id}}">♣</label>
+          재밌어요!
         </div>
         <div>
           <p>작성자 : {{member_nickname}}</p>
@@ -103,6 +104,7 @@
 <hr>
 {{/reviewDtos}}
 </div>
+<br>
 
 <!--나의 리뷰-->
 {{#my_review}}
@@ -111,14 +113,12 @@
 <div id="review-section">
   <div id="reviews">
     <p>나의 리뷰</p>
-    <p>{{member_nickname}} 평점 : {{score}} 점</p>
-    <form id="scoreForm">
-
-    </form>
-    한줄평 : {{score_reason}}
+    <p>평점 : {{score}} 점</p>
+    <!--태그내용-->
+    <p>한줄평 : {{score_reason}}</p><br>
   </div>
-  <button id="editBtn">수정</button>
-  <button id="saveBtn" class="hidden">완료</button>
+  <button id="editBtn" class="btn btn-sm btn-primary">수정</button>
+  <button id="saveBtn" class="btn btn-sm btn-outline-danger">삭제</button>
 </div>
 </div>
 </div>
@@ -156,11 +156,11 @@
     <button type="button" class="btn btn-primary" id="reviewCreateBtn">리뷰 작성</button>
   </form>	
 {{/my_review}}
-
-  <a href="/articles/anime/{{id}}/edit" class="btn btn-primary">Edit</a>
-  <a href="/articles/anime/{{id}}/delete" class="btn btn-sm btn-outline-danger">Deletes</a>
-  <a href="/articles/anime" class="btn btn-sm btn-outline-success">Go to Article List</a>
-  {{/article}}
+{{/article}}
+  <a href="/articles/anime/{{id}}/edit" class="btn btn-sm btn-primary">게시글 수정</a>
+  <a href="/articles/anime/{{id}}/delete" class="btn btn-sm btn-outline-danger">게시글 삭제</a>
+  <a href="/articles/anime" class="btn btn-sm btn-success">작품 목록</a>
+  
 </div>
 
 <script>
