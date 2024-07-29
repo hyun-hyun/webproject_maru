@@ -10,18 +10,18 @@
 
     {{>/layouts/css}}
 
-    <title>마루의 곳간</title>
+    <title>마루의 애니 추천 곳간</title>
   </head>
   <body>
     <!--navigation-->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
+        <div class="container">
             <div class="row align-items-center">
                 <div class="col-9">
-                <a class="navbar-brand" href="/"><h2>마루의 애니메이션 추천해주는 곳간</h2></a>
+                <a class="navbar-brand" href="/"><h2>애니 추천 곳간</h2></a>
                 </div>
                 {{#nickname}}
-                <div class="col-md-auto">
+                <div class="col-12 d-flex justify-content-end align-items-center">
                     <b>{{nickname}}</b>님
                     <a href="/user/mypage" class="btn btn-success">마이페이지</a>
                     <a href="/logout" class="btn btn-outline-success">로그아웃</a>
@@ -29,7 +29,7 @@
                 {{/nickname}}
 
                 {{^nickname}}
-                <div class="col-md-auto">
+                <div class="col-12 d-flex justify-content-end align-items-center">
                     <a href="/join" class="btn btn-success">회원가입</a>
                     <a href="/login" class="btn btn-outline-success">로그인</a>
                 </div>
@@ -54,7 +54,8 @@
                         </ul>
                     </div>
                 </div>
-                <div class="col-4">
+                <br>
+                <div class="col-lg-4 d-flex justify-content-end">
                         <form class="d-flex">
                             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">Search</button>

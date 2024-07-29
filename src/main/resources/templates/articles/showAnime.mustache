@@ -90,7 +90,6 @@
           <input type="radio" name="rate-{{id}}" value="3" id="rate3-{{id}}" disabled><label for="rate3-{{id}}">♣</label>
           <input type="radio" name="rate-{{id}}" value="2" id="rate2-{{id}}" disabled><label for="rate2-{{id}}">♣</label>
           <input type="radio" name="rate-{{id}}" value="1" id="rate1-{{id}}" disabled><label for="rate1-{{id}}">♣</label>
-          재밌어요!
         </div>
         <div>
           <p>작성자 : {{member_nickname}}</p>
@@ -117,8 +116,18 @@
     <!--태그내용-->
     <p>한줄평 : {{score_reason}}</p><br>
   </div>
-  <button id="editBtn" class="btn btn-sm btn-primary">수정</button>
-  <button id="saveBtn" class="btn btn-sm btn-outline-danger">삭제</button>
+  <button type="button"
+    class="btn btn-sm btn-primary"
+    data-bs-toggle="modal"
+    data-bs-target="#review-edit-modal"
+    data-bs-id="{{id}}"
+    data-bs-score="{{score}}"
+    data-bs-score_reason="{{score_reason}}"
+    data-bs-member-id="{{member_id}}"
+    data-bs-article-id="{{article_id}}">수정</button>
+  <button type="button"
+    class="btn btn-sm btn-outline-danger"
+    data-review-id="{{id}}">삭제</button>
 </div>
 </div>
 </div>
