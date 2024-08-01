@@ -69,4 +69,46 @@ public class ReviewService {
         //4. DTO로 변환해 반환
         return ReviewForm.createReviewForm(created);
     }
+
+    //리뷰 수정
+    @Transactional
+    public ReviewForm update(Long id, ReviewForm dto){
+        //1. 리뷰 조회 및 예외 발생
+        Review target=reviewRepository.findById(id)
+                .orElseThrow(()->new IllegalArgumentException("리뷰 수정 실패!"+"대상 리뷰가 없습니다."));
+        //2. 리뷰 수정
+        target.patch(dto);
+        //updateTime 갱신
+        LocalDateTime SeoulNow=LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        target.setUpdateTime(SeoulNow);
+        //3. DB로 갱신
+        Review updated=reviewRepository.save(target);
+        //4. 리뷰 엔티티를 dto로 변환 및 반환
+        return ReviewForm.createReviewForm(updated);
+
+    }
+
+    //리뷰 삭제
+    @Transactional
+    public ReviewForm delete(Long id, Long articleId){
+        //1.리뷰 조회 및 예외발생
+        Review target=reviewRepository.findById(id)
+                .orElseThrow(()->new IllegalArgumentException("리뷰 삭제 실패!"+"대상이 없습니다."));
+        //2. 리뷰 삭제
+        reviewRepository.delete(target);
+        //2-2. article t_c_score랑 t_avg_score 갱신
+        Article article=articleRepository.findById(articleId)
+                .orElseThrow(() -> new IllegalArgumentException("리뷰 생성 실패!"+
+                        "대상 게시글이 없습니다."));//부모게시글 없으면 에러 메시지 출력
+        Integer t_c_score=article.getC_score();
+        article.setC_score(t_c_score-1);
+        //리뷰 평균 갱신(article 값)
+        Double t_avg_score=reviewRepository.getScoreAverage(articleId);
+        article.setAvg_score(t_avg_score !=null ? (double)Math.round(t_avg_score*10.0)/10.0 : 0.0);
+        articleRepository.save(article);
+
+        //3. 삭제 리뷰를 dto로 변환 및 반환
+        return ReviewForm.createReviewForm(target);
+    }
+
 }

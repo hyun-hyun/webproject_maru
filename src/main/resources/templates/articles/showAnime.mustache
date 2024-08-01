@@ -1,11 +1,11 @@
 {{>layouts/header}}
 
 <div class="container">
-<h1>애니메이션</h1>
-<h2>상세페이지</h2><br>
+<h4>애니메이션</h4>
+<br>
 
 {{#article}}
-<label class="form-label"><h4>작품명</h4><h3> {{title}}</h3></label><br>
+<label class="form-label"><h4>작품명</h4><h1> {{title}}</h1></label><br>
 <label class="form-label">방영날짜 </label> {{broad_date}}<br>
 
 <label class="form-label">작품 표지</label>
@@ -77,7 +77,7 @@
 
 <!--전체 리뷰-->
 <h5>전체리뷰</h5>
-전체 평점 : {{avg_score}}/5 리뷰 수 : {{c_score}}<br>
+전체 평점 : {{avg_score}}/5.0 리뷰 수 : {{c_score}}<br>
 <hr>
 <span class="review-toggle">전체리뷰 보기</span>
 <div class="review-content">
@@ -107,7 +107,7 @@
 
 <!--나의 리뷰-->
 {{#my_review}}
-<div class="card mb-3">
+<div class="card mb-3" id="reviews-{{id}}">
   <div class="card-body">
 <div id="review-section">
   <div id="reviews">
@@ -126,8 +126,8 @@
     data-bs-member-id="{{member_id}}"
     data-bs-article-id="{{article_id}}">수정</button>
   <button type="button"
-    class="btn btn-sm btn-outline-danger"
-    data-review-id="{{id}}">삭제</button>
+    class="btn btn-sm btn-outline-danger review-delete-btn"
+    data-review-id="{{id}}" data-review-title="{{title}}" data-article-id="{{article_id}}">삭제</button>
 </div>
 </div>
 </div>
@@ -143,9 +143,9 @@
 
     <input type="hidden" id="member-id" value="{{member_id}}"><br>
     <input type="hidden" id="article-id" value="{{id}}"><br>
-
+    <span class="text-bold">작품에 평점을 표시해주세요</span><br>
     <fieldset>
-      <span class="text-bold">작품에 평점을 표시해주세요</span>
+      
       <input type="radio" name="score" value="5" id="rate1"><label
         for="rate1">♣</label>
       <input type="radio" name="score" value="4" id="rate2"><label
@@ -165,6 +165,65 @@
     <button type="button" class="btn btn-primary" id="reviewCreateBtn">리뷰 작성</button>
   </form>	
 {{/my_review}}
+
+<!--리뷰수정-->
+<!-- Modal -->
+<div class="modal fade" id="review-edit-modal" tabindex="-1"">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5"
+            id="exampleModalLabel">리뷰 수정</h1>
+        <button type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!--댓글 수정 폼-->
+        <form>
+            <!--평점 입력-->
+            <div class="mb-3">
+              <label class="form-label">평점</label>
+              <div class="editReview" name="starform" id="scoreForm">
+                <span class="text-bold">작품에 평점을 표시해주세요</span><br>
+                <fieldset>
+                  <input type="radio" name="score" value="5" id="rate1"><label
+                    for="rate1">♣</label>
+                  <input type="radio" name="score" value="4" id="rate2"><label
+                    for="rate2">♣</label>
+                  <input type="radio" name="score" value="3" id="rate3"><label
+                    for="rate3">♣</label>
+                  <input type="radio" name="score" value="2" id="rate4"><label
+                    for="rate4">♣</label>
+                  <input type="radio" name="score" value="1" id="rate5"><label
+                    for="rate5">♣</label>
+                </fieldset>
+                <input type="hidden" id="member-id" value="{{member_id}}"><br>
+                <input type="hidden" id="article-id" value="{{id}}"><br>
+              </div>	
+
+            </div>
+            <!--한줄평 입력-->
+            <div class="mb-3">
+            <textarea class="col-auto form-control" type="text" id="edit-review-score_reason"
+                        placeholder="간단하게 해당 점수를 택한 이유를 적어주세요."></textarea>
+            </div>
+            <!--히든 인풋-->
+                <input type="hidden" id="edit-review-id">
+                <input type="hidden" id="edit-review-member-id">
+                <input type="hidden" id="edit-review-article-id"">
+            <!--전송 버튼-->
+            <button type="button" class="btn btn-primary"
+                id="review-update-btn">수정 완료</button>
+        </form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+
 {{/article}}
   <a href="/articles/anime/{{id}}/edit" class="btn btn-sm btn-primary">게시글 수정</a>
   <a href="/articles/anime/{{id}}/delete" class="btn btn-sm btn-outline-danger">게시글 삭제</a>
@@ -174,7 +233,7 @@
 
 <script>
   {
-
+    //전체리뷰 띄우기
     document.addEventListener("DOMContentLoaded", function() {
       const reviewToggle = document.querySelector('.review-toggle');
       const reviewContent = document.querySelector('.review-content');
@@ -222,6 +281,7 @@
         return;
       }
 
+
       //review객체를 확인하기 위해 콘솔에 출력(디버깅용, 추후 삭제하기)
        console.log(review);
       //review객체 서버에 post, 비동기 통신을 위한 fetch API
@@ -258,62 +318,6 @@
             </div>
         `;
 
-        document.querySelector("#editBtn").classList.remove('hidden');
-        document.querySelector("#editBtn").addEventListener("click", function() {
-            reviewsDiv.innerHTML = `
-                <div class="review">
-                    <p>Member ID: <span id="display_member_id">${review.member_id}</span></p>
-                    <p>Article ID: <span id="display_article_id">${review.article_id}</span></p>
-                    <p>Score: 
-                        <input type="radio" name="score" value="5" id="edit_rate1" ${review.score == 5 ? 'checked' : ''}><label for="edit_rate1">♣</label>
-                        <input type="radio" name="score" value="4" id="edit_rate2" ${review.score == 4 ? 'checked' : ''}><label for="edit_rate2">♣</label>
-                        <input type="radio" name="score" value="3" id="edit_rate3" ${review.score == 3 ? 'checked' : ''}><label for="edit_rate3">♣</label>
-                        <input type="radio" name="score" value="2" id="edit_rate4" ${review.score == 2 ? 'checked' : ''}><label for="edit_rate4">♣</label>
-                        <input type="radio" name="score" value="1" id="edit_rate5" ${review.score == 1 ? 'checked' : ''}><label for="edit_rate5">♣</label>
-                    </p>
-                    <p>Reason: <textarea id="edit_score_reason">${review.score_reason}</textarea></p>
-                </div>
-            `;
-            document.querySelector("#editBtn").classList.add('hidden');
-            document.querySelector("#saveBtn").classList.remove('hidden');
-        });
-
-        document.querySelector("#saveBtn").addEventListener("click", function() {
-            const newScoreElement = document.querySelector('input[name="score"]:checked');
-            const newScoreValue = newScoreElement ? newScoreElement.value : review.score;
-            const newScoreReason = document.querySelector("#edit_score_reason").value;
-
-            fetch(`/api/reviews/${data.id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ ...review, score: newScoreValue, score_reason: newScoreReason })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(updatedData => {
-                alert('리뷰 수정 완료 :)');
-                reviewsDiv.innerHTML = `
-                    <div class="review">
-                        <p>Member ID: <span id="display_member_id">${review.member_id}</span></p>
-                        <p>Article ID: <span id="display_article_id">${review.article_id}</span></p>
-                        <p>Score: <span id="display_score">${newScoreValue}</span></p>
-                        <p>Reason: <span id="display_score_reason">${newScoreReason}</span></p>
-                    </div>
-                `;
-
-                document.querySelector("#editBtn").classList.remove('hidden');
-                document.querySelector("#saveBtn").classList.add('hidden');
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
     })
       .catch((error)=>{
         console.error('Error:',error);
@@ -323,7 +327,113 @@
   });
     
   }
+  //모달 이벤트 처리
+  {
+    //모달 클릭 시 데이터 띄우기
+        //모달 요소 선택
+        const reviewEditModal=document.querySelector("#review-edit-modal");
+        //모달 이벤트 감지
+        reviewEditModal.addEventListener("show.bs.modal", function(event){
+            //1. 트리거 버튼 선택(event.target은 모달 자체)
+            const triggerBtn=event.relatedTarget;
+            //2. 데이터 가져오기
+            const id=triggerBtn.getAttribute("data-bs-id");
+            const score=triggerBtn.getAttribute("data-bs-score");
+            const score_reason=triggerBtn.getAttribute("data-bs-score_reason");
+            const memberId=triggerBtn.getAttribute("data-bs-member-id");
+            const articleId=triggerBtn.getAttribute("data-bs-article-id");
+            //3. 수정 폼에 데이터 반영
+            document.querySelector("#edit-review-id").value=id;
+            //document.querySelector("#edit-review-score").value=score;
+            document.querySelector("#edit-review-score_reason").value=score_reason;
+            document.querySelector("#edit-review-member-id").value=memberId;
+            document.querySelector("#edit-review-article-id").value=articleId;
+            //리뷰 평점 선택되어있게
+            document.querySelectorAll(".editReview").forEach(function(card) {
+              card.querySelector(`input[name="score"][value="${score}"]`).checked = true;
+          });
+        });
+   
+
+  }
+  {
+    //REST API로 데이터 반영
+        //수정 완료 버튼 선택
+        const reviewUpdateBtn=document.querySelector("#review-update-btn");
+        //클릭 이벤트 처리
+        reviewUpdateBtn.addEventListener("click", function(){
+            //라디오 버튼에서 선택된 값을 가져오기 
+            const scoreElement=document.querySelector('input[name="score"]:checked');
+            //수정 댓글 객체 생성
+            const review={
+                id: document.querySelector("#edit-review-id").value,
+                score:scoreElement ? scoreElement.value : null,
+                score: document.querySelector("#edit-review-score").value,
+                score_reason: document.querySelector("#edit-review-score_reason").value,
+                memberId: document.querySelector("#edit-review-member-id").value,
+                articleId: document.querySelector("#edit-review-article-id").value
+            };
+            console.log(review);
+            //수정 REST API 호출
+            const url="/api/reviews/"+review.id;
+            fetch(url, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(review)//review 객체를 JSON문자열로 변환 전송
+            }).then(response=>{
+                //HTTP 응답코드에 따른 메시지 출력
+                const msg=(response.ok)?"리뷰가 수정됐습니다. ♪(^∇^*)":"리뷰 수정 실패! ~(>_<。)＼";
+                alert(msg);
+                //현재 페이지 새로고침
+                window.location.reload();
+            });
+        });
+  }
 </script>
+<!--댓글 삭제-->
+<script>
+    {
+        //삭제 버튼 선택
+        const reviewDeleteBtns=document.querySelectorAll(".review-delete-btn");
+        //삭제 버튼 이벤트 처리
+        //reviewDeleteBtn.addEventListener("click", function(){
+        //    console.log("삭제 버튼이 클릭됐습니다!");
+        //});
+        reviewDeleteBtns.forEach(btn => {
+            btn.addEventListener("click", (event)=>{
+                //이벤트 발생 요소 선택
+                const reviewDeleteBtn=event.target;
+                //삭제 댓글 id 가져오기
+                const reviewId=reviewDeleteBtn.getAttribute("data-review-id");
+                const reviewTitle=reviewDeleteBtn.getAttribute("data-review-title");
+                const articleId=reviewDeleteBtn.getAttribute("data-article-id");
+                console.log(`삭제 버튼 클릭: ${reviewId}번 댓글`);
+                //삭제 REST API 호출
+                const url=`/api/reviews/${articleId}/${reviewId}`;
+                fetch(url, {
+                    method: "DELETE"
+                }).then(response=>{
+                    //댓글 삭제 실패 처리
+                    if(!response.ok){
+                        alert("댓글 삭제 실패..!");
+                        return;
+                    }
+                    //삭제 성공 시 댓글을 화면에서 지우고 메시지 창 띄우기
+                    const target=document.querySelector(`#reviews-${reviewId}`);
+                    target.remove();
+                    const msg=`"${reviewTitle}" 댓글을 삭제했습니다.`;
+                    alert(msg);
+                    //현재 페이지 새로고침
+                    window.location.reload();
+                })
+            });
+        });
+    }
+</script>
+
+
 <style>
   /* CSS */
 .review {
