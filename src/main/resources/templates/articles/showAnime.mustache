@@ -222,7 +222,24 @@
     </div>
   </div>
 </div>
-
+<!-- 삭제 확인 모달 -->
+<div class="modal fade" id="review-delete-confirm-modal" tabindex="-1" aria-labelledby="reviewDeleteConfirmLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ReviewDeleteConfirmLabel">리뷰 삭제</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        정말로 이 리뷰를 삭제하시겠습니까?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">아니오</button>
+        <button type="button" class="btn btn-danger" id="confirm-review-delete-btn">예</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 {{/article}}
   <a href="/articles/anime/{{id}}/edit" class="btn btn-sm btn-primary">게시글 수정</a>
@@ -396,39 +413,47 @@
     {
         //삭제 버튼 선택
         const reviewDeleteBtns=document.querySelectorAll(".review-delete-btn");
+        let reviewId, reviewTitle, articleId;
+
+        //삭제 확인 모달의 예 버튼
+        const confirmReviewDeleteBtn=document.getElementById('confirm-review-delete-btn');
         //삭제 버튼 이벤트 처리
-        //reviewDeleteBtn.addEventListener("click", function(){
-        //    console.log("삭제 버튼이 클릭됐습니다!");
-        //});
         reviewDeleteBtns.forEach(btn => {
             btn.addEventListener("click", (event)=>{
                 //이벤트 발생 요소 선택
                 const reviewDeleteBtn=event.target;
                 //삭제 댓글 id 가져오기
-                const reviewId=reviewDeleteBtn.getAttribute("data-review-id");
-                const reviewTitle=reviewDeleteBtn.getAttribute("data-review-title");
-                const articleId=reviewDeleteBtn.getAttribute("data-article-id");
+                reviewId=reviewDeleteBtn.getAttribute("data-review-id");
+                reviewTitle=reviewDeleteBtn.getAttribute("data-review-title");
+                articleId=reviewDeleteBtn.getAttribute("data-article-id");
                 console.log(`삭제 버튼 클릭: ${reviewId}번 댓글`);
-                //삭제 REST API 호출
+
+                //삭제 확인 모달 띄우기
+                const reviewDeleteConfirmModal=new bootstrap.Modal(document.getElementById('review-delete-confirm-modal'));
+                reviewDeleteConfirmModal.show();
+                
+            });
+        });
+        confirmReviewDeleteBtn.addEventListener("click",()=>{
+          //삭제 REST API 호출
                 const url=`/api/reviews/${articleId}/${reviewId}`;
                 fetch(url, {
                     method: "DELETE"
                 }).then(response=>{
-                    //댓글 삭제 실패 처리
+                    //리뷰 삭제 실패 처리
                     if(!response.ok){
-                        alert("댓글 삭제 실패..!");
+                        alert("리뷰 삭제 실패..!");
                         return;
                     }
                     //삭제 성공 시 댓글을 화면에서 지우고 메시지 창 띄우기
                     const target=document.querySelector(`#reviews-${reviewId}`);
                     target.remove();
-                    const msg=`"${reviewTitle}" 댓글을 삭제했습니다.`;
+                    const msg=`"${reviewTitle}" 리뷰를 삭제했습니다.`;
                     alert(msg);
                     //현재 페이지 새로고침
                     window.location.reload();
                 })
-            });
-        });
+        })
     }
 </script>
 
