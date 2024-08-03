@@ -163,6 +163,10 @@ public class ArticleService {
         return articleEntity;
     }
 
-
+    //작품등록 최신순 정렬
+    public ArrayList<Article> findArticlesDesc(){
+        ArrayList<Article> articleEntityList=articleRepository.findAllByOrderByIdDesc();
+        return articleEntityList;
+    }
     
 }

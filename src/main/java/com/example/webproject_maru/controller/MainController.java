@@ -1,8 +1,10 @@
 package com.example.webproject_maru.controller;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,12 +14,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.example.webproject_maru.dto.CustomUserDetails;
+import com.example.webproject_maru.entity.Article;
+import com.example.webproject_maru.service.ArticleService;
 import com.example.webproject_maru.service.LoginService;
 
 
 @Controller
 public class MainController {
-    
+    @Autowired
+    private ArticleService articleService;
 
     @GetMapping("/")
     public String goMain(Model model) {
@@ -48,7 +53,11 @@ public class MainController {
 
        // String nickname=LoginService.getNickname(email);
 
-
+        //등록한 게시물 내림차순(최신등록작품)
+        //1. 모든 데이터 가져오기 list<entity>
+        ArrayList<Article> articleEntityList=articleService.findArticlesDesc();
+        //2. 모델에 데이터 등록
+        model.addAttribute("articleList", articleEntityList);
 
 
         return "main";

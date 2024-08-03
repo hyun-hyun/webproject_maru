@@ -108,7 +108,7 @@ public class ArticleController {
         model.addAttribute("nickname", nickname);
 
         //1. 모든 데이터 가져오기 list<entity>
-        ArrayList<Article> articleEntityList=articleService.findArticles();
+        ArrayList<Article> articleEntityList=articleService.findArticlesDesc();
         //2. 모델에 데이터 등록
         model.addAttribute("articleList", articleEntityList);
         //3. 뷰 페이지 설정

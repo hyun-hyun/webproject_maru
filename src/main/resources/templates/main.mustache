@@ -27,8 +27,8 @@
             <table class="table">
                 <thead class="table-light">
                     <tr>
-                    <th scope="col">Pic</th>
-                    <th scope="col">Title & Story</th>
+                    <th scope="col">작품표지</th>
+                    <th scope="col">제목 & 줄거리</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,18 +53,20 @@
             <table class="table">
                 <thead class="table-light">
                     <tr>
-                    <th scope="col">Pic</th>
-                    <th scope="col">Title & Story</th>
+                    <th scope="col">작품표지</th>
+                    <th scope="col">제목 & 줄거리</th>
                     </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td rowspan="2"><img src="/images/pic/anime/3202_skirt_white.png" width=150 alt="작품표지"></img></td>
-                    <th>작품제목</th>
+                  {{#articleList}}
+                  <tr class="article-row" data-article-id="{{id}}">
+                    <td rowspan="2"><img src="/images/pic/anime/{{main_pic}}" width=150 alt="작품표지"></img></td>
+                    <th>{{title}}</th>
                   </tr>
-                  <tr>
-                    <td>줄거리_어느날 작아진 명탐정!</img></td>
+                  <tr class="article-row" data-article-id="{{id}}">
+                    <td>{{story}}</img></td>
                   </tr>
+                  {{/articleList}}
                 </tbody>
               </table>
         </div>
@@ -73,3 +75,23 @@
 
 
 {{>layouts/footer}}
+
+<script>
+{
+  <!--작품목록중에서 선택하면 작품 상세페이지로 이동-->
+  document.addEventListener("DOMContentLoaded", function(){
+    const articleRows=document.querySelectorAll(".article-row");
+
+    //각 row에 클릭 이벤트 핸들러 추가
+    articleRows.forEach(row=>{
+      row.addEventListener("click", function(){
+        //클릭한 row의 data-article-id 속성값 가져오기
+        const articleId=this.getAttribute("data-article-id");
+
+        //리디렉션
+        window.location.href=`/articles/anime/${articleId}`;
+      })
+    })
+  })
+}
+</script>
