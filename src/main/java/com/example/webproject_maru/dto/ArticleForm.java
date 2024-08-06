@@ -1,6 +1,7 @@
 package com.example.webproject_maru.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.entity.Member;
@@ -22,8 +23,8 @@ public class ArticleForm {
     private Long memberId;
 
     //tag
+    private List<String> tags;
     private String story;
-
 
     public Article toEntity(Member member) {
         // return new Article(id, catagory, title, genre, broad_date, null, story, null, null, null, null, null, null, null, null, null, null);

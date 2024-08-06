@@ -74,6 +74,17 @@
 
 </div>
 </br> 
+<!--tag-->
+<ul>
+  {{#tags}}
+  <li>
+      <span>{{tag}}</span>
+      <input type="checkbox" id="tag_{{id}}" name="tags" value="{{id}}" style="display:none;">
+      <button type="button" onclick="toggleTag({{id}})">Toggle</button>
+  </li>
+  {{/tags}}
+</ul>
+
 
 <!--전체 리뷰-->
 <h5>전체리뷰</h5>
@@ -157,6 +168,15 @@
       <input type="radio" name="score" value="1" id="rate5"><label
         for="rate5">♣</label>
     </fieldset>
+    <ul>
+      {{#tags}}
+      <li>
+          <span>{{tag}}</span>
+          <input type="checkbox" id="tag_{{id}}" name="selectedTags" value="{{id}}">
+          <button type="button" onclick="toggleTag({{id}})">Toggle</button>
+      </li>
+      {{/tags}}
+  </ul>
     <div>
       <textarea class="col-auto form-control" type="text" id="score-reason"
             placeholder="간단하게 해당 점수를 택한 이유를 적어주세요."></textarea>
@@ -408,7 +428,7 @@
         });
   }
 </script>
-<!--댓글 삭제-->
+<!--리뷰 삭제-->
 <script>
     {
         //삭제 버튼 선택
@@ -422,7 +442,7 @@
             btn.addEventListener("click", (event)=>{
                 //이벤트 발생 요소 선택
                 const reviewDeleteBtn=event.target;
-                //삭제 댓글 id 가져오기
+                //삭제 리뷰 id 가져오기
                 reviewId=reviewDeleteBtn.getAttribute("data-review-id");
                 reviewTitle=reviewDeleteBtn.getAttribute("data-review-title");
                 articleId=reviewDeleteBtn.getAttribute("data-article-id");
@@ -454,6 +474,13 @@
                     window.location.reload();
                 })
         })
+    }
+    {
+      //tag선택
+      function toggleTag(tagId) {
+            const checkbox = document.getElementById('tag_' + tagId);
+            checkbox.checked = !checkbox.checked;
+        }
     }
 </script>
 

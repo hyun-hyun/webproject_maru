@@ -1,6 +1,7 @@
 package com.example.webproject_maru.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.example.webproject_maru.dto.ReviewForm;
 
@@ -11,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -42,6 +44,9 @@ public class Review {
     @Column
     private LocalDateTime updateTime;
     
+    //tag
+    @OneToMany(mappedBy = "review")
+    private List<Map_r_t> selectedTags;
 
     public static Review createReview(ReviewForm dto, Member member, Article article) {//static이므로 객체생성 안해도 호출가능
         //예외 발생
@@ -59,7 +64,8 @@ public class Review {
             dto.getScore(),
             dto.getScore_reason(),
             dto.getAppendTime(),
-            dto.getUpdateTime()
+            dto.getUpdateTime(),
+            dto.getSelectedTags()
         );
     }
     public void patch(ReviewForm dto) {

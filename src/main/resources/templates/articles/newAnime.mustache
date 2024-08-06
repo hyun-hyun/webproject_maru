@@ -72,7 +72,20 @@
 
     <div class="mb-3">
     <!--관련태그-->
-    <label class="form-label">관련태그</label>
+    <label class="form-label">관련 키워드</label>
+    <ul id="tagList">
+        {{#defaultTags}}
+            <li>{{.}}
+                <input type="hidden" name="tags" value="{{.}}">
+                <button type="button" class="btn-light" onclick="this.parentElement.remove()">삭제</button>
+            </li>
+            {{/defaultTags}}
+    </ul>
+    <input type="text" id="newTag" placeholder="키워드를 추가해주세요">
+    <button type="button" onclick="addTag()">키워드 추가</button><br><br>
+
+
+
     </div>
 
 
@@ -100,6 +113,27 @@
         let container = document.getElementById(imageShowId);
         container.innerHTML = '';//기존 이미지 제거
         container.appendChild(newImage);
+    }
+    //태그추가
+    function addTag() {
+        const tagInput = document.getElementById('newTag');
+        const tagList = document.getElementById('tagList');
+        const newTag = document.createElement('li');
+        newTag.innerText = tagInput.value;
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'tags';
+        hiddenInput.value = tagInput.value;
+        const deleteButton = document.createElement('button');
+        deleteButton.type = 'button';
+        deleteButton.innerText = 'Delete';
+        deleteButton.onclick = function() {
+            tagList.removeChild(newTag);
+        };
+        newTag.appendChild(hiddenInput);
+        newTag.appendChild(deleteButton);
+        tagList.appendChild(newTag);
+        tagInput.value = '';
     }
 </script>
 {{>layouts/footer}}

@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +18,12 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.webproject_maru.dto.ArticleForm;
 import com.example.webproject_maru.dto.SubPicForm;
 import com.example.webproject_maru.entity.Article;
+import com.example.webproject_maru.entity.Map_a_t;
 import com.example.webproject_maru.entity.Member;
 import com.example.webproject_maru.entity.SubPic;
+import com.example.webproject_maru.entity.Tag;
 import com.example.webproject_maru.repository.ArticleRepository;
+import com.example.webproject_maru.repository.Map_a_tRepository;
 import com.example.webproject_maru.repository.MemberRepository;
 
 import jakarta.transaction.Transactional;
@@ -32,6 +36,10 @@ public class ArticleService {
     private ArticleRepository articleRepository;
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private Map_a_tRepository map_a_tRepository;
+    @Autowired
+    private TagService tagService;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -77,7 +85,22 @@ public class ArticleService {
             }
         }
         
-        
+        //태그(키워드) 생성 및 저장
+        for (String tagName : dto.getTags()) {
+            Tag tag = tagService.findByTag(tagName);
+            if (tag == null) {
+                tag = new Tag();
+                tag.setTag(tagName);
+                tagService.saveTag(tag);
+            }
+
+            // 아티클과 태그를 연결하는 맵핑 테이블에 저장
+            Map_a_t map_a_t = new Map_a_t();
+            map_a_t.setArticle(article);
+            map_a_t.setTag(tag);
+            map_a_tRepository.save(map_a_t);
+        }
+
         try{
         // article.setBroad_date(b_date);
 
@@ -169,4 +192,8 @@ public class ArticleService {
         return articleEntityList;
     }
     
+    //articleId별 tag조회
+    public List<Map_a_t> getArticleTags(Long articleId){
+        return articleRepository.findTagsByArticleId(articleId);
+    }
 }

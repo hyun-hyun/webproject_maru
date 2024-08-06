@@ -1,7 +1,9 @@
 package com.example.webproject_maru.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,6 +20,7 @@ import com.example.webproject_maru.dto.CustomUserDetails;
 import com.example.webproject_maru.dto.ReviewForm;
 import com.example.webproject_maru.dto.SubPicForm;
 import com.example.webproject_maru.entity.Article;
+import com.example.webproject_maru.entity.Map_a_t;
 import com.example.webproject_maru.service.ArticleService;
 import com.example.webproject_maru.service.ReviewService;
 
@@ -38,9 +41,11 @@ public class ArticleController {
         String nickname = userDetails.member.getNickname();
         Long memgber_id = userDetails.member.getId();
 
+        List<String> defaultTags = Arrays.asList("깔끔한_작화", "느낌있는_작화", "잘생긴_등장인물", "귀여운_등장인물", "예쁜_등장인물"); // 기본 태그 목록
+
         model.addAttribute("nickname", nickname);
         model.addAttribute("member_id", memgber_id);
-
+        model.addAttribute("defaultTags", defaultTags);
 
         return "articles/newAnime";
     }
@@ -92,10 +97,13 @@ public class ArticleController {
         List<ReviewForm> reviewDtos=reviewService.reviews(id);
         //사용자 리뷰만 가져오기
         ReviewForm reviewForm=reviewService.my_review(id, member_id);
+        //등록된 tag 가져오기
+        List<Map_a_t> tags = articleService.getArticleTags(id);
         //2. 모델에 데이터 등록
         model.addAttribute("article", articleEntity);
         model.addAttribute("reviewDtos", reviewDtos);
         model.addAttribute("my_review", reviewForm);
+        model.addAttribute("tags", tags.stream().map(Map_a_t::getTag).collect(Collectors.toList()));
         // model.addAttribute("commentDtos", commentsDtos);
         //3. 뷰 페이지 반환
         return "articles/showAnime";

@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import com.example.webproject_maru.entity.Map_r_t;
 import com.example.webproject_maru.entity.Review;
 
 public interface ReviewRepository extends JpaRepository<Review,Long> {
@@ -29,4 +31,10 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
 		"AND member_id= :memberId",
             nativeQuery=true)//SQL문으로 작성
     Review findByArticleMemberId(Long articleId, Long memberId);
+
+    @Query("SELECT r.selectedTags FROM Review r WHERE r.article.id =:articleId")
+    List<Map_r_t> findTagsByArticleId(@Param("articleId") Long articleId);
+
+    @Query("SELECT r.selectedTags FROM Review r WHERE r.member.id=:memberId")
+    List<Map_r_t> findTagsByMemberId(@Param("memberId") Long memberId);
 }

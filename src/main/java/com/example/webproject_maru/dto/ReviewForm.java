@@ -1,7 +1,9 @@
 package com.example.webproject_maru.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import com.example.webproject_maru.entity.Map_r_t;
 import com.example.webproject_maru.entity.Review;
 
 import lombok.AllArgsConstructor;
@@ -23,7 +25,7 @@ public class ReviewForm {
     private String score_reason;
     private LocalDateTime appendTime;
     private LocalDateTime updateTime;
-
+    private List<Map_r_t> selectedTags;
  
     public static ReviewForm createReviewForm(Review review) {
         if(review ==null){
@@ -37,7 +39,8 @@ public class ReviewForm {
             review.getScore(),
             review.getScore_reason(),
             review.getAppendTime(),
-            review.getUpdateTime()
+            review.getUpdateTime(),
+            review.getSelectedTags()
         );
     }
 }
