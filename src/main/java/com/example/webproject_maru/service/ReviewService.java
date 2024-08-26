@@ -111,7 +111,7 @@ public class ReviewService {
         //3. 삭제 리뷰를 dto로 변환 및 반환
         return ReviewForm.createReviewForm(target);
     }
-
+/*
     //articleId에 따른 tag 선택된거 조회
     public List<Map_r_t> getReviewTagsByArticleId(Long articleId){
         return reviewRepository.findTagsByArticleId(articleId);
@@ -119,5 +119,5 @@ public class ReviewService {
     //memberId에 따른 tag조회
     public List<Map_r_t> getReviewTagsByMemberId(Long memberId){
         return reviewRepository.findTagsByMemberId(memberId);
-    }
+    }*/
 }

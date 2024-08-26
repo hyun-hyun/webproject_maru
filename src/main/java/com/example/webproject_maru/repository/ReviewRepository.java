@@ -32,9 +32,9 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
             nativeQuery=true)//SQL문으로 작성
     Review findByArticleMemberId(Long articleId, Long memberId);
 
-    @Query("SELECT r.selectedTags FROM Review r WHERE r.article.id =:articleId")
+    /*@Query("SELECT r.selectedTags FROM Review r WHERE r.article.id =:articleId")
     List<Map_r_t> findTagsByArticleId(@Param("articleId") Long articleId);
 
     @Query("SELECT r.selectedTags FROM Review r WHERE r.member.id=:memberId")
-    List<Map_r_t> findTagsByMemberId(@Param("memberId") Long memberId);
+    List<Map_r_t> findTagsByMemberId(@Param("memberId") Long memberId);*/
 }

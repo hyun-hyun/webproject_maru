@@ -25,7 +25,7 @@ public class ReviewForm {
     private String score_reason;
     private LocalDateTime appendTime;
     private LocalDateTime updateTime;
-    private List<Map_r_t> selectedTags;
+    //private List<Map_r_t> selectedTags;
  
     public static ReviewForm createReviewForm(Review review) {
         if(review ==null){
@@ -39,8 +39,8 @@ public class ReviewForm {
             review.getScore(),
             review.getScore_reason(),
             review.getAppendTime(),
-            review.getUpdateTime(),
-            review.getSelectedTags()
+            review.getUpdateTime()//,
+            //review.getSelectedTags()
         );
     }
 }

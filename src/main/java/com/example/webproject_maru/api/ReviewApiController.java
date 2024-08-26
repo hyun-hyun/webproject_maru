@@ -53,7 +53,7 @@ public class ReviewApiController {
         //결과 응답
         return ResponseEntity.status(HttpStatus.OK).body(deletedForm);
     }
-
+/* 
     //게시글별 전체 tag조회
     @GetMapping("/api/reviews/articles/anime/{articleId}/tags")
     public List<Map_r_t> getReviewTagsByArticleId(@PathVariable Long articleId){
@@ -63,6 +63,6 @@ public class ReviewApiController {
     @GetMapping("/api/reviews/members/{memberId}/tags")
     public List<Map_r_t> getReviewTagsByMemberId(@PathVariable Long memberId){
         return reviewService.getReviewTagsByMemberId(memberId);
-    }
+    }*/
 
 }

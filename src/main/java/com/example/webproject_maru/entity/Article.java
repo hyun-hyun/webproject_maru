@@ -2,10 +2,12 @@ package com.example.webproject_maru.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -57,6 +59,9 @@ public class Article {
 
     @Column
     private String story;
+
+    @OneToMany(mappedBy="article", cascade=CascadeType.ALL)
+    private List<Review> reviews=new ArrayList<>();
 
     @Embedded
     @AttributeOverrides({

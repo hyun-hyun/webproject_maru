@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,6 @@ import com.example.webproject_maru.entity.Member;
 import com.example.webproject_maru.entity.SubPic;
 import com.example.webproject_maru.entity.Tag;
 import com.example.webproject_maru.repository.ArticleRepository;
-import com.example.webproject_maru.repository.Map_a_tRepository;
 import com.example.webproject_maru.repository.MemberRepository;
 
 import jakarta.transaction.Transactional;
@@ -37,9 +37,8 @@ public class ArticleService {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
-    private Map_a_tRepository map_a_tRepository;
-    @Autowired
-    private TagService tagService;
+    private Map_a_tService map_a_tService;
+
 
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -85,21 +84,7 @@ public class ArticleService {
             }
         }
         
-        //태그(키워드) 생성 및 저장
-        for (String tagName : dto.getTags()) {
-            Tag tag = tagService.findByTag(tagName);
-            if (tag == null) {
-                tag = new Tag();
-                tag.setTag(tagName);
-                tagService.saveTag(tag);
-            }
-
-            // 아티클과 태그를 연결하는 맵핑 테이블에 저장
-            Map_a_t map_a_t = new Map_a_t();
-            map_a_t.setArticle(article);
-            map_a_t.setTag(tag);
-            map_a_tRepository.save(map_a_t);
-        }
+        
 
         try{
         // article.setBroad_date(b_date);
@@ -154,9 +139,15 @@ public class ArticleService {
         catch (IllegalStateException | IOException e){
         e.printStackTrace();
     }
-        
+    
+    Article resultA=articleRepository.save(article);
+        //태그(키워드) 생성 및 저장
+        for (String tagName : dto.getTags()) {
+            Tag tag = map_a_tService.findOrCreateTag(tagName);
+            map_a_tService.saveMap_a_t(article, tag);
+        }
 
-        return articleRepository.save(article);
+        return resultA;
     }
 /*
     @Transactional

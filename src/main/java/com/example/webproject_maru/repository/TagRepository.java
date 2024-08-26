@@ -1,5 +1,7 @@
 package com.example.webproject_maru.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.webproject_maru.entity.Tag;

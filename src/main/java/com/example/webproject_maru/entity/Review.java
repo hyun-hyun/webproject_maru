@@ -1,12 +1,15 @@
 package com.example.webproject_maru.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.webproject_maru.dto.ReviewForm;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,11 +30,11 @@ public class Review {
     @Column
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
     private Article article;
 
@@ -45,8 +48,8 @@ public class Review {
     private LocalDateTime updateTime;
     
     //tag
-    @OneToMany(mappedBy = "review")
-    private List<Map_r_t> selectedTags;
+    //@OneToMany(mappedBy = "review", cascade=CascadeType.ALL)
+    //private List<Map_r_t> map_r_ts=new ArrayList<>();
 
     public static Review createReview(ReviewForm dto, Member member, Article article) {//static이므로 객체생성 안해도 호출가능
         //예외 발생
@@ -64,8 +67,8 @@ public class Review {
             dto.getScore(),
             dto.getScore_reason(),
             dto.getAppendTime(),
-            dto.getUpdateTime(),
-            dto.getSelectedTags()
+            dto.getUpdateTime()//,
+            //dto.getSelectedTags()
         );
     }
     public void patch(ReviewForm dto) {
