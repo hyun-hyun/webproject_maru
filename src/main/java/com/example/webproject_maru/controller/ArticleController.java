@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,8 +20,10 @@ import com.example.webproject_maru.dto.ArticleForm;
 import com.example.webproject_maru.dto.CustomUserDetails;
 import com.example.webproject_maru.dto.ReviewForm;
 import com.example.webproject_maru.dto.SubPicForm;
+import com.example.webproject_maru.dto.TagCountForm;
 import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.entity.Map_a_t;
+import com.example.webproject_maru.entity.Tag;
 import com.example.webproject_maru.service.ArticleService;
 import com.example.webproject_maru.service.ReviewService;
 
@@ -35,6 +38,7 @@ public class ArticleController {
     private ArticleService articleService;
     @Autowired
     private ReviewService reviewService;
+    
 
     @GetMapping("/write/article/anime")
     public String goNewAnime(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
@@ -99,11 +103,14 @@ public class ArticleController {
         ReviewForm reviewForm=reviewService.my_review(id, member_id);
         //등록된 tag 가져오기
         List<Map_a_t> tags = articleService.getArticleTags(id);
+        List<TagCountForm> tagSelectionCounts = articleService.countTagSelectionsByArticleId(id);
+
         //2. 모델에 데이터 등록
         model.addAttribute("article", articleEntity);
         model.addAttribute("reviewDtos", reviewDtos);
         model.addAttribute("my_review", reviewForm);
         model.addAttribute("tags", tags.stream().map(Map_a_t::getTag).collect(Collectors.toList()));
+        model.addAttribute("tagSelectionCounts", tagSelectionCounts);
         // model.addAttribute("commentDtos", commentsDtos);
         //3. 뷰 페이지 반환
         return "articles/showAnime";

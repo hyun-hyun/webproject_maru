@@ -76,13 +76,13 @@
 </br> 
 <!--tag-->
 <ul>
-  {{#tags}}
+  {{#tagSelectionCounts}}
   <li>
-      <span>{{tag}}</span>
+      <span> {{tagName}}: {{count}} reviews</span>
       <input type="checkbox" id="tag_{{id}}" name="tags" value="{{id}}" style="display:none;">
       <button type="button" onclick="toggleTag({{id}})">Toggle</button>
   </li>
-  {{/tags}}
+  {{/tagSelectionCounts}}
 </ul>
 
 

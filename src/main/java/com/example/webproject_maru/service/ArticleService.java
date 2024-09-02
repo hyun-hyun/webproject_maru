@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.webproject_maru.dto.ArticleForm;
 import com.example.webproject_maru.dto.SubPicForm;
+import com.example.webproject_maru.dto.TagCountForm;
 import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.entity.Map_a_t;
 import com.example.webproject_maru.entity.Member;
@@ -38,6 +40,8 @@ public class ArticleService {
     private MemberRepository memberRepository;
     @Autowired
     private Map_a_tService map_a_tService;
+    @Autowired
+    private Map_r_tService map_r_tService;
 
 
     @Value("${file.upload-dir}")
@@ -187,4 +191,9 @@ public class ArticleService {
     public List<Map_a_t> getArticleTags(Long articleId){
         return articleRepository.findTagsByArticleId(articleId);
     }
+
+    public List<TagCountForm> countTagSelectionsByArticleId(Long articleId){
+        return map_r_tService.countTagSelectionsByArticleId(articleId);
+    }
+
 }
