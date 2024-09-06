@@ -1,22 +1,38 @@
 {{>layouts/header}}
 
 <div class="container">
-<h4>애니메이션</h4>
+<h4>Animation</h4>
 <br>
 
 {{#article}}
-<label class="form-label"><h4>작품명</h4><h1> {{title}}</h1></label><br>
-<label class="form-label">방영날짜 </label> {{broad_date}}<br>
+<label class="form-label"><h1> {{title}}</h1></label><br>
+<label class="form-label">방영 </label> <b>{{broad_date}}</b><br>
+<label class="form-label">제작 </label> <b>{{ani_company}}</b><br>
+<label class="form-label">원작 </label> <b>{{author}}</b><br>
 
-<label class="form-label">작품 표지</label>
 <br>
-<img src="../../images/pic/anime/{{main_pic}}" class="addImage" alt="작품표지"></img>
-<br>
+<div class="row g-2">
+  <div class="col-md-3" align="center">
+  <img src="../../images/pic/anime/{{main_pic}}" class="addImage" alt="작품표지"></img>
+  <br>
+  </div>
+  <div class="col-md-9" align="center">
+    <!--tag-->
+    <ul>
+      {{#tagSelectionCounts}}
+          <span class="btn btn-primary btn-round"> {{tagName}}: {{count}} reviews</span>
+          <input type="checkbox" id="tag_{{id}}" name="tags" value="{{id}}" style="display:none;">
+          <span> </span>
+          <!--<button type="button" onclick="toggleTag({{id}})">Toggle</button>-->
+      {{/tagSelectionCounts}}
+    </ul>
+  </div>
+</div>
 
 <label class="form-label">줄거리</label>
-<br>
-{{story}}
 <br><br>
+{{story}}
+<br>
 <label class="form-label">등장인물</label>
 <br>
 <div class="image-container">
@@ -74,16 +90,7 @@
 
 </div>
 </br> 
-<!--tag-->
-<ul>
-  {{#tagSelectionCounts}}
-  <li>
-      <span> {{tagName}}: {{count}} reviews</span>
-      <input type="checkbox" id="tag_{{id}}" name="tags" value="{{id}}" style="display:none;">
-      <button type="button" onclick="toggleTag({{id}})">Toggle</button>
-  </li>
-  {{/tagSelectionCounts}}
-</ul>
+
 
 
 <!--전체 리뷰-->

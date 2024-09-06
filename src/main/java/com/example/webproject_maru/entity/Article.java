@@ -39,6 +39,10 @@ public class Article {
     @Column
     private LocalDate broad_date;
     @Column
+    private String ani_company;
+    @Column
+    private String author;
+    @Column
     private String main_pic;
     @Column
     private String main_pic_name;
@@ -128,12 +132,14 @@ public class Article {
     private LocalDateTime updateTime;
     
 
-    public Article (Long id, String catagory, String title, String genre, LocalDate broad_date, String story, Member member){
+    public Article (Long id, String catagory, String title, String genre, LocalDate broad_date,String ani_company, String author, String story, Member member){
         this.id=id;
         this.catagory=catagory;
         this.title=title;
         this.genre=genre;
         this.broad_date=broad_date;
+        this.ani_company=ani_company;
+        this.author=author;
         this.story=story;
         this.member=member;
     }

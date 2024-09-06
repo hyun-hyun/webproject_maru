@@ -20,6 +20,8 @@ public class ArticleForm {
     private String title;
     private String genre;
     private LocalDate broad_date;
+    private String ani_company;
+    private String author;
     private Long memberId;
 
     //tag
@@ -30,7 +32,7 @@ public class ArticleForm {
         // return new Article(id, catagory, title, genre, broad_date, null, story, null, null, null, null, null, null, null, null, null, null);
 
 
-        return new Article(id, catagory, title, genre, broad_date, story, member);
+        return new Article(id, catagory, title, genre, broad_date, ani_company, author, story, member);
         // return new Article(id, catagory, title, genre, story);
 
     } 

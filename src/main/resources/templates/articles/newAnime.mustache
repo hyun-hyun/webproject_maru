@@ -5,12 +5,17 @@
     <h2>글쓰기</h2>
     <div class="mb-3">
         <!--catagory-->
+        *기본정보는 빈틈없이 입력해주세요!*<br>
         <label class="form-label">카테고리 : anime</label>
         <input type="hidden" name="catagory" value="anime"><br>
         <label class="form-label">작품명</label>
         <input type="text" class="form-control" name="title">{{!name으로 DTO클래스와 연결}}
         <label class="form-label">방영날짜</label>
         <input type="date" class="form-control" name="broad_date">
+        <label class="form-label">제작사</label>
+        <input type="text" class="form-control" name="ani_company">
+        <label class="form-label">원작자</label>
+        <input type="text" class="form-control" name="author">
         <label class="form-label">작품 대표 이미지</label>
         <div class="addImage" id="image-show"> <!-- 이미지 띄울 공간 --></div>
         <input type="file" accept="image/jpeg, image/png, image/gif" onchange="loadFile(this, 'image-show')" name="pic">
