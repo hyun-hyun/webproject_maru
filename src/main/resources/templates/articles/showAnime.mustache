@@ -5,19 +5,23 @@
 <br>
 
 {{#article}}
-<label class="form-label"><h1> {{title}}</h1></label><br>
-<label class="form-label">방영 </label> <b>{{broad_date}}</b><br>
-<label class="form-label">제작 </label> <b>{{ani_company}}</b><br>
-<label class="form-label">원작 </label> <b>{{author}}</b><br>
 
-<br>
 <div class="row g-2">
-  <div class="col-md-3" align="center">
-  <img src="../../images/pic/anime/{{main_pic}}" class="addImage" alt="작품표지"></img>
-  <br>
+  <div class="col-md-6">
+    <label class="form-label"><h1> {{title}}</h1></label><br>
+    <label class="form-label">방영 </label> <b>{{broad_date}}</b><br>
+    <label class="form-label">제작 </label> <b>{{ani_company}}</b><br>
+    <label class="form-label">원작 </label> <b>{{author}}</b><br>
+    <label class="form-label">줄거리</label><br>
+    {{story}}
+    <br>
   </div>
-  <div class="col-md-8" align="center">
-    <!--tag-->
+  <div class="col-md-5" align="center">
+  <img src="../../images/pic/anime/{{main_pic}}" class="addImage" alt="작품표지"></img>
+    <br>
+  </div>
+</div>
+<!--tag-->
     <ul>
       {{#tagSelectionCounts}}
           <span class="btn btn-primary btn-round m-1" > {{tagName}}: {{count}} reviews</span>
@@ -26,13 +30,8 @@
           <!--<button type="button" onclick="toggleTag({{id}})">Toggle</button>-->
       {{/tagSelectionCounts}}
     </ul>
-  </div>
-</div>
 
-<label class="form-label">줄거리</label>
 <br><br>
-{{story}}
-<br>
 <label class="form-label">등장인물</label>
 <br>
 <div class="image-container">
@@ -51,19 +50,20 @@
   <div class="image-item">
   <img src="../../images/pic/anime/{{subPic2.pic}}" class="addImage_m" alt="등장인물2"></img>
   {{subPic2.realChar}}<br>
-  <div class="gray-text"{{subPic2.realVoiceChar}}</div>
+  <div class="gray-text">{{subPic2.realVoiceChar}}</div>
   {{subPic2.korChar}}<br>
-  <div class="gray-text"{{subPic2.korVoiceChar}}</div>
+  <div class="gray-text">{{subPic2.korVoiceChar}}</div>
   </div>
   {{/subPic2.realChar}}
+
 
   {{#subPic3.realChar}}
   <div class="image-item">
   <img src="../../images/pic/anime/{{subPic3.pic}}" class="addImage_m" alt="등장인물3"></img>
   {{subPic3.realChar}}<br>
-  <div class="gray-text"{{subPic3.realVoiceChar}}</div>
+  <div class="gray-text">{{subPic3.realVoiceChar}}</div>
   {{subPic3.korChar}}<br>
-  <div class="gray-text"{{subPic3.korVoiceChar}}</div>
+  <div class="gray-text">{{subPic3.korVoiceChar}}</div>
   </div>
   {{/subPic3.realChar}}
   
@@ -71,9 +71,9 @@
   <div class="image-item">
   <img src="../../images/pic/anime/{{subPic4.pic}}" class="addImage_m" alt="등장인물4"></img>
   {{subPic4.realChar}}<br>
-  <div class="gray-text"{{subPic4.realVoiceChar}}</div>
+  <div class="gray-text">{{subPic4.realVoiceChar}}</div>
   {{subPic4.korChar}}<br>
-  <div class="gray-text"{{subPic4.korVoiceChar}}</div>
+  <div class="gray-text">{{subPic4.korVoiceChar}}</div>
   </div>
   {{/subPic4.realChar}}
 
@@ -81,15 +81,15 @@
   <div class="image-item">
   <img src="../../images/pic/anime/{{subPic5.pic}}" class="addImage_m" alt="등장인물5"></img>
   {{subPic5.realChar}}<br>
-  <div class="gray-text"{{subPic5.realVoiceChar}}</div>
+  <div class="gray-text">{{subPic5.realVoiceChar}}</div>
   {{subPic5.korChar}}<br>
-  <div class="gray-text"{{subPic5.korVoiceChar}}</div>
+  <div class="gray-text">{{subPic5.korVoiceChar}}</div>
   </div>
   {{/subPic5.realChar}}
 
 
 </div>
-</br> 
+<br> 
 
 
 
@@ -494,6 +494,9 @@
 
 <style>
   /* CSS */
+.col-md-6 {
+  word-wrap: break-word;
+}
 .review {
  /*border: 1px solid #ccc;  테두리 선 스타일 */
   text-align: left;

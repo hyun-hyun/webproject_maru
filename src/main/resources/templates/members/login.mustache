@@ -1,4 +1,6 @@
 {{>layouts/header}}
+<div class="container">
+
     <form class="px-4 py-3" action="/loginProc" method="post">
    <!-- <form class="px-4 py-3" th:action="@{/loginProc}" method="post">-->
       <div class="mb-3">
@@ -26,5 +28,5 @@
       <button type="submit" class="btn btn-primary">로그인</button>
     </form>
     <a class="dropdown-item" href="/join">처음 방문하셨나요? 회원가입</a>
-
+</div>
   {{>layouts/footer}}
