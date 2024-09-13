@@ -175,7 +175,16 @@
       <input type="radio" name="score" value="1" id="rate5"><label
         for="rate5">♣</label>
     </fieldset>
-    <ul>
+    <!--기존 태그 선택-->
+    <div id="existing-tags">
+      {{#tagList}}
+      <label>
+        <input type="checkbox" name="selectingTags" value={{t_id}}>{{t_name}}
+      </label>
+      {{/tagList}}
+    </div>
+    <!--
+<ul>
       {{#tags}}
       <li>
           <span>{{tag}}</span>
@@ -184,6 +193,8 @@
       </li>
       {{/tags}}
   </ul>
+    -->
+    
     <div>
       <textarea class="col-auto form-control" type="text" id="score-reason"
             placeholder="간단하게 해당 점수를 택한 이유를 적어주세요."></textarea>

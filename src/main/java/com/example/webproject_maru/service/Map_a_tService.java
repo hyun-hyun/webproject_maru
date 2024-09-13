@@ -1,10 +1,13 @@
 package com.example.webproject_maru.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.webproject_maru.dto.TagForm;
 import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.entity.Map_a_t;
 import com.example.webproject_maru.entity.Tag;
@@ -33,6 +36,15 @@ public class Map_a_tService {
     public void saveMap_a_t(Article article, Tag tag){
         Map_a_t map=new Map_a_t(article, tag);
         map_a_tRepository.save(map);
+    }
+
+    public List<TagForm> findTagsByArticleId(Long articleId) {
+        List<Object[]> results = map_a_tRepository.findTagsByArticleId(articleId);
+            return results.stream()
+                  .map(
+                      result -> new TagForm((Long) result[0],  // tag_id
+                      (String) result[1])   // tag_name
+                  ).collect(Collectors.toList());
     }
 
 }

@@ -21,6 +21,7 @@ import com.example.webproject_maru.dto.CustomUserDetails;
 import com.example.webproject_maru.dto.ReviewForm;
 import com.example.webproject_maru.dto.SubPicForm;
 import com.example.webproject_maru.dto.TagCountForm;
+import com.example.webproject_maru.dto.TagForm;
 import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.entity.Map_a_t;
 import com.example.webproject_maru.entity.Tag;
@@ -102,16 +103,19 @@ public class ArticleController {
         //사용자 리뷰만 가져오기
         ReviewForm reviewForm=reviewService.my_review(id, member_id);
         //등록된 tag 가져오기
-        List<Map_a_t> tags = articleService.getArticleTags(id);
+        List<TagForm> tags = articleService.getArticleTags(id);
+        //리뷰에서 선택되었던 tag만 tagName이랑 선택된 횟수 가져오기 
         List<TagCountForm> tagSelectionCounts = articleService.countTagSelectionsByArticleId(id);
-
         //2. 모델에 데이터 등록
         model.addAttribute("article", articleEntity);
         model.addAttribute("reviewDtos", reviewDtos);
         model.addAttribute("my_review", reviewForm);
-        model.addAttribute("tags", tags.stream().map(Map_a_t::getTag).collect(Collectors.toList()));
+        model.addAttribute("tagList", tags);
         model.addAttribute("tagSelectionCounts", tagSelectionCounts);
         // model.addAttribute("commentDtos", commentsDtos);
+
+        tags.forEach(tag -> log.info("Tag ID: " + tag.getT_id() + ", Tag Name: " + tag.getT_name()));
+
         //3. 뷰 페이지 반환
         return "articles/showAnime";
     }

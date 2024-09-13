@@ -22,9 +22,9 @@ public class ArticleApiController {
     public Article findByIdArticle(@PathVariable Long id){
         return articleService.findByIdArticle(id);
     }
-
+/*
     @GetMapping("/{id}/tags")
     public List<Map_a_t> getArticleTags(@PathVariable Long id){
         return articleService.getArticleTags(id);
-    }
+    }*/
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.webproject_maru.dto.ReviewForm;
 import com.example.webproject_maru.entity.Map_r_t;
 import com.example.webproject_maru.service.ArticleService;
+import com.example.webproject_maru.service.Map_r_tService;
 import com.example.webproject_maru.service.ReviewService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 public class ReviewApiController {
     @Autowired
     private ReviewService reviewService;
+    @Autowired
+    private Map_r_tService map_r_tService;
 
     //리뷰생성
     @PostMapping("/api/articles/{id}/create_r")

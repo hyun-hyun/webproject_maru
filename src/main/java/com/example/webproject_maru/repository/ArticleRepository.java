@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.example.webproject_maru.dto.TagForm;
 import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.entity.Map_a_t;
 
@@ -19,7 +20,8 @@ public interface ArticleRepository extends JpaRepository<Article,Long> {
     // ID 내림차순으로 모든 Article 가져오기
     ArrayList<Article> findAllByOrderByIdDesc();
 
-    //articleId에 따른 tag
-    @Query("SELECT a.tags FROM Article a WHERE a.id=:articleId")
-    List <Map_a_t> findTagsByArticleId(@Param("articleId") Long articleId);
+   /* //articleId에 따른 tag
+    @Query("SELECT a.tag.id, a.tag.tag FROM Article a WHERE a.id=:articleId")
+    List <TagForm> findTagsByArticleId(@Param("articleId") Long articleId);
+    */
 }

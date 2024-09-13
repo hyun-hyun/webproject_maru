@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.webproject_maru.dto.ArticleForm;
 import com.example.webproject_maru.dto.SubPicForm;
 import com.example.webproject_maru.dto.TagCountForm;
+import com.example.webproject_maru.dto.TagForm;
 import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.entity.Map_a_t;
 import com.example.webproject_maru.entity.Member;
@@ -188,8 +189,8 @@ public class ArticleService {
     }
     
     //articleId별 tag조회
-    public List<Map_a_t> getArticleTags(Long articleId){
-        return articleRepository.findTagsByArticleId(articleId);
+    public List<TagForm> getArticleTags(Long articleId){
+        return map_a_tService.findTagsByArticleId(articleId);
     }
 
     public List<TagCountForm> countTagSelectionsByArticleId(Long articleId){
