@@ -156,44 +156,27 @@
 <!--로그인ㅇ&리뷰x-->
   <!--<link href="/resources/templates/layouts/css.mustache" rel="stylesheet"/>-->
   <!--<form class="mb-3" name="starform" action="/articles/{{id}}/create_r" id="scoreForm" method="post">-->
-  <form class="mb-3" name="starform" id="scoreForm">
-
-
-    <input type="hidden" id="member-id" value="{{member_id}}"><br>
-    <input type="hidden" id="article-id" value="{{id}}"><br>
-    <span class="text-bold">작품에 평점을 표시해주세요</span><br>
-    <fieldset>
-      
-      <input type="radio" name="score" value="5" id="rate1"><label
-        for="rate1">♣</label>
-      <input type="radio" name="score" value="4" id="rate2"><label
-        for="rate2">♣</label>
-      <input type="radio" name="score" value="3" id="rate3"><label
-        for="rate3">♣</label>
-      <input type="radio" name="score" value="2" id="rate4"><label
-        for="rate4">♣</label>
-      <input type="radio" name="score" value="1" id="rate5"><label
-        for="rate5">♣</label>
-    </fieldset>
-    <!--기존 태그 선택-->
-    <div id="existing-tags">
-      {{#tagList}}
-      <label>
-        <input type="checkbox" name="selectingTags" value={{t_id}}>{{t_name}}
-      </label>
-      {{/tagList}}
-    </div>
-    <!--
-<ul>
-      {{#tags}}
-      <li>
-          <span>{{tag}}</span>
-          <input type="checkbox" id="tag_{{id}}" name="selectedTags" value="{{id}}">
-          <button type="button" onclick="toggleTag({{id}})">Toggle</button>
-      </li>
-      {{/tags}}
-  </ul>
-    -->
+    <form class="mb-3" name="starform" id="scoreForm">
+      <input type="hidden" id="member-id" value="{{member_id}}"><br>
+      <input type="hidden" id="article-id" value="{{id}}"><br>
+      <span class="text-bold">작품에 평점을 표시해주세요</span><br>
+      <fieldset>
+        <input type="radio" name="score" value="5" id="rate1"><label class="radio-label" for="rate1">♣</label>
+        <input type="radio" name="score" value="4" id="rate2"><label class="radio-label" for="rate2">♣</label>
+        <input type="radio" name="score" value="3" id="rate3"><label class="radio-label" for="rate3">♣</label>
+        <input type="radio" name="score" value="2" id="rate4"><label class="radio-label" for="rate4">♣</label>
+        <input type="radio" name="score" value="1" id="rate5"><label class="radio-label" for="rate5">♣</label>
+      </fieldset>
+      <!-- 기존 태그 선택 -->
+      <div id="existing-tags">
+        {{#tagList}}
+        <label class="checkbox-label">
+          <input type="checkbox" name="selectingTags" value="{{t_id}}">
+          <span>{{t_name}}</span>
+        </label>
+        {{/tagList}}
+      </div>
+    <br>
     
     <div>
       <textarea class="col-auto form-control" type="text" id="score-reason"
