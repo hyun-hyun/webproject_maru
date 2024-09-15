@@ -25,7 +25,7 @@ public class ReviewForm {
     private String score_reason;
     private LocalDateTime appendTime;
     private LocalDateTime updateTime;
-    //private List<Map_r_t> selectedTags;
+    private List<String> selectingTags;
  
     public static ReviewForm createReviewForm(Review review) {
         if(review ==null){
@@ -39,8 +39,20 @@ public class ReviewForm {
             review.getScore(),
             review.getScore_reason(),
             review.getAppendTime(),
-            review.getUpdateTime()//,
-            //review.getSelectedTags()
+            review.getUpdateTime()
         );
+    }
+
+    public ReviewForm(Long id, Long member_id, String member_nickname, Long article_id, Integer score, String score_reason,
+            LocalDateTime appendTime, LocalDateTime updateTime) {
+        this.id=id;
+        this.member_id=member_id;
+        this.member_nickname=member_nickname;
+        this.article_id=article_id;
+        this.score=score;
+        this.score_reason=score_reason;
+        this.appendTime=appendTime;
+        this.updateTime=updateTime;
+
     }
 }

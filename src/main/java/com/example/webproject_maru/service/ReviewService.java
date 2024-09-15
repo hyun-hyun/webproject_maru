@@ -13,6 +13,7 @@ import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.entity.Map_r_t;
 import com.example.webproject_maru.entity.Member;
 import com.example.webproject_maru.entity.Review;
+import com.example.webproject_maru.entity.Tag;
 import com.example.webproject_maru.repository.ArticleRepository;
 import com.example.webproject_maru.repository.MemberRepository;
 import com.example.webproject_maru.repository.ReviewRepository;
@@ -29,6 +30,8 @@ public class ReviewService {
     private ArticleRepository articleRepository;
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private Map_r_tService map_r_tService;
 
     //리뷰 조회(전체)
     public List<ReviewForm> reviews(Long articleId){
@@ -67,8 +70,16 @@ public class ReviewService {
         Double t_avg_score=reviewRepository.getScoreAverage(dto.getArticle_id());
         article.setAvg_score(t_avg_score !=null ? (double)Math.round(t_avg_score*10.0)/10.0 : 0.0);
         articleRepository.save(article);
+        ReviewForm resultR=ReviewForm.createReviewForm(created);
+        log.info("리뷰저장");
+        //selectingTags 저장
+        for(String tagName:dto.getSelectingTags()){
+            Tag tag=map_r_tService.findOrCreateTag(tagName);
+            log.info(tag.getTag());
+            map_r_tService.saveMap_r_t(review, tag);
+        }
         //4. DTO로 변환해 반환
-        return ReviewForm.createReviewForm(created);
+        return resultR;
     }
 
     //리뷰 수정
@@ -77,11 +88,18 @@ public class ReviewService {
         //1. 리뷰 조회 및 예외 발생
         Review target=reviewRepository.findById(id)
                 .orElseThrow(()->new IllegalArgumentException("리뷰 수정 실패!"+"대상 리뷰가 없습니다."));
+        Article article=articleRepository.findById(dto.getArticle_id())
+                .orElseThrow(() -> new IllegalArgumentException("리뷰 생성 실패!"+
+                        "대상 게시글이 없습니다."));//부모게시글 없으면 에러 메시지 출력
         //2. 리뷰 수정
         target.patch(dto);
         //updateTime 갱신
         LocalDateTime SeoulNow=LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         target.setUpdateTime(SeoulNow);
+        //리뷰 평균 갱신(article 값)
+        Double t_avg_score=reviewRepository.getScoreAverage(dto.getArticle_id());
+        article.setAvg_score(t_avg_score !=null ? (double)Math.round(t_avg_score*10.0)/10.0 : 0.0);
+        articleRepository.save(article);
         //3. DB로 갱신
         Review updated=reviewRepository.save(target);
         //4. 리뷰 엔티티를 dto로 변환 및 반환

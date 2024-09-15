@@ -26,8 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ReviewApiController {
     @Autowired
     private ReviewService reviewService;
-    @Autowired
-    private Map_r_tService map_r_tService;
+
 
     //리뷰생성
     @PostMapping("/api/articles/{id}/create_r")

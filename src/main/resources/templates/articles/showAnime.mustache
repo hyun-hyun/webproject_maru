@@ -24,7 +24,7 @@
 <!--tag-->
     <ul>
       {{#tagSelectionCounts}}
-          <span class="btn btn-info btn-round m-1" > {{tagName}}: {{count}} reviews</span>
+          <span class="btn btn-outline-info btn-round m-1" > {{tagName}}: {{count}} reviews</span>
           <input type="checkbox" id="tag_{{id}}" name="tags" value="{{id}}" style="display:none;">
           <!--m 모든방향 마진 mb-0~5 아래, mt 위 ml, mr 등 있음-->
           <!--<button type="button" onclick="toggleTag({{id}})">Toggle</button>-->
@@ -103,11 +103,11 @@
 <div id="scoreForm" class="review">
     <fieldset disabled>
       <div>
-          <input type="radio" name="rate-{{id}}" value="5" id="rate5-{{id}}" disabled><label for="rate5-{{id}}">♣</label>
-          <input type="radio" name="rate-{{id}}" value="4" id="rate4-{{id}}" disabled><label for="rate4-{{id}}">♣</label>
-          <input type="radio" name="rate-{{id}}" value="3" id="rate3-{{id}}" disabled><label for="rate3-{{id}}">♣</label>
-          <input type="radio" name="rate-{{id}}" value="2" id="rate2-{{id}}" disabled><label for="rate2-{{id}}">♣</label>
-          <input type="radio" name="rate-{{id}}" value="1" id="rate1-{{id}}" disabled><label for="rate1-{{id}}">♣</label>
+          <input type="radio" name="rate-{{id}}" value="5" id="rate5-{{id}}" disabled><label class="radio-label" for="rate5-{{id}}">♣</label>
+          <input type="radio" name="rate-{{id}}" value="4" id="rate4-{{id}}" disabled><label class="radio-label" for="rate4-{{id}}">♣</label>
+          <input type="radio" name="rate-{{id}}" value="3" id="rate3-{{id}}" disabled><label class="radio-label" for="rate3-{{id}}">♣</label>
+          <input type="radio" name="rate-{{id}}" value="2" id="rate2-{{id}}" disabled><label class="radio-label" for="rate2-{{id}}">♣</label>
+          <input type="radio" name="rate-{{id}}" value="1" id="rate1-{{id}}" disabled><label class="radio-label" for="rate1-{{id}}">♣</label>
         </div>
         <div>
           <p>작성자 : {{member_nickname}}</p>
@@ -171,7 +171,7 @@
       <div id="existing-tags">
         {{#tagList}}
         <label class="checkbox-label">
-          <input type="checkbox" name="selectingTags" value="{{t_id}}">
+          <input type="checkbox" name="selectingTags" value="{{t_name}}">
           <span>{{t_name}}</span>
         </label>
         {{/tagList}}
@@ -209,15 +209,15 @@
               <div class="editReview" name="starform" id="scoreForm">
                 <span class="text-bold">작품에 평점을 표시해주세요</span><br>
                 <fieldset>
-                  <input type="radio" name="score" value="5" id="rate1"><label
+                  <input type="radio" name="score" value="5" id="rate1"><label class="radio-label"
                     for="rate1">♣</label>
-                  <input type="radio" name="score" value="4" id="rate2"><label
+                  <input type="radio" name="score" value="4" id="rate2"><label class="radio-label"
                     for="rate2">♣</label>
-                  <input type="radio" name="score" value="3" id="rate3"><label
+                  <input type="radio" name="score" value="3" id="rate3"><label class="radio-label"
                     for="rate3">♣</label>
-                  <input type="radio" name="score" value="2" id="rate4"><label
+                  <input type="radio" name="score" value="2" id="rate4"><label class="radio-label"
                     for="rate4">♣</label>
-                  <input type="radio" name="score" value="1" id="rate5"><label
+                  <input type="radio" name="score" value="1" id="rate5"><label class="radio-label"
                     for="rate5">♣</label>
                 </fieldset>
                 <input type="hidden" id="member-id" value="{{member_id}}"><br>
@@ -304,13 +304,17 @@
     reviewCreateBtn.addEventListener("click",function(){
       //라디오 버튼에서 선택된 값을 가져오기 
       const scoreElement=document.querySelector('input[name="score"]:checked');
+      
       //새 리뷰 객체 생성
       const review={
         //새 리뷰의 멤버id,게시글id,점수,한줄평
         member_id:document.querySelector("#member-id").value,
         article_id:document.querySelector("#article-id").value,
         score:scoreElement ? scoreElement.value : null,
-        score_reason:document.querySelector("#score-reason").value
+        score_reason:document.querySelector("#score-reason").value,
+        //선택중인 tag값 가져오기
+        selectingTags:Array.from(document.querySelectorAll('input[name="selectingTags"]:checked'))
+                            .map(checkbox=>checkbox.value)
       };
 
       //선택된 라디오 버튼이 없는 경우 경고 메시지를 출력하고 함수 종료

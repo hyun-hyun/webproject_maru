@@ -19,11 +19,17 @@ public class Map_r_t {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)//지금 n:review 1
-    @JoinColumn(name="article_id")
+    @JoinColumn(name="review_id")
     private Review review;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="tag_id")
     private Tag tag;
+
+
+    public Map_r_t(Review review, Tag tag){
+        this.review=review;
+        this.tag=tag;
+    }
 
 }

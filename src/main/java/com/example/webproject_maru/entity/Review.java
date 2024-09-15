@@ -48,8 +48,8 @@ public class Review {
     private LocalDateTime updateTime;
     
     //tag
-    //@OneToMany(mappedBy = "review", cascade=CascadeType.ALL)
-    //private List<Map_r_t> map_r_ts=new ArrayList<>();
+    @OneToMany(mappedBy = "review", cascade=CascadeType.ALL, orphanRemoval=true)
+    private List<Map_r_t> map_r_ts=new ArrayList<>();
 
     public static Review createReview(ReviewForm dto, Member member, Article article) {//static이므로 객체생성 안해도 호출가능
         //예외 발생
@@ -67,8 +67,7 @@ public class Review {
             dto.getScore(),
             dto.getScore_reason(),
             dto.getAppendTime(),
-            dto.getUpdateTime()//,
-            //dto.getSelectedTags()
+            dto.getUpdateTime()
         );
     }
     public void patch(ReviewForm dto) {
@@ -80,6 +79,16 @@ public class Review {
             this.score=dto.getScore();//내용 반영
         if(dto.getScore_reason()!=null)//수정할 한줄평이 있다면
             this.score_reason=dto.getScore_reason();//내용 반영
+    }
+    public Review(Long id, Member member, Article article, Integer score, String score_reason,
+            LocalDateTime appendTime, LocalDateTime updateTime) {
+        this.id=id;
+        this.member=member;
+        this.article=article;
+        this.score=score;
+        this.score_reason=score_reason;
+        this.appendTime=appendTime;
+        this.updateTime=updateTime;
     }
 
 }
