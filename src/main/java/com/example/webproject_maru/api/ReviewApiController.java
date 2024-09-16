@@ -41,8 +41,10 @@ public class ReviewApiController {
     //리뷰수정
     @PatchMapping("/api/reviews/{id}")
     public ResponseEntity<ReviewForm> update(@PathVariable Long id, @RequestBody ReviewForm reviewForm){
+        log.info("reviewApi patch진입");
         //서비스에 위임
         ReviewForm updatedForm=reviewService.update(id, reviewForm);
+        log.info("reviewApi update완료");
         //결과 응답
         return ResponseEntity.status(HttpStatus.OK).body(updatedForm);
     }

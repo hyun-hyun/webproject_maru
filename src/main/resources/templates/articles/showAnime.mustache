@@ -103,6 +103,8 @@
 <div id="scoreForm" class="review">
     <fieldset disabled>
       <div>
+        <p>{{member_nickname}}</p>
+
           <input type="radio" name="rate-{{id}}" value="5" id="rate5-{{id}}" disabled><label class="radio-label" for="rate5-{{id}}">♣</label>
           <input type="radio" name="rate-{{id}}" value="4" id="rate4-{{id}}" disabled><label class="radio-label" for="rate4-{{id}}">♣</label>
           <input type="radio" name="rate-{{id}}" value="3" id="rate3-{{id}}" disabled><label class="radio-label" for="rate3-{{id}}">♣</label>
@@ -110,8 +112,7 @@
           <input type="radio" name="rate-{{id}}" value="1" id="rate1-{{id}}" disabled><label class="radio-label" for="rate1-{{id}}">♣</label>
         </div>
         <div>
-          <p>작성자 : {{member_nickname}}</p>
-          <p>한줄평 : {{score_reason}}</p><br>
+          <p>{{score_reason}}</p><br>
         </div>
       </fieldset>
     <input type="hidden" class="score-value" value="{{score}}">
@@ -129,13 +130,15 @@
   <div class="card-body">
 <div id="review-section">
   <div id="reviews">
-    <p>나의 리뷰</p>
-    <p>평점 : {{score}} 점</p>
+    <h5><b>나의 리뷰</b></h5>
+    <p>평점 : <b>{{score}}</b> 점</p>
     <!--태그내용-->
+    선택한 키워드<br>
     {{#selectingTags}}
       <button class="btn btn-info m-1">{{.}}</button>
     {{/selectingTags}}
-    <p>한줄평 : {{score_reason}}</p><br>
+    <br>
+    <p>{{score_reason}}</p><br>
   </div>
   <button type="button"
     class="btn btn-sm btn-primary"
@@ -145,7 +148,8 @@
     data-bs-score="{{score}}"
     data-bs-score_reason="{{score_reason}}"
     data-bs-member-id="{{member_id}}"
-    data-bs-article-id="{{article_id}}">수정</button>
+    data-bs-article-id="{{article_id}}"
+    data-bs-tags='[{{#selectingTags}}"{{.}}",{{/selectingTags}}]'>수정</button>
   <button type="button"
     class="btn btn-sm btn-outline-danger review-delete-btn"
     data-review-id="{{id}}" data-review-title="{{title}}" data-article-id="{{article_id}}">삭제</button>
@@ -159,9 +163,10 @@
 <!--로그인ㅇ&리뷰x-->
   <!--<link href="/resources/templates/layouts/css.mustache" rel="stylesheet"/>-->
   <!--<form class="mb-3" name="starform" action="/articles/{{id}}/create_r" id="scoreForm" method="post">-->
-    <form class="mb-3" name="starform" id="scoreForm">
+     <form class="mb-3" name="starform" id="scoreForm">
       <input type="hidden" id="member-id" value="{{member_id}}"><br>
       <input type="hidden" id="article-id" value="{{id}}"><br>
+      <h4>리뷰작성하기</h4>
       <span class="text-bold">작품에 평점을 표시해주세요</span><br>
       <fieldset>
         <input type="radio" name="score" value="5" id="rate1"><label class="radio-label" for="rate1">♣</label>
@@ -172,6 +177,7 @@
       </fieldset>
       <!-- 기존 태그 선택 -->
       <div id="existing-tags">
+      <span>작품의 <strong>키워드</strong>를 선택해주세요</span><br>
         {{#tagList}}
         <label class="checkbox-label">
           <input type="checkbox" name="selectingTags" value="{{t_name}}">
@@ -180,7 +186,7 @@
         {{/tagList}}
       </div>
     <br>
-    
+        
     <div>
       <textarea class="col-auto form-control" type="text" id="score-reason"
             placeholder="간단하게 해당 점수를 택한 이유를 적어주세요."></textarea>
@@ -188,6 +194,7 @@
 
     <button type="button" class="btn btn-primary" id="reviewCreateBtn">리뷰 작성</button>
   </form>	
+
 {{/my_review}}
 
 <!--리뷰수정-->
@@ -225,8 +232,18 @@
                 </fieldset>
                 <input type="hidden" id="member-id" value="{{member_id}}"><br>
                 <input type="hidden" id="article-id" value="{{id}}"><br>
-              </div>	
-
+              </div>	  
+            </div>
+            <div class="mb-3">
+              <label class="form-label">태그 선택</label>
+              <div id="existing-tags">
+                {{#tagList}}
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="selectingTags" value={{t_name}} {{#selected}}checked{{/selected}}>
+                    <span>{{t_name}}</span>
+                  </label>
+                {{/tagList}}
+              </div>
             </div>
             <!--한줄평 입력-->
             <div class="mb-3">
@@ -381,12 +398,26 @@
         reviewEditModal.addEventListener("show.bs.modal", function(event){
             //1. 트리거 버튼 선택(event.target은 모달 자체)
             const triggerBtn=event.relatedTarget;
+            console.log("data-bs-tags:", triggerBtn.getAttribute("data-bs-tags")); // data-bs-tags 값 확인
             //2. 데이터 가져오기
             const id=triggerBtn.getAttribute("data-bs-id");
             const score=triggerBtn.getAttribute("data-bs-score");
             const score_reason=triggerBtn.getAttribute("data-bs-score_reason");
             const memberId=triggerBtn.getAttribute("data-bs-member-id");
             const articleId=triggerBtn.getAttribute("data-bs-article-id");
+            let tagsData = triggerBtn.getAttribute("data-bs-tags") || "[]"; // 태그 데이터가 없으면 빈 배열로 설정
+
+            // JSON 문자열에서 마지막 쉼표 제거
+            tagsData = tagsData.replace(/,\s*([\]}])/g, '$1');
+            console.log("tagsData:", tagsData); // tagsData 값을 확인
+            let tags;
+            try {
+                tags = JSON.parse(tagsData); // JSON으로 변환
+                console.log("Parsed tags:", tags); // 파싱된 태그 배열 확인
+            } catch (error) {
+                console.error("Error parsing tagsData:", error);
+                tags = []; // JSON 파싱 오류 발생 시 빈 배열로 설정
+            }
             //3. 수정 폼에 데이터 반영
             document.querySelector("#edit-review-id").value=id;
             //document.querySelector("#edit-review-score").value=score;
@@ -396,6 +427,10 @@
             //리뷰 평점 선택되어있게
             document.querySelectorAll(".editReview").forEach(function(card) {
               card.querySelector(`input[name="score"][value="${score}"]`).checked = true;
+            //태그 선택되어있게
+            document.querySelectorAll('#existing-tags input[name="selectingTags"]').forEach(checkbox=>{
+              checkbox.checked=tags.includes(checkbox.value);
+            })
           });
         });
    
@@ -414,8 +449,10 @@
                 id: document.querySelector("#edit-review-id").value,
                 score:scoreElement ? scoreElement.value : null,
                 score_reason: document.querySelector("#edit-review-score_reason").value,
-                memberId: document.querySelector("#edit-review-member-id").value,
-                articleId: document.querySelector("#edit-review-article-id").value
+                member_id: document.querySelector("#edit-review-member-id").value,
+                article_id: document.querySelector("#edit-review-article-id").value,
+                selectingTags: Array.from(document.querySelectorAll('input[name="selectingTags"]:checked'))
+                                    .map(checkbox=>checkbox.value)
             };
             console.log(review);
             //수정 REST API 호출
@@ -476,7 +513,7 @@
                     //삭제 성공 시 댓글을 화면에서 지우고 메시지 창 띄우기
                     const target=document.querySelector(`#reviews-${reviewId}`);
                     target.remove();
-                    const msg=`"${reviewTitle}" 리뷰를 삭제했습니다.`;
+                    const msg=`${reviewTitle}에 대한 리뷰를 삭제했습니다.`;
                     alert(msg);
                     //현재 페이지 새로고침
                     window.location.reload();

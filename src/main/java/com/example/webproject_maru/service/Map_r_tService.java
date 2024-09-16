@@ -49,4 +49,16 @@ public class Map_r_tService {
     public List<String> findTagsByReviewId(Long reviewId){
         return map_r_tRepository.findTagsByReviewId(reviewId);
     }
+
+    //리뷰삭제시 연계삭제
+    @Transactional
+    public void deleteByReviewId(Long reviewId){
+        map_r_tRepository.deleteByReviewId(reviewId);
+    }
+
+    //리뷰와 태그명을 통해 Map_r_t삭제
+    @Transactional
+    public void deleteByReviewAndTagName(Long reviewId, String tagName){
+        map_r_tRepository.deleteByReviewIdAndTagName(reviewId, tagName);
+    }
 }

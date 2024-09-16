@@ -90,13 +90,37 @@ public class ReviewService {
     //리뷰 수정
     @Transactional
     public ReviewForm update(Long id, ReviewForm dto){
+
+        log.info("update 들어옴");
+        log.info("Updating review with ID: " + id); // ID 값 확인
+        log.info("ReviewForm ID: " + dto.getId()); // DTO의 ID 값 확인
         //1. 리뷰 조회 및 예외 발생
         Review target=reviewRepository.findById(id)
                 .orElseThrow(()->new IllegalArgumentException("리뷰 수정 실패!"+"대상 리뷰가 없습니다."));
         Article article=articleRepository.findById(dto.getArticle_id())
                 .orElseThrow(() -> new IllegalArgumentException("리뷰 생성 실패!"+
                         "대상 게시글이 없습니다."));//부모게시글 없으면 에러 메시지 출력
+        log.info("update entity가져옴");
+
+        //리뷰의 기존 태그 리스트
+        List<String> beforeSelectingTags=map_r_tService.findTagsByReviewId(id);
+        log.info("update 기존태그가져옴");
+
         //2. 리뷰 수정
+        //기존태그중에 체크제거된 태그 삭제
+        for(String tag:beforeSelectingTags){
+            if(!dto.getSelectingTags().contains(tag)){
+                map_r_tService.deleteByReviewAndTagName(id, tag);
+            }
+        }
+        //새로 추가된 태그 저장
+        for(String tag:dto.getSelectingTags()){
+            if(!beforeSelectingTags.contains(tag)){
+                Tag newTag=map_r_tService.findOrCreateTag(tag);
+                map_r_tService.saveMap_r_t(target, newTag);
+            }
+        }
+        //평점과 한줄평 저장
         target.patch(dto);
         //updateTime 갱신
         LocalDateTime SeoulNow=LocalDateTime.now(ZoneId.of("Asia/Seoul"));
@@ -119,6 +143,8 @@ public class ReviewService {
         Review target=reviewRepository.findById(id)
                 .orElseThrow(()->new IllegalArgumentException("리뷰 삭제 실패!"+"대상이 없습니다."));
         //2. 리뷰 삭제
+        //연관된 Map_r_t삭제
+        map_r_tService.deleteByReviewId(id);
         reviewRepository.delete(target);
         //2-2. article t_c_score랑 t_avg_score 갱신
         Article article=articleRepository.findById(articleId)
