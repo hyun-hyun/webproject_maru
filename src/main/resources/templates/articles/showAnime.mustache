@@ -135,7 +135,10 @@
     <!--태그내용-->
     선택한 키워드<br>
     {{#selectingTags}}
-      <button class="btn btn-info m-1">{{.}}</button>
+      <label class="checkbox-label">
+          <input type="checkbox" name="selectingTags" checked disabled>
+          <span>{{.}}</span>
+      </label>
     {{/selectingTags}}
     <br>
     <p>{{score_reason}}</p><br>
@@ -235,7 +238,7 @@
               </div>	  
             </div>
             <div class="mb-3">
-              <label class="form-label">태그 선택</label>
+              <label class="form-label">키워드 선택</label>
               <div id="existing-tags">
                 {{#tagList}}
                   <label class="checkbox-label">

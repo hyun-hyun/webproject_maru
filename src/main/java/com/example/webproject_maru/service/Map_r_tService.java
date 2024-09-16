@@ -50,6 +50,15 @@ public class Map_r_tService {
         return map_r_tRepository.findTagsByReviewId(reviewId);
     }
 
+    // articleId를 이용하여 태그 목록을 가져오는 메서드(메인화면용)
+    public List<String> getOnlyTagsByArticleId(Long articleId) {
+        List<String> tags =map_r_tRepository.findOnlyTagsByArticleId(articleId);
+        // 상위 5개만 반환
+        return tags.stream().limit(5).collect(Collectors.toList());
+
+    }
+
+
     //리뷰삭제시 연계삭제
     @Transactional
     public void deleteByReviewId(Long reviewId){

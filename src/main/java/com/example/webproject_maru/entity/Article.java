@@ -17,6 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -60,6 +61,8 @@ public class Article {
     @OneToMany(mappedBy = "article")
     private List<Map_a_t> tags;
 
+    @Transient  // 데이터베이스에 저장하지 않기 위해 Transient 사용
+    private List<String> t_tags;  // 태그 리스트 추가
 
     @Column
     private String story;

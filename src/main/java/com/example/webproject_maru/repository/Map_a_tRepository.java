@@ -13,4 +13,8 @@ import com.example.webproject_maru.entity.Tag;
 public interface Map_a_tRepository extends JpaRepository<Map_a_t, Long>{
     @Query("SELECT m.tag.id, m.tag.tag FROM Map_a_t m WHERE m.article.id=:articleId")
     List<Object[]> findTagsByArticleId(@Param("articleId") Long articleId);
+
+    // articleId로 태그 목록을 가져오는 쿼리
+    @Query("SELECT m.tag.tag FROM Map_a_t m WHERE m.article.id = :articleId" )
+    List<String> findOnlyTagsByArticleId(@Param("articleId") Long articleId);
 }

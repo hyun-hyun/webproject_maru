@@ -3,6 +3,7 @@ package com.example.webproject_maru.controller;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -17,12 +18,16 @@ import com.example.webproject_maru.dto.CustomUserDetails;
 import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.service.ArticleService;
 import com.example.webproject_maru.service.LoginService;
+import com.example.webproject_maru.service.Map_a_tService;
+import com.example.webproject_maru.service.Map_r_tService;
 
 
 @Controller
 public class MainController {
     @Autowired
     private ArticleService articleService;
+    @Autowired
+    private Map_r_tService map_r_tService;
 
     @GetMapping("/")
     public String goMain(Model model) {
@@ -56,6 +61,12 @@ public class MainController {
         //등록한 게시물 내림차순(최신등록작품)
         //1. 모든 데이터 가져오기 list<entity>
         ArrayList<Article> articleEntityList=articleService.findArticlesDesc();
+        // 각 Article의 태그 리스트 가져오기
+        for (Article article : articleEntityList) {
+            Long articleId = article.getId();
+            List<String> tags = map_r_tService.getOnlyTagsByArticleId(articleId);  // List<String>으로 태그를 가져옴
+            article.setT_tags(tags);  // Article 엔티티에 태그 리스트를 추가
+        }
         //2. 모델에 데이터 등록
         model.addAttribute("articleList", articleEntityList);
 

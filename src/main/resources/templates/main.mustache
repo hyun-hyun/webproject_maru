@@ -61,7 +61,11 @@
                   {{#articleList}}
                   <tr class="article-row" data-article-id="{{id}}">
                     <td rowspan="2"><img src="/images/pic/anime/{{main_pic}}" width=150 alt="작품표지"></img></td>
-                    <th>{{title}}</th>
+                    <th>{{title}}<br>
+                      {{#t_tags}}
+                      <span class="btn btn-outline-info m-1 tag">{{.}}</span>
+                      {{/t_tags}}
+                    </th>
                   </tr>
                   <tr class="article-row" data-article-id="{{id}}">
                     <td>{{story}}</img></td>
@@ -95,3 +99,10 @@
   })
 }
 </script>
+<style>
+  .tag {
+    display: inline-block;
+    padding: 0.5em 1em; /* 버튼 내부 패딩 조정 */
+    font-size: 0.7em; /* 글자 크기 줄이기 */
+}
+</style>
