@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.webproject_maru.dto.TagCountForm;
+import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.entity.Map_r_t;
 import com.example.webproject_maru.entity.Review;
 import com.example.webproject_maru.entity.Tag;
@@ -21,6 +22,8 @@ public class Map_r_tService {
     private Map_r_tRepository map_r_tRepository;
     @Autowired
     private TagService tagService;
+    @Autowired
+    Map_a_tService map_a_tService;
 
     public List<TagCountForm> countTagSelectionsByArticleId(Long articleId) {
     List<Object[]> results = map_r_tRepository.countTagSelectionsByArticleId(articleId);
@@ -33,10 +36,11 @@ public class Map_r_tService {
 
     //article만들 때 tag저장
     @Transactional
-    public Tag findOrCreateTag(String tagName){
+    public Tag findOrCreateTag(Article article, String tagName){
         Tag tag=tagService.findByTag(tagName);
         if(tag==null){
             tag=tagService.saveTag(new Tag(tagName));
+            map_a_tService.saveMap_a_t(article, tag);
         }
         return tag;
     }

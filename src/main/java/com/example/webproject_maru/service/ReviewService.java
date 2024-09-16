@@ -79,7 +79,7 @@ public class ReviewService {
         log.info("리뷰저장");
         //selectingTags 저장
         for(String tagName:dto.getSelectingTags()){
-            Tag tag=map_r_tService.findOrCreateTag(tagName);
+            Tag tag=map_r_tService.findOrCreateTag(article, tagName);
             log.info(tag.getTag());
             map_r_tService.saveMap_r_t(review, tag);
         }
@@ -116,7 +116,7 @@ public class ReviewService {
         //새로 추가된 태그 저장
         for(String tag:dto.getSelectingTags()){
             if(!beforeSelectingTags.contains(tag)){
-                Tag newTag=map_r_tService.findOrCreateTag(tag);
+                Tag newTag=map_r_tService.findOrCreateTag(article, tag);
                 map_r_tService.saveMap_r_t(target, newTag);
             }
         }

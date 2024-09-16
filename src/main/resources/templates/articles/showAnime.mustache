@@ -188,6 +188,20 @@
         </label>
         {{/tagList}}
       </div>
+      <!-- 추가된 태그 표시 -->
+      <div id="addedTagContainer" style="display: none;">
+          <label class="checkbox-label">
+              <input type="checkbox" name="selectingTags" id="addedTagCheckbox" value="" checked>
+              <span id="addedTagText"></span>
+              <button type="button" id="removeTagBtn" class="btn btn-danger btn-sm">삭제</button>
+          </label>
+      </div>
+      <div>
+        <input type="text" id="newTagInput" placeholder="새 키워드 추가" class="form-control">
+        <button type="button" id="addTagBtn" class="btn btn-info">추가</button>
+        *키워드 추가는 처음 리뷰 작성시만 가능합니다.(선택해제는 수정에서도 가능합니다.)
+      </div>
+      
     <br>
         
     <div>
@@ -320,6 +334,37 @@
           const id = card.querySelector(".review-id").value;
           card.querySelector(`input[name="rate-${id}"][value="${score}"]`).checked = true;
       });
+
+    //리뷰생성시 태그 1개 추가
+    const newTagInput = document.querySelector('#newTagInput');
+    const addTagBtn = document.querySelector('#addTagBtn');
+    const addedTagContainer = document.querySelector('#addedTagContainer');
+    const addedTagCheckbox = document.querySelector('#addedTagCheckbox');
+    const addedTagText = document.querySelector('#addedTagText');
+    const removeTagBtn = document.querySelector('#removeTagBtn');
+
+    // 태그 추가 버튼 클릭 시
+    addTagBtn.addEventListener('click', function () {
+        const newTag = newTagInput.value.trim();
+        if (newTag !== '') {
+            // 입력된 태그를 추가하고 input 비활성화
+            addedTagText.textContent = newTag;
+            addedTagCheckbox.value = newTag;
+            addedTagContainer.style.display = 'inline-block'; // 태그 컨테이너 보이기
+            newTagInput.disabled = true;  // input 비활성화
+            addTagBtn.disabled = true;    // 추가 버튼 비활성화
+        }
+    });
+
+    // 태그 삭제 버튼 클릭 시
+    removeTagBtn.addEventListener('click', function () {
+        // 추가된 태그를 제거하고 input 활성화
+        addedTagContainer.style.display = 'none'; // 태그 컨테이너 숨기기
+        newTagInput.value = '';                   // input 필드 초기화
+        newTagInput.disabled = false;             // input 활성화
+        addTagBtn.disabled = false;               // 추가 버튼 활성화
+    });
+
 
     //리뷰 생성 버튼 변수화
     const reviewCreateBtn=document.querySelector("#reviewCreateBtn");
