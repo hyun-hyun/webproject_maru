@@ -43,7 +43,12 @@ public class ReviewService {
 
     //리뷰 조회(로그인한 사용자)
     public ReviewForm my_review(Long articleId, Long memberId){
-        return ReviewForm.createReviewForm(reviewRepository.findByArticleMemberId(articleId, memberId));
+        ReviewForm reviewForm = ReviewForm.createReviewForm(reviewRepository.findByArticleMemberId(articleId, memberId));
+        if(reviewForm != null){
+            List<String> my_selectingTags=map_r_tService.findTagsByReviewId(reviewForm.getId());
+            reviewForm.setSelectingTags(my_selectingTags);
+        }
+        return reviewForm;
     }
 
     //리뷰 생성

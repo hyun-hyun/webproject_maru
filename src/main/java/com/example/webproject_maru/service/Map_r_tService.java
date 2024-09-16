@@ -46,4 +46,7 @@ public class Map_r_tService {
         map_r_tRepository.save(map);
     }
     
+    public List<String> findTagsByReviewId(Long reviewId){
+        return map_r_tRepository.findTagsByReviewId(reviewId);
+    }
 }

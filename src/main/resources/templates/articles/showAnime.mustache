@@ -132,6 +132,9 @@
     <p>나의 리뷰</p>
     <p>평점 : {{score}} 점</p>
     <!--태그내용-->
+    {{#selectingTags}}
+      <button class="btn btn-info m-1">{{.}}</button>
+    {{/selectingTags}}
     <p>한줄평 : {{score_reason}}</p><br>
   </div>
   <button type="button"
