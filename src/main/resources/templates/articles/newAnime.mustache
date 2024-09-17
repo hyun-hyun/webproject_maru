@@ -5,11 +5,13 @@
     <h2>신규 작품 추가</h2>
     <div class="mb-3">
         <!--catagory-->
-        *기본정보는 빈틈없이 입력해주세요!*<br>
+        *기본정보는 빈틈없이 입력해주세요!*<br><br>
         <label class="form-label">카테고리 : anime</label>
         <input type="hidden" name="catagory" value="anime"><br>
         <label class="form-label">작품명</label>
         <input type="text" class="form-control" name="title">{{!name으로 DTO클래스와 연결}}
+        <label class="form-label">장르</label>
+        <input type="text" class="form-control" name="genre">
         <label class="form-label">방영날짜</label>
         <input type="date" class="form-control" name="broad_date">
         <label class="form-label">제작사</label>
@@ -86,7 +88,7 @@
             </li>
         {{/defaultTags}}
     </ul>
-    <input type="text" id="newTag" placeholder="키워드를 추가해주세요">
+    <input type="text" id="newTag" placeholder="키워드를 추가해주세요" maxlength="20" style="width: 200px;">
     <button type="button" onclick="addTag()">키워드 추가</button><br><br>
 
 

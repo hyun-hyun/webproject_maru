@@ -27,8 +27,8 @@
             <table class="table">
                 <thead class="table-light">
                     <tr>
-                    <th scope="col">작품표지</th>
-                    <th scope="col">제목 & 줄거리</th>
+                    <th scope="col">작품</th>
+                    <th scope="col">작품설명</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,15 +53,15 @@
             <table class="table">
                 <thead class="table-light">
                     <tr>
-                    <th scope="col">작품표지</th>
-                    <th scope="col">제목 & 줄거리</th>
+                    <th scope="col">작품</th>
+                    <th scope="col">작품설명</th>
                     </tr>
                 </thead>
                 <tbody>
                   {{#articleList}}
                   <tr class="article-row" data-article-id="{{id}}">
                     <td rowspan="2"><img src="/images/pic/anime/{{main_pic}}" width=150 alt="작품표지"></img></td>
-                    <th>{{title}}<br>
+                    <th>[{{genre}}] {{title}}<br>
                       {{#t_tags}}
                       <span class="btn btn-outline-info m-1 tag">{{.}}</span>
                       {{/t_tags}}

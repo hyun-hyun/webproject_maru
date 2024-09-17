@@ -9,6 +9,7 @@
 <div class="row g-2">
   <div class="col-md-6">
     <label class="form-label"><h1> {{title}}</h1></label><br>
+    <label class="form-label">장르 </label> <b>{{genre}}</b><br>
     <label class="form-label">방영 </label> <b>{{broad_date}}</b><br>
     <label class="form-label">제작 </label> <b>{{ani_company}}</b><br>
     <label class="form-label">원작 </label> <b>{{author}}</b><br>
@@ -24,7 +25,7 @@
 <!--tag-->
     <ul>
       {{#tagSelectionCounts}}
-          <span class="btn btn-outline-info btn-round m-1" > {{tagName}}: {{count}} reviews</span>
+          <span class="btn btn-outline-info btn-round m-1" > <b>{{tagName}}</b> : {{count}}</span>
           <input type="checkbox" id="tag_{{id}}" name="tags" value="{{id}}" style="display:none;">
           <!--m 모든방향 마진 mb-0~5 아래, mt 위 ml, mr 등 있음-->
           <!--<button type="button" onclick="toggleTag({{id}})">Toggle</button>-->
@@ -196,9 +197,9 @@
               <button type="button" id="removeTagBtn" class="btn btn-danger btn-sm">삭제</button>
           </label>
       </div>
-      <div>
-        <input type="text" id="newTagInput" placeholder="새 키워드 추가" class="form-control">
-        <button type="button" id="addTagBtn" class="btn btn-info">추가</button>
+      <div style="display: flex; align-items: center;">
+        <input type="text" id="newTagInput" placeholder="새 키워드 추가" class="form-control" maxlength="20" style="width: 200px; margin-right: 8px;">
+        <button type="button" id="addTagBtn" class="btn btn-secondary">추가</button><br>
         *키워드 추가는 처음 리뷰 작성시만 가능합니다.(선택해제는 수정에서도 가능합니다.)
       </div>
       
@@ -353,6 +354,9 @@
             addedTagContainer.style.display = 'inline-block'; // 태그 컨테이너 보이기
             newTagInput.disabled = true;  // input 비활성화
             addTagBtn.disabled = true;    // 추가 버튼 비활성화
+        }
+        else{
+          addedTagCheckbox.value='';
         }
     });
 
