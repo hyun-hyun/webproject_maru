@@ -5,22 +5,23 @@
     <h2>신규 작품 추가</h2>
     <div class="mb-3">
         <!--catagory-->
+        <br>
         *기본정보는 빈틈없이 입력해주세요!*<br><br>
         <label class="form-label">카테고리 : anime</label>
-        <input type="hidden" name="catagory" value="anime"><br>
+        <input type="hidden" name="catagory" value="anime" required><br>
         <label class="form-label">작품명</label>
-        <input type="text" class="form-control" name="title">{{!name으로 DTO클래스와 연결}}
+        <input type="text" class="form-control" name="title" required>{{!name으로 DTO클래스와 연결}}
         <label class="form-label">장르</label>
-        <input type="text" class="form-control" name="genre">
+        <input type="text" class="form-control" name="genre" required>
         <label class="form-label">방영날짜</label>
-        <input type="date" class="form-control" name="broad_date">
+        <input type="date" class="form-control" name="broad_date" required>
         <label class="form-label">제작사</label>
-        <input type="text" class="form-control" name="ani_company">
+        <input type="text" class="form-control" name="ani_company" required>
         <label class="form-label">원작자</label>
-        <input type="text" class="form-control" name="author">
+        <input type="text" class="form-control" name="author" required>
         <label class="form-label">작품 대표 이미지</label>
         <div class="addImage" id="image-show"> <!-- 이미지 띄울 공간 --></div>
-        <input type="file" accept="image/jpeg, image/png, image/gif" onchange="loadFile(this, 'image-show')" name="pic">
+        <input type="file" accept="image/jpeg, image/png, image/gif" onchange="loadFile(this, 'image-show')" name="pic" required>
         <!--배열로 여러 파일 받을 경우 multiple="multiple" 추가하고 MultipartFile[]같이 받음-->
 
         <br>
