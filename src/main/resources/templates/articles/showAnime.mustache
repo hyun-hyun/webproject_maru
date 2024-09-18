@@ -301,8 +301,10 @@
 </div>
 
 {{/article}}
-  <a href="/articles/anime/{{id}}/edit" class="btn btn-sm btn-primary">게시글 수정</a>
-  <a href="/articles/anime/{{id}}/delete" class="btn btn-sm btn-outline-danger">게시글 삭제</a>
+{{#write}}
+  <a href="/write/article/anime/{{id}}/edit" class="btn btn-sm btn-primary">게시글 수정</a>
+  <a href="/write/article/anime/{{id}}/delete" class="btn btn-sm btn-outline-danger">게시글 삭제</a>
+{{/write}}
   <a href="/articles/anime" class="btn btn-sm btn-success">작품 목록</a>
   
 </div>

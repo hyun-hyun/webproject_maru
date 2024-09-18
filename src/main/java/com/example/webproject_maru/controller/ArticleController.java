@@ -2,12 +2,17 @@ package com.example.webproject_maru.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +46,7 @@ public class ArticleController {
     private ReviewService reviewService;
     
 
+    //게시글 생성
     @GetMapping("/write/article/anime")
     public String goNewAnime(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
         String nickname = userDetails.member.getNickname();
@@ -87,6 +93,7 @@ public class ArticleController {
         return "redirect:/articles/anime/"+saved.getId();
     }
 
+    //게시글 상세페이지
     @GetMapping("/articles/anime/{id}") //컨트롤러 변수{}, 뷰 변수{{}}
     public String show(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails, Model model){//매개변수로 url의 id받아오기
         log.info("id= "+id);//id잘 받았는지 확인
@@ -95,6 +102,25 @@ public class ArticleController {
         Long member_id = userDetails.member.getId();
         model.addAttribute("nickname", nickname);
         model.addAttribute("member_id", member_id);
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        Iterator<? extends GrantedAuthority> iter = authorities.iterator();
+        GrantedAuthority auth = iter.next();
+        String role = auth.getAuthority();
+
+        if(email!="anonymousUser"){
+
+            if(role.equals("ROLE_ADMIN") || role.equals("ROLE_MANAGER")){
+                model.addAttribute("write", 1);
+            }
+
+            if(role=="ROLE_ADMIN"){
+                model.addAttribute("admin",1);
+            }
+        }
 
         //1. id조회해서 데이터(entity, Optional<Article>) 가져오기
         Article articleEntity=articleService.findByIdArticle(id);
@@ -121,6 +147,21 @@ public class ArticleController {
     }
 
 
+    //게시글 수정
+    @GetMapping("/write/article/{category}/{id}/edit")
+    public String edit(@PathVariable Long id, Model model){
+
+
+        return "articles/editAnime";
+    }
+
+    @PostMapping("/write/article/{category}/update")
+    public String update(@PathVariable String category, ArticleForm form){
+
+        return "redirect: /articles/"+category+articleEntity.getId();
+    }
+
+    //게시글 목록
     @GetMapping("/articles/anime")
     public String index(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
         String nickname = userDetails.member.getNickname();

@@ -1,0 +1,161 @@
+{{>layouts/header}}
+
+<form class="container" action="/write/article/anime/update" method="post" enctype="multipart/form-data"><!-- 이미지 파일 데이터에 알맞는 enctype 설정 -->
+    <h1>애니메이션</h1>
+    <h3>작품 정보 수정</h3>
+<br>
+
+{{#article}}
+<div class="mb-3">
+    <!--catagory-->
+    <br>
+    *기본정보는 빈틈없이 입력해주세요!*<br><br>
+    <label class="form-label">카테고리 : anime</label>
+    <input type="hidden" name="catagory" value="anime" required><br>
+    <label class="form-label">작품명</label>
+    <input type="text" class="form-control" name="title" required>{{!name으로 DTO클래스와 연결}}
+    <label class="form-label">장르</label>
+    <input type="text" class="form-control" name="genre" required>
+    <label class="form-label">방영날짜</label>
+    <input type="date" class="form-control" name="broad_date" required>
+    <label class="form-label">제작사</label>
+    <input type="text" class="form-control" name="ani_company" required>
+    <label class="form-label">원작자</label>
+    <input type="text" class="form-control" name="author" required>
+    <label class="form-label">작품 대표 이미지</label>
+    <div class="addImage" id="image-show"> <!-- 이미지 띄울 공간 --></div>
+    <input type="file" accept="image/jpeg, image/png, image/gif" onchange="loadFile(this, 'image-show')" name="pic" required>
+    <!--배열로 여러 파일 받을 경우 multiple="multiple" 추가하고 MultipartFile[]같이 받음-->
+
+    <br>
+    <label class="form-label">등장인물</label>
+    <p>***사진, 이름, 성우 모두 빈칸 없이 작성해주세요***</p><br>
+    <div class="image-container">
+        <div class="image-item">
+        <div class="addImage_m" id="image-show1"> <!-- 등장인물1 --></div>
+        <input type="file" accept="image/jpeg, image/png, image/gif" onchange="loadFile(this, 'image-show1')" name="pic">
+        (원작)캐릭터 이름<input type="text" name="realChar">
+        (원작)캐릭터 성우<input type="text" name="realVoiceChar">
+        (한국)캐릭터 이름<input type="text" name="korChar">
+        (한국)캐릭터 성우<input type="text" name="korVoiceChar">
+        </div>
+        <div class="image-item">
+        <div class="addImage_m" id="image-show2"> <!-- 등장인물2 --></div>
+        <input type="file" accept="image/jpeg, image/png, image/gif" onchange="loadFile(this, 'image-show2')" name="pic">
+        (원작)캐릭터 이름<input type="text" name="realChar">
+        (원작)캐릭터 성우<input type="text" name="realVoiceChar">
+        (한국)캐릭터 이름<input type="text" name="korChar">
+        (한국)캐릭터 성우<input type="text" name="korVoiceChar">
+        </div>
+        <div class="image-item">
+        <div class="addImage_m" id="image-show3"> <!-- 등장인물3 --></div>
+        <input type="file" accept="image/jpeg, image/png, image/gif" onchange="loadFile(this,'image-show3')" name="pic">
+        (원작)캐릭터 이름<input type="text" name="realChar">
+        (원작)캐릭터 성우<input type="text" name="realVoiceChar">
+        (한국)캐릭터 이름<input type="text" name="korChar">
+        (한국)캐릭터 성우<input type="text" name="korVoiceChar">
+        </div>
+        <div class="image-item">
+        <div class="addImage_m" id="image-show4"> <!-- 등장인물4 --></div>
+        <input type="file"accept="image/jpeg, image/png, image/gif" onchange="loadFile(this, 'image-show4')" name="pic">
+        (원작)캐릭터 이름<input type="text" name="realChar">
+        (원작)캐릭터 성우<input type="text" name="realVoiceChar">
+        (한국)캐릭터 이름<input type="text" name="korChar">
+        (한국)캐릭터 성우<input type="text" name="korVoiceChar">
+        </div>
+        <div class="image-item">
+        <div class="addImage_m" id="image-show5"> <!-- 등장인물5 --></div>
+        <input type="file" accept="image/jpeg, image/png, image/gif" onchange="loadFile(this, 'image-show5')" name="pic">
+        (원작)캐릭터 이름<input type="text" name="realChar">
+        (원작)캐릭터 성우<input type="text" name="realVoiceChar">
+        (한국)캐릭터 이름<input type="text" name="korChar">
+        (한국)캐릭터 성우<input type="text" name="korVoiceChar">
+        </div>
+    </div>
+</div>
+<div class="mb-3">
+<!--작성자-->
+<input type="hidden" name="memberId" value="{{member_id}}"><br>
+<!--종합추천점수-->
+<label class="form-label">종합추천점수</label>
+<button type="button" onclick="alert('사이즈지정해서 평가결과 뜨게하기')"class="btn btn-primary">자세히보기</button>
+</div>
+
+<div class="mb-3">
+<!--관련태그-->
+<label class="form-label">관련 키워드</label>
+<ul id="tagList">
+    {{#defaultTags}}
+        <li>{{.}}
+            <input type="hidden" name="tags" value="{{.}}">
+            <button type="button" class="btn-light" onclick="this.parentElement.remove()">삭제</button>
+        </li>
+    {{/defaultTags}}
+</ul>
+<input type="text" id="newTag" placeholder="키워드를 추가해주세요" maxlength="20" style="width: 200px;">
+<button type="button" onclick="addTag()">키워드 추가</button><br><br>
+
+
+
+</div>
+
+
+<div class="mb-3">
+    <label class="form-label">줄거리</label>
+    <textarea class="form-control" row="3" name="story"></textarea>
+</div> 
+{{/article}}
+
+
+<button type="submit" class="btn btn-primary">Submit</button>
+<a href="/articles" class="btn btn-sm btn-outline-success">Back</a>
+</form>
+
+
+
+<script>
+function loadFile(input, imageShowId) {
+    let file = input.files[0]; // 선택된 파일 가져오기
+
+    let newImage = document.createElement("img"); //새 이미지 추가
+
+    //이미지 source 가져오기
+    newImage.src = URL.createObjectURL(file);
+    newImage.id = "img-id"
+    newImage.style.width = "100%";
+    newImage.style.height = "100%";
+    newImage.style.objectFit = "cover";
+
+    //이미지를 image-show div에 추가
+    let container = document.getElementById(imageShowId);
+    container.innerHTML = '';//기존 이미지 제거
+    container.appendChild(newImage);
+}
+//태그추가
+function addTag() {
+    const tagInput = document.getElementById('newTag');
+    const tagList = document.getElementById('tagList');
+    if(tagInput.value){
+        const newTag = document.createElement('li');
+        newTag.innerText = tagInput.value;
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'tags';
+        hiddenInput.value = tagInput.value;
+
+        const deleteButton = document.createElement('button');
+        deleteButton.type = 'button';
+        deleteButton.innerText = '삭제';
+        deleteButton.onclick = function() {
+            tagList.removeChild(newTag);
+        };
+
+        newTag.appendChild(hiddenInput);
+        newTag.appendChild(deleteButton);
+        tagList.appendChild(newTag);
+        tagInput.value = '';
+    }
+    
+}
+</script>
+{{>layouts/footer}}
