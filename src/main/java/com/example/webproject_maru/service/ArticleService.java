@@ -1,5 +1,6 @@
 package com.example.webproject_maru.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -51,7 +52,7 @@ public class ArticleService {
 
     //게시글 생성
     @Transactional
-    public Article create(ArticleForm dto, MultipartFile[] files, SubPicForm[] subPicForms,String catagory) {
+    public Article create(ArticleForm dto, MultipartFile[] files, SubPicForm[] subPicForms,String category) {
         Member member=memberRepository.findById(dto.getMemberId())
                 .orElseThrow(() -> new IllegalArgumentException("게시글 생성 실패!"+
                         "대상 회원이 없습니다."));//작성자 없으면 에러 메시지 출력
@@ -105,13 +106,13 @@ public class ArticleService {
                 // 랜덤 id 값 + 파일 확장자
                 String saveFileName = uuid.toString() + extention;
                 // 파일을 서버에 저장
-                Path filePath = Paths.get(uploadDir+catagory + "/" + saveFileName);
+                Path filePath = Paths.get(uploadDir+category + "/" + saveFileName);
 
                 Files.createDirectories(filePath.getParent());
                 files[i].transferTo(filePath);
                 //files[i].transferTo(new File(uploadDir+genR+"_"+files[i].getOriginalFilename()));
 
-                log.info(uploadDir+catagory + "/" + saveFileName);
+                log.info(uploadDir+category + "/" + saveFileName);
                 log.info("i="+i);
 
                 switch(i){
@@ -218,7 +219,7 @@ public class ArticleService {
     }
 
     //수정데이터 반영
-    public Article update(ArticleForm form){
+    public Article update(ArticleForm form, MultipartFile[] newFiles, SubPicForm[] subPicForms, String category){
         //1. Article 조회
         Article article=articleRepository.findById(form.getId())
                 .orElseThrow(() -> new IllegalArgumentException("리뷰 생성 실패!"+
@@ -229,6 +230,48 @@ public class ArticleService {
         //기본내용
         article.patch(form);
         //이미지
+        try{
+        for(int i=0;i<newFiles.length;i++){
+            if(!newFiles[i].isEmpty()){
+                log.info("기존이미지삭제 : ",article.getMain_pic());
+                String beforeFilePath=uploadDir+category + "/"+article.getMain_pic();
+                File beforeFile=new File(beforeFilePath);
+                if(beforeFile.exists()){
+                    beforeFile.delete();
+                }
+
+                // 새로운 이미지 저장
+                UUID uuid = UUID.randomUUID();
+                String oriName = newFiles[i].getOriginalFilename();
+                String extension = oriName.substring(oriName.lastIndexOf("."));
+                String saveFileName = uuid.toString() + extension;
+                Path filePath = Paths.get(uploadDir + category + "/" + saveFileName);
+                log.info("신규 이미지 저장 : ",saveFileName);
+                Files.createDirectories(filePath.getParent());
+                newFiles[i].transferTo(filePath);
+
+                switch(i){
+                    case 0 : article.setMain_pic_name(newFiles[0].getOriginalFilename());
+                            article.setMain_pic(saveFileName);
+                            break;
+                    case 1 : article.getSubPic1().setName(newFiles[1].getOriginalFilename());
+                            article.getSubPic1().setPic(saveFileName);
+                            break;
+                    case 2 : article.getSubPic2().setName(newFiles[2].getOriginalFilename());
+                            article.getSubPic2().setPic(saveFileName);
+                            break;
+                    case 3 : article.getSubPic3().setName(newFiles[3].getOriginalFilename());
+                            article.getSubPic3().setPic(saveFileName);
+                            break;
+                    case 4 : article.getSubPic4().setName(newFiles[4].getOriginalFilename());
+                            article.getSubPic4().setPic(saveFileName);
+                            break;
+                    case 5 : article.getSubPic5().setName(newFiles[5].getOriginalFilename());
+                            article.getSubPic5().setPic(saveFileName);
+                            break;
+                }                
+            }
+        }
 
         //기존태그중에 삭제한 태그 삭제
         for(String tag:beforeTags){
@@ -247,10 +290,15 @@ public class ArticleService {
         LocalDateTime SeoulNow=LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         article.setUpdateTime(SeoulNow);
 
+        
+    }catch(IllegalStateException | IOException e){
+        e.printStackTrace();
+    }
+
         //3. DB로 갱신
         Article updated=articleRepository.save(article);
-
         return updated;
+
     }
 
 }

@@ -154,13 +154,17 @@ public class ArticleController {
     }
 
     @PostMapping("/write/article/{category}/update")
-    public String update(@PathVariable String category, ArticleForm articleForm){
+    public String update(@PathVariable String category, ArticleForm articleForm,
+                        @RequestParam("pic") MultipartFile[] newPic){
         log.info(articleForm.toString());
-        Article articleEntity=articleService.update(articleForm);
+        SubPicForm[] subPicForms=new SubPicForm[5];
+
+
+        Article updated=articleService.update(articleForm, newPic, subPicForms, category);
         //1. DTO->entity
         // Article articleEntity=articleForm.toEntity();
         //2. entity DB에 저장
-        return "redirect:/articles/"+category+"/"+articleEntity.getId();
+        return "redirect:/articles/"+category+"/"+updated.getId();
     }
 
     //게시글 목록

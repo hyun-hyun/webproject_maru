@@ -24,17 +24,12 @@
     <label class="form-label">원작자</label>
     <input type="text" class="form-control" name="author" value="{{author}}" required>
     <label class="form-label">작품 대표 이미지</label>
-    <label>현재 이미지:</label>
-    <div>
-        <img src="/images/pic/anime/{{main_pic}}" alt="메인이미지">
-    </div>
     <!-- 이미지 변경 -->
     <label>이미지 변경:</label>
-    <input type="file" name="new_image" class="form-control">
-    <input type="hidden" name="current_image" value="{{main_pic}}">
-
-    <div class="addImage" id="image-show"> <!-- 이미지 띄울 공간 --></div>
-    <input type="file" accept="image/jpeg, image/png, image/gif" onchange="loadFile(this, 'image-show')" name="pic" required>
+    <div class="addImage" id="image-show"> <!-- 이미지 띄울 공간 -->
+        <img id="current-image" src="/images/pic/anime/{{main_pic}}" alt="기존이미지" style="width: 100%; height: 100%; object-fit: cover;">
+    </div>
+    <input type="file" accept="image/jpeg, image/png, image/gif" onchange="loadFile(this, 'image-show')" name="pic">
     <!--배열로 여러 파일 받을 경우 multiple="multiple" 추가하고 MultipartFile[]같이 받음-->
 
     <br>
@@ -86,10 +81,6 @@
 <div class="mb-3">
 <!--작성자-->
 <input type="hidden" name="memberId" value="{{member.id}}"><br>
-<!--종합추천점수-->
-<label class="form-label">종합추천점수</label>
-<button type="button" onclick="alert('사이즈지정해서 평가결과 뜨게하기')"class="btn btn-primary">자세히보기</button>
-</div>
 
 
 <!--관련태그-->
@@ -152,29 +143,26 @@
             button.disabled = isDisabled; // 비활성화
             if (isDisabled) {
                 button.classList.add('disabled-button'); // 비활성화 클래스 추가
+                button.classList.remove('btn-outline-dark'); // 기존 활성화 클래스 제거
+                button.classList.add('btn', 'btn-outline-secondary'); // 비활성화 클래스 추가
             } else {
                 button.classList.remove('disabled-button'); // 활성화 클래스 제거
+                button.classList.remove('btn-outline-secondary'); // 비활성화 클래스 제거
+                button.classList.add('btn', 'btn-outline-dark'); // 활성화 클래스 추가
             }
         });
 
     })
-
-    function loadFile(input, imageShowId) {
-        let file = input.files[0]; // 선택된 파일 가져오기
-    
-        let newImage = document.createElement("img"); //새 이미지 추가
-    
-        //이미지 source 가져오기
-        newImage.src = URL.createObjectURL(file);
-        newImage.id = "img-id"
-        newImage.style.width = "100%";
-        newImage.style.height = "100%";
-        newImage.style.objectFit = "cover";
-    
-        //이미지를 image-show div에 추가
-        let container = document.getElementById(imageShowId);
-        container.innerHTML = '';//기존 이미지 제거
-        container.appendChild(newImage);
+    //이미지 기존보여주고 수정반영
+    function loadFile(input, showId) {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById(showId).innerHTML = '<img src="' + e.target.result + '" style="width: 100%; height: 100%; object-fit: cover;">';
+            };
+            reader.readAsDataURL(file);
+        }
     }
     //태그추가
     function addTag() {
