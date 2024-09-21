@@ -32,12 +32,30 @@ public class Map_a_tService {
         return tag;
     }
 
+    //생성
     @Transactional
     public void saveMap_a_t(Article article, Tag tag){
         Map_a_t map=new Map_a_t(article, tag);
         map_a_tRepository.save(map);
     }
 
+    //tag찾기
+    public List<String> getTagsByArticleId(Long articleId){
+        return map_a_tRepository.getTagsByArticleId(articleId);
+    }
+
+    //article과 tag명을 통해 Map_a_t삭제
+    @Transactional
+    public void deleteByArticleIdAndTagName(Long articleId, String tagName){
+        map_a_tRepository.deleteByArticleIdAndTagName(articleId, tagName);
+    }
+
+    //article삭제시 연계삭제
+    @Transactional
+    public void deleteByArticleId(Long articleId){
+        map_a_tRepository.deleteByArticleId(articleId);
+    }
+/* 
     public List<TagForm> findTagsByArticleId(Long articleId) {
         List<Object[]> results = map_a_tRepository.findTagsByArticleId(articleId);
             return results.stream()
@@ -46,6 +64,6 @@ public class Map_a_tService {
                       (String) result[1])   // tag_name
                   ).collect(Collectors.toList());
     }
-
+*/
     
 }

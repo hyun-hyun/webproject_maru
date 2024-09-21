@@ -64,8 +64,8 @@ public class MainController {
         // 각 Article의 태그 리스트 가져오기
         for (Article article : articleEntityList) {
             Long articleId = article.getId();
-            List<String> tags = map_r_tService.getOnlyTagsByArticleId(articleId);  // List<String>으로 태그를 가져옴
-            article.setT_tags(tags);  // Article 엔티티에 태그 리스트를 추가
+            List<String> usedTags = map_r_tService.getOnlyTagsByArticleId(articleId);  // List<String>으로 태그를 가져옴
+            article.setUsedTags(usedTags);  // Article 엔티티에 태그 리스트를 추가
         }
         //2. 모델에 데이터 등록
         model.addAttribute("articleList", articleEntityList);

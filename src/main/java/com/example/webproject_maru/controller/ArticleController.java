@@ -91,8 +91,7 @@ public class ArticleController {
 */
 
         return "redirect:/articles/anime/"+saved.getId();
-    }
-
+    }  
     //게시글 상세페이지
     @GetMapping("/articles/anime/{id}") //컨트롤러 변수{}, 뷰 변수{{}}
     public String show(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails, Model model){//매개변수로 url의 id받아오기
@@ -129,7 +128,7 @@ public class ArticleController {
         //사용자 리뷰만 가져오기
         ReviewForm reviewForm=reviewService.my_review(id, member_id);
         //등록된 tag 가져오기
-        List<TagForm> tags = articleService.getArticleTags(id);
+        List<String> tags = articleService.getTagsByArticleId(id);
         //리뷰에서 선택되었던 tag만 tagName이랑 선택된 횟수 가져오기 
         List<TagCountForm> tagSelectionCounts = articleService.countTagSelectionsByArticleId(id);
         //2. 모델에 데이터 등록
@@ -140,8 +139,6 @@ public class ArticleController {
         model.addAttribute("tagSelectionCounts", tagSelectionCounts);
         // model.addAttribute("commentDtos", commentsDtos);
 
-        tags.forEach(tag -> log.info("Tag ID: " + tag.getT_id() + ", Tag Name: " + tag.getT_name()));
-
         //3. 뷰 페이지 반환
         return "articles/showAnime";
     }
@@ -150,15 +147,20 @@ public class ArticleController {
     //게시글 수정
     @GetMapping("/write/article/{category}/{id}/edit")
     public String edit(@PathVariable Long id, Model model){
-
+        Article articleEntity=articleService.getArticleWithTags(id);
+        model.addAttribute(("article"), articleEntity);
 
         return "articles/editAnime";
     }
 
     @PostMapping("/write/article/{category}/update")
-    public String update(@PathVariable String category, ArticleForm form){
-
-        return "redirect: /articles/"+category+articleEntity.getId();
+    public String update(@PathVariable String category, ArticleForm articleForm){
+        log.info(articleForm.toString());
+        Article articleEntity=articleService.update(articleForm);
+        //1. DTO->entity
+        // Article articleEntity=articleForm.toEntity();
+        //2. entity DB에 저장
+        return "redirect:/articles/"+category+"/"+articleEntity.getId();
     }
 
     //게시글 목록

@@ -184,8 +184,8 @@
       <span>작품의 <strong>키워드</strong>를 선택해주세요</span><br>
         {{#tagList}}
         <label class="checkbox-label">
-          <input type="checkbox" name="selectingTags" value="{{t_name}}">
-          <span>{{t_name}}</span>
+          <input type="checkbox" name="selectingTags" value="{{.}}">
+          <span>{{.}}</span>
         </label>
         {{/tagList}}
       </div>
@@ -257,8 +257,8 @@
               <div id="existing-tags">
                 {{#tagList}}
                   <label class="checkbox-label">
-                    <input type="checkbox" name="selectingTags" value={{t_name}} {{#selected}}checked{{/selected}}>
-                    <span>{{t_name}}</span>
+                    <input type="checkbox" name="selectingTags" value={{.}} {{#selected}}checked{{/selected}}>
+                    <span>{{.}}</span>
                   </label>
                 {{/tagList}}
               </div>

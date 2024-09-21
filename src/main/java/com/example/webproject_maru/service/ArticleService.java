@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -172,6 +173,8 @@ public class ArticleService {
         return articleList;
     }
 */
+
+
     public ArrayList<Article> findArticles(){
         ArrayList<Article> articleEntityList=articleRepository.findAll();
         return articleEntityList;
@@ -189,12 +192,65 @@ public class ArticleService {
     }
     
     //articleId별 tag조회
-    public List<TagForm> getArticleTags(Long articleId){
-        return map_a_tService.findTagsByArticleId(articleId);
+    public List<String> getTagsByArticleId(Long articleId){
+        return map_a_tService.getTagsByArticleId(articleId);
     }
 
     public List<TagCountForm> countTagSelectionsByArticleId(Long articleId){
         return map_r_tService.countTagSelectionsByArticleId(articleId);
+    }
+
+    //작품수정시 ArticleForm+tag
+    public Article getArticleWithTags(Long articleId){
+        //ArticleForm articleForm=ArticleForm.createArticleForm(articleRepository.findById(articleId).orElse(null));
+        Article articleEntity=articleRepository.findById(articleId).orElse(null);
+        if(articleEntity!=null){
+            List<String> tags=getTagsByArticleId(articleId);
+            if(tags!=null){
+                articleEntity.setAllTags(tags);
+            }
+            List<String> usedTags=map_r_tService.getOnlyAllTagsByArticleId(articleId);
+            if(usedTags!=null){
+                articleEntity.setUsedTags(usedTags);
+            }
+        }
+        return articleEntity;
+    }
+
+    //수정데이터 반영
+    public Article update(ArticleForm form){
+        //1. Article 조회
+        Article article=articleRepository.findById(form.getId())
+                .orElseThrow(() -> new IllegalArgumentException("리뷰 생성 실패!"+
+                        "대상 게시글이 없습니다."));//부모게시글 없으면 에러 메시지 출력
+        //기존태그 리스트
+        List<String> beforeTags=getTagsByArticleId(form.getId());
+        //2. Article 수정
+        //기본내용
+        article.patch(form);
+        //이미지
+
+        //기존태그중에 삭제한 태그 삭제
+        for(String tag:beforeTags){
+            if(!form.getTags().contains(tag)){
+                map_a_tService.deleteByArticleIdAndTagName(form.getId(),tag);
+            }
+        }
+        //새로 추가된 태그 저장
+        for(String tag:form.getTags()){
+            if(!beforeTags.contains(tag)){
+                Tag newTag=map_a_tService.findOrCreateTag(tag);
+                map_a_tService.saveMap_a_t(article, newTag);
+            }
+        }
+        //수정시간 저장
+        LocalDateTime SeoulNow=LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        article.setUpdateTime(SeoulNow);
+
+        //3. DB로 갱신
+        Article updated=articleRepository.save(article);
+
+        return updated;
     }
 
 }

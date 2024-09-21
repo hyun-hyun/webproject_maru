@@ -62,6 +62,13 @@ public class Map_r_tService {
 
     }
 
+    // articleId를 이용하여 태그 목록을 가져오는 메서드(게시글 수정용)
+    public List<String> getOnlyAllTagsByArticleId(Long articleId) {
+        List<String> tags =map_r_tRepository.findOnlyTagsByArticleId(articleId);
+        return tags.stream().collect(Collectors.toList());
+
+    }
+
 
     //리뷰삭제시 연계삭제
     @Transactional
