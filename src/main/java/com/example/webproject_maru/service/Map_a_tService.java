@@ -55,6 +55,12 @@ public class Map_a_tService {
     public void deleteByArticleId(Long articleId){
         map_a_tRepository.deleteByArticleId(articleId);
     }
+
+    //tagId와 연결된 map_a_t 수량 파악
+    @Transactional
+    public Long countByTagId(Long tagId){
+        return map_a_tRepository.countByTagId(tagId);
+    }
 /* 
     public List<TagForm> findTagsByArticleId(Long articleId) {
         List<Object[]> results = map_a_tRepository.findTagsByArticleId(articleId);

@@ -8,4 +8,5 @@ import com.example.webproject_maru.entity.Tag;
 
 public interface TagRepository extends JpaRepository<Tag, Long>{
     Tag findByTag(String tag);
+
 }

@@ -29,4 +29,8 @@ public interface Map_a_tRepository extends JpaRepository<Map_a_t, Long>{
     @Modifying
     @Query("DELETE FROM Map_a_t m WHERE m.article.id=:articleId")
     void deleteByArticleId(@Param("articleId") Long articleId);
+
+    //tagId와 연결된 map_a_t수량파악
+    @Query("SELECT COUNT(m) FROM Map_a_t m WHERE m.tag.id=:tagId")
+    Long countByTagId(@Param("tagId") Long tagId);
 }

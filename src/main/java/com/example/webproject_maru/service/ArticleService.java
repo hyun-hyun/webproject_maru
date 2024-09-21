@@ -45,6 +45,8 @@ public class ArticleService {
     private Map_a_tService map_a_tService;
     @Autowired
     private Map_r_tService map_r_tService;
+    @Autowired
+    private TagService tagService;
 
 
     @Value("${file.upload-dir}")
@@ -277,6 +279,14 @@ public class ArticleService {
         for(String tag:beforeTags){
             if(!form.getTags().contains(tag)){
                 map_a_tService.deleteByArticleIdAndTagName(form.getId(),tag);
+
+                //해당태그가 다른 article_id에서 사용중인지 확인
+                Long tagId=tagService.findByTag(tag).getId();
+                log.info("삭제중 tagId: {}",tagId);
+                log.info("개수: {}", map_a_tService.countByTagId(tagId));
+                if(map_a_tService.countByTagId(tagId)==0){//기타 연결 없는경우
+                    tagService.deleteById(tagId);
+                }
             }
         }
         //새로 추가된 태그 저장

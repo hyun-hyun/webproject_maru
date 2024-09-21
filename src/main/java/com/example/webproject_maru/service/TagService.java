@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import com.example.webproject_maru.entity.Tag;
 import com.example.webproject_maru.repository.TagRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class TagService {
     @Autowired
@@ -31,5 +33,11 @@ public class TagService {
     //기존tag에 있는지 tag찾기
     public Tag findByTag(String tagName){
         return tagRepository.findByTag(tagName);
+    }
+
+    //tag삭제
+    @Transactional
+    public void deleteById(Long tagId){
+        tagRepository.deleteById(tagId);
     }
 }
