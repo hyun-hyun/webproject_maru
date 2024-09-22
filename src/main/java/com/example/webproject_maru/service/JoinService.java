@@ -58,6 +58,7 @@ public class JoinService {
         data.setNickname(memberForm.getNickname());
         data.setEmail(memberForm.getEmail());
         data.setPswd(bCryptPasswordEncoder.encode(memberForm.getPswd()));
+        data.setGender(memberForm.getGender());
 
         LocalDateTime SeoulNow = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         data.setAppendDate(SeoulNow);

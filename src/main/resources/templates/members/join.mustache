@@ -6,7 +6,7 @@
 <form class="px-4 py-3" action="/joinProc" method="post">
     <div class="mb-3">
         <label class="form-label"><b>닉네임</b></label>
-        <input type="text" class="form-control" name="nickname">
+        <input type="text" class="form-control" name="nickname" required>
     </div>
     {{#nicknameError}}
     <div class="alert alert-danger">
@@ -16,7 +16,7 @@
     <div class="mb-3">
         <label class="form-label"><b>이메일</b></label><br>
         <p>*가입 시 ID로 활용되고 안내사항이 있을 경우 이 메일주소로 안내됩니다.*</p>
-        <input type="email" class="form-control" name="email">
+        <input type="email" class="form-control" name="email" required>
     </div>
     {{#emailError}}
     <div class="alert alert-danger">
@@ -25,8 +25,20 @@
     {{/emailError}}
     <div class="mb-3">
         <label class="form-label"><b>비밀번호</b></label>
-        <input type="password" class="form-control" name="pswd">
+        <input type="password" class="form-control" name="pswd" required>
     </div>
+    <div class="mb-3">
+        <label>
+            <input type="radio" name="gender" value="남" required> 남성
+        </label>
+        <label>
+            <input type="radio" name="gender" value="여" required> 여성
+        </label>
+        <label>
+            <input type="radio" name="gender" value="무" required> 비공개
+        </label>
+    </div>
+
     <button type="submit" class="btn btn-primary">가입하기</button>
     <a href="/" class="btn btn-sm btn-outline-success">뒤로가기</a>
 

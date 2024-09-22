@@ -215,7 +215,7 @@ public class ArticleController {
                 //.body(Map.of("message", "해당 작품에 리뷰가 있어 삭제가 불가합니다. 관리자권한으로 시도해주세요."));
         }
         //관리자권한일 경우 삭제 혹은 리뷰연관 없을경우 삭제(권한 더블체크)
-        if((admin && role=="ROLE_ADMIN") || (!reviewService.existsByArticleId(id)&&(role=="ROLE_MANAGER"||role=="ROLE_ADMIN"))){
+        if((admin && role.equals("ROLE_ADMIN")) || (!reviewService.existsByArticleId(id)&&(role.equals("ROLE_MANAGER")||role.equals("ROLE_ADMIN")))){
                 
             //태그, 리뷰, 사진, 기본 삭제
             articleService.delete(form, category, existingReview);

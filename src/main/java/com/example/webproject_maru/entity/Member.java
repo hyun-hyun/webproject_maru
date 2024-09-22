@@ -29,6 +29,8 @@ public class Member{
     @Column
     private String pswd;
     @Column
+    private String gender;
+    @Column
     private LocalDateTime appendDate;
     @Column
     private LocalDateTime updateDate;
@@ -36,7 +38,6 @@ public class Member{
     private LocalDateTime loginDate;
     @Column
     private String role;
-
 
     public String getNickname(){
         return nickname;

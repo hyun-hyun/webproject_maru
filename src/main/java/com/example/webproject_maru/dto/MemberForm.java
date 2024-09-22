@@ -15,7 +15,7 @@ public class MemberForm {
     private String nickname;
     private String pswd;
     private String email;
-
+    private String gender;
 
 }
 
