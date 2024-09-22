@@ -120,7 +120,7 @@ public class ArticleController {
                 model.addAttribute("write", 1);
             }
 
-            if(role=="ROLE_ADMIN"){
+            if(role.equals("ROLE_ADMIN")){
                 model.addAttribute("admin",1);
             }
         }
@@ -164,11 +164,19 @@ public class ArticleController {
 
     @PostMapping("/write/article/{category}/update")
     public String update(@PathVariable String category, ArticleForm articleForm,
-                        @RequestParam("pic") MultipartFile[] newPic){
+                        @RequestParam("pic") MultipartFile[] newPic,
+                        @RequestParam("realChar") String[] realChars,@RequestParam("realVoiceChar") String[] realVoiceChars,
+                                @RequestParam("korChar") String[] korChars, @RequestParam("korVoiceChar")String[] korVoiceChars){
         log.info(articleForm.toString());
         SubPicForm[] subPicForms=new SubPicForm[5];
-
-
+        for(int i=0;i<5;i++){
+            if(realChars[i]!=null && !realChars[i].isEmpty()){
+                subPicForms[i] =new SubPicForm(realChars[i],realVoiceChars[i],korChars[i],korVoiceChars[i]);
+            }
+            else{
+                subPicForms[i]=new SubPicForm(null,null,null,null);
+            }
+        }
         Article updated=articleService.update(articleForm, newPic, subPicForms, category);
         //1. DTO->entity
         // Article articleEntity=articleForm.toEntity();

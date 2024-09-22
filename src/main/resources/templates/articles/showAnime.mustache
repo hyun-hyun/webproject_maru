@@ -105,7 +105,7 @@
 <!--전체 리뷰-->
 <h5>전체리뷰</h5>
 <hr>
-전체 평점 : {{avg_score}}/5.0 리뷰 수 : {{c_score}}<br>
+전체 평점 : {{avg_score}}/5.0 리뷰 수 : {{c_score}}<br><br>
 <span class="review-toggle">전체리뷰 보기</span>
 <div class="review-content">
 {{#reviewDtos}}
@@ -208,7 +208,7 @@
       <div style="display: flex; align-items: center;">
         <input type="text" id="newTagInput" placeholder="새 키워드 추가" class="form-control" maxlength="20" style="width: 200px; margin-right: 8px;">
         <button type="button" id="addTagBtn" class="btn btn-secondary">추가</button><br>
-        *키워드 추가는 처음 리뷰 작성시만 가능합니다.(선택해제는 수정에서도 가능합니다.)
+        <span>*키워드 추가는 처음 리뷰 작성시만 가능합니다.(선택해제는 수정에서도 가능합니다.)</span>
       </div>
       
     <br>

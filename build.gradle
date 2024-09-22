@@ -33,9 +33,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
 	//mysql DB
-	//runtimeOnly 'com.mysql:mysql-connector-j'
+	runtimeOnly 'com.mysql:mysql-connector-j'
 	//h2 DB
-	runtimeOnly 'com.h2database:h2'
+	//runtimeOnly 'com.h2database:h2'
 
 	//스프링시큐리티
 	implementation 'org.springframework.boot:spring-boot-starter-security'

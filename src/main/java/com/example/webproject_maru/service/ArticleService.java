@@ -131,6 +131,7 @@ public class ArticleService {
     }
 
     //수정데이터 반영
+    @Transactional
     public Article update(ArticleForm form, MultipartFile[] newFiles, SubPicForm[] subPicForms, String category){
         //1. Article 조회
         Article article=articleRepository.findById(form.getId())
@@ -141,9 +142,10 @@ public class ArticleService {
         //2. Article 수정
         //기본내용
         article.patch(form);
+        Article updating=updateSubPic(subPicForms, article);
         //이미지
         try{
-            updateImage(newFiles, category, article);
+            updateImage(newFiles, category, updating);
 
             //기존태그중에 삭제한 태그 삭제
             for(String tag:beforeTags){
@@ -163,12 +165,12 @@ public class ArticleService {
             for(String tag:form.getTags()){
                 if(!beforeTags.contains(tag)){
                     Tag newTag=map_a_tService.findOrCreateTag(tag);
-                    map_a_tService.saveMap_a_t(article, newTag);
+                    map_a_tService.saveMap_a_t(updating, newTag);
                 }
             }
             //수정시간 저장
             LocalDateTime SeoulNow=LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-            article.setUpdateTime(SeoulNow);
+            updating.setUpdateTime(SeoulNow);
 
             
         }catch(IllegalStateException | IOException e){
@@ -176,7 +178,7 @@ public class ArticleService {
         }
 
         //3. DB로 갱신
-        Article updated=articleRepository.save(article);
+        Article updated=articleRepository.save(updating);
         return updated;
 
     }
@@ -253,7 +255,98 @@ public class ArticleService {
             }
         }
     }
+    
+    private Article updateSubPic(SubPicForm[] subPicForms, Article article) {
+        for (int i = 0; i < subPicForms.length; i++) {
+            SubPicForm subPicForm = subPicForms[i];
 
+            log.info("subPicForm밑");
+            if(subPicForm != null){
+                //SubPic subPic = subPicForm.toEntity();
+                String realChar=subPicForm.getRealChar();
+                String realVoiceChar=subPicForm.getRealVoiceChar();
+                String korChar=subPicForm.getKorChar();
+                String korVoiceChar=subPicForm.getKorVoiceChar();
+                log.info("subPicForm.toEntity");
+                switch (i) {
+                    case 0:
+                        if(article.getSubPic1().getRealChar()!=realChar){
+                            article.getSubPic1().setRealChar(realChar);
+                        }
+                        if(article.getSubPic1().getRealVoiceChar()!=realVoiceChar){
+                            article.getSubPic1().setRealVoiceChar(realVoiceChar);
+                        }
+                        if(article.getSubPic1().getKorChar()!=korChar){
+                            article.getSubPic1().setKorChar(korChar);
+                        }
+                        if(article.getSubPic1().getKorVoiceChar()!=korVoiceChar){
+                            article.getSubPic1().setKorVoiceChar(korVoiceChar);
+                        }
+                        break;
+                    case 1:
+                        if(article.getSubPic2().getRealChar()!=realChar){
+                            article.getSubPic2().setRealChar(realChar);
+                        }
+                        if(article.getSubPic2().getRealVoiceChar()!=realVoiceChar){
+                            article.getSubPic2().setRealVoiceChar(realVoiceChar);
+                        }
+                        if(article.getSubPic2().getKorChar()!=korChar){
+                            article.getSubPic2().setKorChar(korChar);
+                        }
+                        if(article.getSubPic2().getKorVoiceChar()!=korVoiceChar){
+                            article.getSubPic2().setKorVoiceChar(korVoiceChar);
+                        }
+                        break;
+                    case 2:
+                        if(article.getSubPic3().getRealChar()!=realChar){
+                            article.getSubPic3().setRealChar(realChar);
+                        }
+                        if(article.getSubPic3().getRealVoiceChar()!=realVoiceChar){
+                            article.getSubPic3().setRealVoiceChar(realVoiceChar);
+                        }
+                        if(article.getSubPic3().getKorChar()!=korChar){
+                            article.getSubPic3().setKorChar(korChar);
+                        }
+                        if(article.getSubPic3().getKorVoiceChar()!=korVoiceChar){
+                            article.getSubPic3().setKorVoiceChar(korVoiceChar);
+                        }
+                        break;
+                    case 3:
+                        if(article.getSubPic4().getRealChar()!=realChar){
+                            article.getSubPic4().setRealChar(realChar);
+                        }
+                        if(article.getSubPic4().getRealVoiceChar()!=realVoiceChar){
+                            article.getSubPic4().setRealVoiceChar(realVoiceChar);
+                        }
+                        if(article.getSubPic4().getKorChar()!=korChar){
+                            article.getSubPic4().setKorChar(korChar);
+                        }
+                        if(article.getSubPic4().getKorVoiceChar()!=korVoiceChar){
+                            article.getSubPic4().setKorVoiceChar(korVoiceChar);
+                        }
+                        break;
+                    case 4:
+                        if(article.getSubPic5().getRealChar()!=realChar){
+                            article.getSubPic5().setRealChar(realChar);
+                        }
+                        if(article.getSubPic5().getRealVoiceChar()!=realVoiceChar){
+                            article.getSubPic5().setRealVoiceChar(realVoiceChar);
+                        }
+                        if(article.getSubPic5().getKorChar()!=korChar){
+                            article.getSubPic5().setKorChar(korChar);
+                        }
+                        if(article.getSubPic5().getKorVoiceChar()!=korVoiceChar){
+                            article.getSubPic5().setKorVoiceChar(korVoiceChar);
+                        }
+                        break;
+                    default:
+                        // 예외 처리나 로깅 등
+                        break;
+                }
+            }
+        }
+        return article;
+    }
 
     private void saveImage(MultipartFile[] files, String category, Article article) throws IOException {
         for(int i=0;i<files.length;i++){

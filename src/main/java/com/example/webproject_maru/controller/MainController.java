@@ -51,7 +51,7 @@ public class MainController {
                 model.addAttribute("write", 1);
             }
 
-            if(role=="ROLE_ADMIN"){
+            if(role.equals("ROLE_ADMIN")){
                 model.addAttribute("admin",1);
             }
         }
