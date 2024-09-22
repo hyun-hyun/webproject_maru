@@ -42,7 +42,7 @@
 <br>
 <label class="form-label">등장인물</label>
 <br>
-<div class="image-container">
+<div class="image-container" align="center">
 
   {{#subPic1.realChar}}
   <div class="image-item">
@@ -307,12 +307,15 @@
   </div>
 </div>
 
-{{/article}}
 {{#write}}
-  <a href="/write/article/anime/{{id}}/edit" class="btn btn-sm btn-primary">게시글 수정</a>
-  <a href="/write/article/anime/{{id}}/delete" class="btn btn-sm btn-outline-danger">게시글 삭제</a>
+  <a href="/write/article/anime/{{id}}/edit" class="btn btn-sm btn-primary">작품 수정</a>
+  <a href="#" class="btn btn-sm btn-outline-danger" onclick="confirmDelete('{{id}}', false)">작품 삭제</a>
 {{/write}}
+{{#admin}}
+  <a href="#" class="btn btn-sm btn-outline-danger admin" onclick="confirmDelete('{{id}}', true)">작품 삭제(관리자 권한)</a>
+{{/admin}}
   <a href="/articles/anime" class="btn btn-sm btn-success">작품 목록</a>
+{{/article}}
   
 </div>
 
@@ -587,6 +590,25 @@
             const checkbox = document.getElementById('tag_' + tagId);
             checkbox.checked = !checkbox.checked;
         }
+    }
+
+    {
+      //게시글삭제버튼
+      function confirmDelete(articleId, isAdmin) {
+        if (confirm("정말로 이 작품을 삭제하시겠습니까?")) {
+          const url=`/write/article/anime/${articleId}/delete?admin=${isAdmin}`;
+
+            fetch(url, {
+                method: 'POST'
+            }).then(response => {
+              if (!response.ok) throw new Error('삭제 실패');
+              window.location.reload();
+              })
+              .catch(error => {
+                  alert(error);
+              });
+        }
+    }
     }
 </script>
 

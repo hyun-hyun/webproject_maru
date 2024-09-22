@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.webproject_maru.dto.ArticleForm;
 import com.example.webproject_maru.dto.CustomUserDetails;
@@ -146,7 +147,12 @@ public class ArticleController {
 
     //게시글 수정
     @GetMapping("/write/article/{category}/{id}/edit")
-    public String edit(@PathVariable Long id, Model model){
+    public String edit(@AuthenticationPrincipal CustomUserDetails userDetails, 
+                        @PathVariable Long id, Model model){
+        //header관련
+        String nickname = userDetails.member.getNickname();
+        model.addAttribute("nickname", nickname);
+
         Article articleEntity=articleService.getArticleWithTags(id);
         model.addAttribute(("article"), articleEntity);
 
@@ -181,5 +187,39 @@ public class ArticleController {
         return "articles/listAnime";
     }
 
-    
+    //게시글 삭제
+    @PostMapping("/write/article/{category}/{id}/delete")
+    public String delete(@PathVariable String category, @PathVariable Long id, ArticleForm form,
+                        @RequestParam(required = false) boolean admin, RedirectAttributes redirectAttributes){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        Iterator<? extends GrantedAuthority> iter = authorities.iterator();
+        GrantedAuthority auth = iter.next();
+        String role = auth.getAuthority();
+
+        if(form.getId()!=id){
+            redirectAttributes.addFlashAttribute("error", "해당 작품에 id정보 불일치가 발생했습니다.");
+            return "redirect:/articles/"+category+"/"+id;
+        }
+        
+        //manager권한에서는 리뷰가 있을 때는 작품삭제 불가
+        boolean existingReview =reviewService.existsByArticleId(id);
+        if(!admin && existingReview){
+            redirectAttributes.addFlashAttribute("error", "해당 작품에 리뷰가 있어 삭제가 불가합니다. 관리자권한으로 시도해주세요.");
+            return "redirect:/articles/"+category+"/"+id;
+        }
+            //관리자권한일 경우 삭제 혹은 리뷰연관 없을경우 삭제(권한 더블체크)
+            if((admin && role=="ROLE_ADMIN") || (!reviewService.existsByArticleId(id)&&(role=="ROLE_MANAGER"||role=="ROLE_ADMIN"))){
+                
+                //태그, 리뷰, 사진, 기본 삭제
+                articleService.delete(form, category, existingReview);
+                
+
+            
+        }
+        
+        
+
+        return "redirect:/articles/"+category;
+    }
 }

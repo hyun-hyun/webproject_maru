@@ -40,6 +40,10 @@ public class ReviewService {
                 .map(review -> ReviewForm.createReviewForm(review))//엔티티를 DTO로 매핑
                 .collect(Collectors.toList());//스트림을 리스트 자료형으로 변환
     }
+    //리뷰 조회(존재여부만)
+    public boolean existsByArticleId(Long articleId){
+        return reviewRepository.existsByArticleId(articleId);
+    }
 
     //리뷰 조회(로그인한 사용자)
     public ReviewForm my_review(Long articleId, Long memberId){
@@ -150,7 +154,7 @@ public class ReviewService {
         reviewRepository.delete(target);
         //2-2. article t_c_score랑 t_avg_score 갱신
         Article article=articleRepository.findById(articleId)
-                .orElseThrow(() -> new IllegalArgumentException("리뷰 생성 실패!"+
+                .orElseThrow(() -> new IllegalArgumentException("리뷰 삭제 실패!"+
                         "대상 게시글이 없습니다."));//부모게시글 없으면 에러 메시지 출력
         Integer t_c_score=article.getC_score();
         article.setC_score(t_c_score-1);
@@ -162,6 +166,13 @@ public class ReviewService {
         //3. 삭제 리뷰를 dto로 변환 및 반환
         return ReviewForm.createReviewForm(target);
     }
+
+    //리뷰삭제(articleId기준으로 한번에)
+    @Transactional
+    public void deleteByArticleId(Long articleId){
+        reviewRepository.deleteByArticleId(articleId);
+    }
+
 /*
     //articleId에 따른 tag 선택된거 조회
     public List<Map_r_t> getReviewTagsByArticleId(Long articleId){

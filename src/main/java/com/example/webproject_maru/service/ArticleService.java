@@ -47,6 +47,8 @@ public class ArticleService {
     private Map_r_tService map_r_tService;
     @Autowired
     private TagService tagService;
+    @Autowired
+    private ReviewService reviewService;
 
 
     @Value("${file.upload-dir}")
@@ -236,11 +238,45 @@ public class ArticleService {
         for(int i=0;i<newFiles.length;i++){
             if(!newFiles[i].isEmpty()){
                 log.info("기존이미지삭제 : ",article.getMain_pic());
-                String beforeFilePath=uploadDir+category + "/"+article.getMain_pic();
-                File beforeFile=new File(beforeFilePath);
-                if(beforeFile.exists()){
-                    beforeFile.delete();
-                }
+                
+                switch(i){
+                    case 0 : String beforeFilePath0=uploadDir+category + "/"+article.getMain_pic();
+                            File beforeFile0=new File(beforeFilePath0);
+                            if(beforeFile0.exists()){
+                                beforeFile0.delete();
+                            }
+                            break;
+                    case 1 : String beforeFilePath1=uploadDir+category + "/"+article.getSubPic1().getPic();
+                            File beforeFile1=new File(beforeFilePath1);
+                            if(beforeFile1.exists()){
+                                beforeFile1.delete();
+                            }
+                            break;
+                    case 2 : String beforeFilePath2=uploadDir+category + "/"+article.getSubPic2().getPic();
+                            File beforeFile2=new File(beforeFilePath2);
+                            if(beforeFile2.exists()){
+                                beforeFile2.delete();
+                            }
+                            break;
+                    case 3 : String beforeFilePath3=uploadDir+category + "/"+article.getSubPic3().getPic();
+                            File beforeFile3=new File(beforeFilePath3);
+                            if(beforeFile3.exists()){
+                                beforeFile3.delete();
+                            }
+                            break;
+                    case 4 : String beforeFilePath4=uploadDir+category + "/"+article.getSubPic4().getPic();
+                            File beforeFile4=new File(beforeFilePath4);
+                            if(beforeFile4.exists()){
+                                beforeFile4.delete();
+                            }
+                            break;
+                    case 5 : String beforeFilePath5=uploadDir+category + "/"+article.getSubPic5().getPic();
+                            File beforeFile5=new File(beforeFilePath5);
+                            if(beforeFile5.exists()){
+                                beforeFile5.delete();
+                            }
+                            break;
+                }   
 
                 // 새로운 이미지 저장
                 UUID uuid = UUID.randomUUID();
@@ -309,6 +345,106 @@ public class ArticleService {
         Article updated=articleRepository.save(article);
         return updated;
 
+    }
+
+    //게시글 삭제
+    @Transactional
+    public void delete(ArticleForm form, String category, boolean existingReview){
+        //삭제대상 가져오기
+        Article article=findByIdArticle(form.getId());
+
+        if(article!=null){
+            Long articleId=article.getId();
+            //태그삭제(map_a_t, tag)
+            deleteMap_a_tAndTagByArticleId(form.getId());
+            //리뷰삭제
+            if(existingReview){
+                reviewService.deleteByArticleId(articleId);
+            }
+            //사진삭제
+            try{
+
+                for(int i=0;i<6;i++){
+                    
+                    log.info("이미지삭제 : {}", i);
+                    switch(i){
+                        case 0 :
+                            if(article.getMain_pic()!=null){
+                                String beforeFilePath0=uploadDir+category + "/"+article.getMain_pic();
+                                File beforeFile0=new File(beforeFilePath0);
+                                if(beforeFile0.exists()){
+                                    beforeFile0.delete();
+                                }
+                            }    
+                            break;
+                        case 1 : 
+                            if(!article.getSubPic1().getPic().isEmpty()){
+                                String beforeFilePath1=uploadDir+category + "/"+article.getSubPic1().getPic();
+                                File beforeFile1=new File(beforeFilePath1);
+                                if(beforeFile1.exists()){
+                                    beforeFile1.delete();
+                                }
+                            }
+                            break;
+                        case 2 : 
+                            if(!article.getSubPic2().getPic().isEmpty()){
+                                String beforeFilePath2=uploadDir+category + "/"+article.getSubPic2().getPic();
+                                File beforeFile2=new File(beforeFilePath2);
+                                if(beforeFile2.exists()){
+                                    beforeFile2.delete();
+                                }
+                            }
+                            break;
+                            
+                        case 3 : 
+                            if(!article.getSubPic3().getPic().isEmpty()){
+                                String beforeFilePath3=uploadDir+category + "/"+article.getSubPic3().getPic();
+                                File beforeFile3=new File(beforeFilePath3);
+                                if(beforeFile3.exists()){
+                                    beforeFile3.delete();
+                                }
+                            }
+                            break;
+                        case 4 : 
+                            if(!article.getSubPic4().getPic().isEmpty()){
+                                String beforeFilePath4=uploadDir+category + "/"+article.getSubPic4().getPic();
+                                File beforeFile4=new File(beforeFilePath4);
+                                if(beforeFile4.exists()){
+                                    beforeFile4.delete();
+                                }
+                            }
+                            break;
+                        case 5 : 
+                            if(!article.getSubPic5().getPic().isEmpty()){
+                                String beforeFilePath5=uploadDir+category + "/"+article.getSubPic5().getPic();
+                                File beforeFile5=new File(beforeFilePath5);
+                                if(beforeFile5.exists()){
+                                    beforeFile5.delete();
+                                }
+                            }
+                            break;
+                        }   
+                    }
+                }catch(IllegalStateException e){
+                e.printStackTrace();
+            }
+            //기본삭제
+            articleRepository.delete(article);
+        }
+    }
+
+    //게시글삭제관련
+    public void deleteMap_a_tAndTagByArticleId(Long articleId){
+        List<String> tagName=map_a_tService.getTagsByArticleId(articleId);
+        map_a_tService.deleteByArticleId(articleId);
+        //해당태그가 다른 article_id에서 미사용중일시 tag삭제
+        for(String tag:tagName){
+            Long tagId=tagService.findByTag(tag).getId();
+            if(map_a_tService.countByTagId(tagId)==0){//기타 연결 없는경우
+                tagService.deleteById(tagId);
+            }
+        }
+        
     }
 
 }

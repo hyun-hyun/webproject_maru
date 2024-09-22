@@ -23,6 +23,10 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
             nativeQuery=true)//SQL문으로 작성
     List<Review> findByArticleId(Long articleId);
 
+    //특정게시글의 리뷰 존재여부 조회
+    @Query("SELECT COUNT(r) >0 FROM Review r WHERE r.article.id = :articleId")
+    boolean existsByArticleId(@Param("articleId") Long articleId);
+
     //특정 회원의 특정게시글 리뷰 조회
     @Query(value=
                 "SELECT * "+
@@ -32,6 +36,9 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
             nativeQuery=true)//SQL문으로 작성
     Review findByArticleMemberId(Long articleId, Long memberId);
 
+    //articleId로 리뷰 삭제
+    void deleteByArticleId(Long articleId);
+    
     /*@Query("SELECT r.selectedTags FROM Review r WHERE r.article.id =:articleId")
     List<Map_r_t> findTagsByArticleId(@Param("articleId") Long articleId);
 
