@@ -36,46 +36,70 @@
     <label class="form-label">등장인물</label>
     <p>***사진, 이름, 성우 모두 빈칸 없이 작성해주세요***</p><br>
     <div class="image-container">
+        {{#subPic1.realChar}}
         <div class="image-item">
-        <div class="addImage_m" id="image-show1"> <!-- 등장인물1 --></div>
+        <div class="addImage_m" id="image-show1"> <!-- 등장인물1 -->
+        <img id="current-image" src="/images/pic/anime/{{subPic1.pic}}" alt="기존이미지" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
         <input type="file" accept="image/jpeg, image/png, image/gif" onchange="loadFile(this, 'image-show1')" name="pic">
-        (원작)캐릭터 이름<input type="text" name="realChar">
-        (원작)캐릭터 성우<input type="text" name="realVoiceChar">
-        (한국)캐릭터 이름<input type="text" name="korChar">
-        (한국)캐릭터 성우<input type="text" name="korVoiceChar">
+        (원작)캐릭터 이름<input type="text" name="realChar" value="{{subPic1.realChar}}">
+        (원작)캐릭터 성우<input type="text" name="realVoiceChar" value="{{subPic1.realVoiceChar}}">
+        (한국)캐릭터 이름<input type="text" name="korChar" value="{{subPic1.korChar}}">
+        (한국)캐릭터 성우<input type="text" name="korVoiceChar" value="{{subPic1.korVoiceChar}}">
         </div>
+        {{/subPic1.realChar}}
+
+        {{#subPic2.realChar}}
         <div class="image-item">
-        <div class="addImage_m" id="image-show2"> <!-- 등장인물2 --></div>
+        <div class="addImage_m" id="image-show2"> <!-- 등장인물2 -->
+        <img id="current-image" src="/images/pic/anime/{{subPic2.pic}}" alt="기존이미지" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
         <input type="file" accept="image/jpeg, image/png, image/gif" onchange="loadFile(this, 'image-show2')" name="pic">
-        (원작)캐릭터 이름<input type="text" name="realChar">
-        (원작)캐릭터 성우<input type="text" name="realVoiceChar">
-        (한국)캐릭터 이름<input type="text" name="korChar">
-        (한국)캐릭터 성우<input type="text" name="korVoiceChar">
+        (원작)캐릭터 이름<input type="text" name="realChar" value="{{subPic2.realChar}}">
+        (원작)캐릭터 성우<input type="text" name="realVoiceChar" value="{{subPic2.realVoiceChar}}">
+        (한국)캐릭터 이름<input type="text" name="korChar" value="{{subPic2.korChar}}">
+        (한국)캐릭터 성우<input type="text" name="korVoiceChar" value="{{subPic2.korVoiceChar}}">
         </div>
+        {{/subPic2.realChar}}
+
+        {{#subPic3.realChar}}
         <div class="image-item">
-        <div class="addImage_m" id="image-show3"> <!-- 등장인물3 --></div>
-        <input type="file" accept="image/jpeg, image/png, image/gif" onchange="loadFile(this,'image-show3')" name="pic">
-        (원작)캐릭터 이름<input type="text" name="realChar">
-        (원작)캐릭터 성우<input type="text" name="realVoiceChar">
-        (한국)캐릭터 이름<input type="text" name="korChar">
-        (한국)캐릭터 성우<input type="text" name="korVoiceChar">
+        <div class="addImage_m" id="image-show3"> <!-- 등장인물3 -->
+        <img id="current-image" src="/images/pic/anime/{{subPic3.pic}}" alt="기존이미지" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
-        <div class="image-item">
-        <div class="addImage_m" id="image-show4"> <!-- 등장인물4 --></div>
-        <input type="file"accept="image/jpeg, image/png, image/gif" onchange="loadFile(this, 'image-show4')" name="pic">
-        (원작)캐릭터 이름<input type="text" name="realChar">
-        (원작)캐릭터 성우<input type="text" name="realVoiceChar">
-        (한국)캐릭터 이름<input type="text" name="korChar">
-        (한국)캐릭터 성우<input type="text" name="korVoiceChar">
+        <input type="file" accept="image/jpeg, image/png, image/gif" onchange="loadFile(this, 'image-show3')" name="pic">
+        (원작)캐릭터 이름<input type="text" name="realChar" value="{{subPic3.realChar}}">
+        (원작)캐릭터 성우<input type="text" name="realVoiceChar" value="{{subPic3.realVoiceChar}}">
+        (한국)캐릭터 이름<input type="text" name="korChar" value="{{subPic3.korChar}}">
+        (한국)캐릭터 성우<input type="text" name="korVoiceChar" value="{{subPic3.korVoiceChar}}">
         </div>
+        {{/subPic3.realChar}}
+
+        {{#subPic4.realChar}}
         <div class="image-item">
-        <div class="addImage_m" id="image-show5"> <!-- 등장인물5 --></div>
+        <div class="addImage_m" id="image-show4"> <!-- 등장인물4 -->
+        <img id="current-image" src="/images/pic/anime/{{subPic1.pic}}" alt="기존이미지" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <input type="file" accept="image/jpeg, image/png, image/gif" onchange="loadFile(this, 'image-show4')" name="pic">
+        (원작)캐릭터 이름<input type="text" name="realChar" value="{{subPic4.realChar}}">
+        (원작)캐릭터 성우<input type="text" name="realVoiceChar" value="{{subPic4.realVoiceChar}}">
+        (한국)캐릭터 이름<input type="text" name="korChar" value="{{subPic4.korChar}}">
+        (한국)캐릭터 성우<input type="text" name="korVoiceChar" value="{{subPic4.korVoiceChar}}">
+        </div>
+        {{/subPic4.realChar}}
+
+        {{#subPic5.realChar}}
+        <div class="image-item">
+        <div class="addImage_m" id="image-show5"> <!-- 등장인물5 -->
+        <img id="current-image" src="/images/pic/anime/{{subPic5.pic}}" alt="기존이미지" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
         <input type="file" accept="image/jpeg, image/png, image/gif" onchange="loadFile(this, 'image-show5')" name="pic">
-        (원작)캐릭터 이름<input type="text" name="realChar">
-        (원작)캐릭터 성우<input type="text" name="realVoiceChar">
-        (한국)캐릭터 이름<input type="text" name="korChar">
-        (한국)캐릭터 성우<input type="text" name="korVoiceChar">
+        (원작)캐릭터 이름<input type="text" name="realChar" value="{{subPic5.realChar}}">
+        (원작)캐릭터 성우<input type="text" name="realVoiceChar" value="{{subPic5.realVoiceChar}}">
+        (한국)캐릭터 이름<input type="text" name="korChar" value="{{subPic5.korChar}}">
+        (한국)캐릭터 성우<input type="text" name="korVoiceChar" value="{{subPic5.korVoiceChar}}">
         </div>
+        {{/subPic5.realChar}}
     </div>
 </div>
 <div class="mb-3">
@@ -106,7 +130,7 @@
 
 <div class="mb-3">
     <label class="form-label">줄거리</label>
-    <textarea class="form-control" row="3" name="story" value="{{story}}"></textarea>
+    <textarea class="form-control" row="3" name="story" maxlength="500">{{story}}</textarea>
 </div> 
 {{/article}}
 

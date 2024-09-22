@@ -21,24 +21,25 @@
         <input type="text" class="form-control" name="author" required>
         <label class="form-label">작품 대표 이미지</label>
         <div class="addImage" id="image-show"> <!-- 이미지 띄울 공간 --></div>
-        <input type="file" accept="image/jpeg, image/png, image/gif" onchange="loadFile(this, 'image-show')" name="pic" required>
+        <input type="file" accept="image/jpeg, image/png, image/gif, image/webp" onchange="loadFile(this, 'image-show')" name="pic" required>
         <!--배열로 여러 파일 받을 경우 multiple="multiple" 추가하고 MultipartFile[]같이 받음-->
 
         <br>
-        <label class="form-label">등장인물</label>
         <p>***사진, 이름, 성우 모두 빈칸 없이 작성해주세요***</p><br>
         <div class="image-container">
+        <label class="form-label">등장인물</label>
+
             <div class="image-item">
             <div class="addImage_m" id="image-show1"> <!-- 등장인물1 --></div>
-            <input type="file" accept="image/jpeg, image/png, image/gif" onchange="loadFile(this, 'image-show1')" name="pic">
-            (원작)캐릭터 이름<input type="text" name="realChar">
-            (원작)캐릭터 성우<input type="text" name="realVoiceChar">
-            (한국)캐릭터 이름<input type="text" name="korChar">
-            (한국)캐릭터 성우<input type="text" name="korVoiceChar">
+            <input type="file" accept="image/jpeg, image/png, image/gif, image/webp" onchange="loadFile(this, 'image-show1')" name="pic" required>
+            (원작)캐릭터 이름<input type="text" name="realChar" required>
+            (원작)캐릭터 성우<input type="text" name="realVoiceChar" required>
+            (한국)캐릭터 이름<input type="text" name="korChar" required>
+            (한국)캐릭터 성우<input type="text" name="korVoiceChar" required>
             </div>
             <div class="image-item">
             <div class="addImage_m" id="image-show2"> <!-- 등장인물2 --></div>
-            <input type="file" accept="image/jpeg, image/png, image/gif" onchange="loadFile(this, 'image-show2')" name="pic">
+            <input type="file" accept="image/jpeg, image/png, image/gif, image/webp" onchange="loadFile(this, 'image-show2')" name="pic">
             (원작)캐릭터 이름<input type="text" name="realChar">
             (원작)캐릭터 성우<input type="text" name="realVoiceChar">
             (한국)캐릭터 이름<input type="text" name="korChar">
@@ -46,7 +47,7 @@
             </div>
             <div class="image-item">
             <div class="addImage_m" id="image-show3"> <!-- 등장인물3 --></div>
-            <input type="file" accept="image/jpeg, image/png, image/gif" onchange="loadFile(this,'image-show3')" name="pic">
+            <input type="file" accept="image/jpeg, image/png, image/gif, image/webp" onchange="loadFile(this,'image-show3')" name="pic">
             (원작)캐릭터 이름<input type="text" name="realChar">
             (원작)캐릭터 성우<input type="text" name="realVoiceChar">
             (한국)캐릭터 이름<input type="text" name="korChar">
@@ -54,7 +55,7 @@
             </div>
             <div class="image-item">
             <div class="addImage_m" id="image-show4"> <!-- 등장인물4 --></div>
-            <input type="file"accept="image/jpeg, image/png, image/gif" onchange="loadFile(this, 'image-show4')" name="pic">
+            <input type="file"accept="image/jpeg, image/png, image/gif, image/webp" onchange="loadFile(this, 'image-show4')" name="pic">
             (원작)캐릭터 이름<input type="text" name="realChar">
             (원작)캐릭터 성우<input type="text" name="realVoiceChar">
             (한국)캐릭터 이름<input type="text" name="korChar">
@@ -62,7 +63,7 @@
             </div>
             <div class="image-item">
             <div class="addImage_m" id="image-show5"> <!-- 등장인물5 --></div>
-            <input type="file" accept="image/jpeg, image/png, image/gif" onchange="loadFile(this, 'image-show5')" name="pic">
+            <input type="file" accept="image/jpeg, image/png, image/gif, image/webp" onchange="loadFile(this, 'image-show5')" name="pic">
             (원작)캐릭터 이름<input type="text" name="realChar">
             (원작)캐릭터 성우<input type="text" name="realVoiceChar">
             (한국)캐릭터 이름<input type="text" name="korChar">
@@ -99,7 +100,7 @@
 
     <div class="mb-3">
         <label class="form-label">줄거리</label>
-        <textarea class="form-control" row="3" name="story"></textarea>
+        <textarea class="form-control" row="3" name="story" maxlength="500"></textarea>
     </div> 
     <button type="submit" class="btn btn-primary">작품등록</button>
     <a href="/articles" class="btn btn-sm btn-outline-success">Back</a>

@@ -16,7 +16,7 @@
         background-color: lightgray;
         border-radius: 20px 20px / 20px 20px;
         overflow: hidden;
-        margin: 0px 10px 10px 0px;
+        margin: 0px 10px 10px 0px
     }
 
     .addImage_m {
@@ -25,17 +25,19 @@
         background-color: lightgray;
         border-radius: 10px;
         overflow: hidden;
-        margin: 0px 5px;
+        margin: 5px 10px;
         display: flex;
         justify-content: center;
         align-items: center;
     }
+
     input[type="file"] {
         width: 100px; /* 파일 선택 버튼의 너비를 이미지와 맞춤 */
     }
     .image-container {
         display: flex;
-        flex-wrap: nowrap;
+        flex-wrap: wrap; /* 이미지가 넘칠 경우 줄 바꿈 */
+        justify-content: center; /* 중앙 정렬 */
         gap: 10px;
     }
 
