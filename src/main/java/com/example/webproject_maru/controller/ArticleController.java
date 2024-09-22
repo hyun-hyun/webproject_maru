@@ -1,5 +1,6 @@
 package com.example.webproject_maru.controller;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -9,6 +10,8 @@ import java.util.stream.Collectors;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -189,7 +192,7 @@ public class ArticleController {
 
     //게시글 삭제
     @PostMapping("/write/article/{category}/{id}/delete")
-    public String delete(@PathVariable String category, @PathVariable Long id, ArticleForm form,
+    public ResponseEntity<Map<String, String>> delete(@PathVariable String category, @PathVariable Long id, ArticleForm form,
                         @RequestParam(required = false) boolean admin, RedirectAttributes redirectAttributes){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -198,28 +201,28 @@ public class ArticleController {
         String role = auth.getAuthority();
 
         if(form.getId()!=id){
-            redirectAttributes.addFlashAttribute("error", "해당 작품에 id정보 불일치가 발생했습니다.");
-            return "redirect:/articles/"+category+"/"+id;
+             return ResponseEntity.badRequest().body(Map.of("error", "해당 작품에 id정보 불일치가 발생했습니다."));
         }
         
         //manager권한에서는 리뷰가 있을 때는 작품삭제 불가
         boolean existingReview =reviewService.existsByArticleId(id);
         if(!admin && existingReview){
-            redirectAttributes.addFlashAttribute("error", "해당 작품에 리뷰가 있어 삭제가 불가합니다. 관리자권한으로 시도해주세요.");
-            return "redirect:/articles/"+category+"/"+id;
+            //String str="/articles/anime/"+id;
+            return ResponseEntity.badRequest().body(Map.of("error", "해당 작품에 리뷰가 있어 삭제가 불가합니다. 관리자권한으로 시도해주세요."));
+            //return ResponseEntity.status(HttpStatus.FOUND)
+                //.location(URI.create(str)) // 리다이렉트할 URL
+                //.build();
+                //.body(Map.of("message", "해당 작품에 리뷰가 있어 삭제가 불가합니다. 관리자권한으로 시도해주세요."));
         }
-            //관리자권한일 경우 삭제 혹은 리뷰연관 없을경우 삭제(권한 더블체크)
-            if((admin && role=="ROLE_ADMIN") || (!reviewService.existsByArticleId(id)&&(role=="ROLE_MANAGER"||role=="ROLE_ADMIN"))){
+        //관리자권한일 경우 삭제 혹은 리뷰연관 없을경우 삭제(권한 더블체크)
+        if((admin && role=="ROLE_ADMIN") || (!reviewService.existsByArticleId(id)&&(role=="ROLE_MANAGER"||role=="ROLE_ADMIN"))){
                 
-                //태그, 리뷰, 사진, 기본 삭제
-                articleService.delete(form, category, existingReview);
-                
-
-            
+            //태그, 리뷰, 사진, 기본 삭제
+            articleService.delete(form, category, existingReview);
+            return ResponseEntity.ok(Map.of("message", "삭제가 완료되었습니다."));
         }
         
         
-
-        return "redirect:/articles/"+category;
+        return ResponseEntity.badRequest().body(Map.of("error", "삭제할 수 없습니다."));
     }
 }

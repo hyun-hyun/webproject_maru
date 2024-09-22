@@ -601,12 +601,20 @@
             fetch(url, {
                 method: 'POST'
             }).then(response => {
-              if (!response.ok) throw new Error('삭제 실패');
-              window.location.reload();
-              })
-              .catch(error => {
-                  alert(error);
+              return response.json().then(data => {
+                console.log(response);
+                   if (!response.ok) {
+                      alert(data.error);
+                      window.location.reload();
+                  } else {
+                      alert(data.message); // 삭제 완료 메시지
+                      window.location.href = `/articles/anime`; // 목록 페이지로 이동
+                  }
               });
+          })
+          .catch(error => {
+              alert("오류가 발생했습니다: " + error);
+          });
         }
     }
     }
