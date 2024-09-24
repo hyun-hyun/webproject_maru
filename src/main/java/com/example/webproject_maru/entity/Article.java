@@ -34,7 +34,7 @@ public class Article {
     @Column(name="article_id")
     private Long id;
     @Column
-    private String catagory;
+    private String category;
     @Column(unique = true)
     private String title;
     @Column
@@ -141,9 +141,9 @@ public class Article {
     private LocalDateTime updateTime;
     
 
-    public Article (Long id, String catagory, String title, String genre, LocalDate broad_date,String ani_company, String author, String story, Member member){
+    public Article (Long id, String category, String title, String genre, LocalDate broad_date,String ani_company, String author, String story, Member member){
         this.id=id;
-        this.catagory=catagory;
+        this.category=category;
         this.title=title;
         this.genre=genre;
         this.broad_date=broad_date;
@@ -161,14 +161,14 @@ public class Article {
         //객체갱신
         if(form.getTitle()!=null)//내용있을때
             this.title=form.getTitle();//반영
-        if(form.getCatagory()!=null)
-            this.catagory=form.getCatagory();
+        if(form.getCategory()!=null)
+            this.category=form.getCategory();
         if(form.getGenre()!=null)
             this.genre=form.getGenre();
         if(form.getBroad_date()!=null)
             this.broad_date=form.getBroad_date();
         if(form.getAni_company()!=null)
-            this.ani_company=form.getCatagory();
+            this.ani_company=form.getAni_company();
         if(form.getAuthor()!=null)
             this.author=form.getAuthor();
         if(form.getStory()!=null)

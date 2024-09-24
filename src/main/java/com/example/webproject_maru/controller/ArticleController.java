@@ -65,11 +65,11 @@ public class ArticleController {
         return "articles/newAnime";
     }
 
-    @PostMapping("/write/article/{catagory}/create")
+    @PostMapping("/write/article/{category}/create")
     public String createArticle(ArticleForm form, @RequestParam("pic") MultipartFile[] mfile,
                                 @RequestParam("realChar") String[] realChars,@RequestParam("realVoiceChar") String[] realVoiceChars,
                                 @RequestParam("korChar") String[] korChars, @RequestParam("korVoiceChar")String[] korVoiceChars,
-                                @PathVariable String catagory) {//폼 데이터를 DTO로 받기
+                                @PathVariable String category) {//폼 데이터를 DTO로 받기
         log.info(form.toString());
         SubPicForm[] subPicForms=new SubPicForm[5];
         for(int i=0;i<5;i++){
@@ -81,7 +81,7 @@ public class ArticleController {
             }
         }
         log.info("서비스 create시작");
-        Article saved=articleService.create(form, mfile, subPicForms, catagory);
+        Article saved=articleService.create(form, mfile, subPicForms, category);
         /*
         //System.out.println(form.toString());//DTO에 잘 담겼는지 확인        
         //1. DTO -> entity

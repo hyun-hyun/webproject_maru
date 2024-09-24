@@ -20,7 +20,7 @@ import lombok.ToString;
 @Setter
 public class ArticleForm {
     private Long id;
-    private String catagory;
+    private String category;
     private String title;
     private String genre;
     private LocalDate broad_date;
@@ -34,11 +34,11 @@ public class ArticleForm {
     private String story;
 
     public Article toEntity(Member member) {
-        // return new Article(id, catagory, title, genre, broad_date, null, story, null, null, null, null, null, null, null, null, null, null);
+        // return new Article(id, category, title, genre, broad_date, null, story, null, null, null, null, null, null, null, null, null, null);
 
 
-        return new Article(id, catagory, title, genre, broad_date, ani_company, author, story, member);
-        // return new Article(id, catagory, title, genre, story);
+        return new Article(id, category, title, genre, broad_date, ani_company, author, story, member);
+        // return new Article(id, category, title, genre, story);
 
     } 
 
@@ -47,13 +47,13 @@ public class ArticleForm {
             return null;
         }
         return new ArticleForm(
-            article.getId(), article.getCatagory(), article.getTitle(), article.getGenre(), 
+            article.getId(), article.getCategory(), article.getTitle(), article.getGenre(), 
             article.getBroad_date(), article.getAni_company(), article.getAuthor(), article.getMember().getId(), article.getStory());
     }
 
-    public ArticleForm(Long id, String catagory, String title, String genre, LocalDate broad_date, String ani_company, String author, Long memberId, String story){
+    public ArticleForm(Long id, String category, String title, String genre, LocalDate broad_date, String ani_company, String author, Long memberId, String story){
         this.id=id;
-        this.catagory=catagory;
+        this.category=category;
         this.title=title;
         this.genre=genre;
         this.broad_date=broad_date;
