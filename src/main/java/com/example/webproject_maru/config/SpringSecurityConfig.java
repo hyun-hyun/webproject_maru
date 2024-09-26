@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -16,22 +17,26 @@ public class SpringSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        HttpSessionRequestCache requestCache=new HttpSessionRequestCache();
+        requestCache.setMatchingRequestParameterName(null);//continue로 사용하는게 스프링시큐리티 5에서 추가됨. 캐시효율성관련
 
         http
                 .authorizeHttpRequests((auth) -> auth
                         //.requestMatchers("/", "/**").permitAll()
 
-                        .requestMatchers("/", "/login", "/loginProc","/join","/joinProc", "/joined","/articles/**","/articles/anime/**").permitAll()
+                        .requestMatchers("/", "/login", "/loginProc","/join","/joinProc", "/joined","/articles/anime/**").permitAll()
                         //h2용
-                        .requestMatchers("/h2-console/**").permitAll() 
+                        //.requestMatchers("/h2-console/**").permitAll() 
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/write/**").hasAnyRole("ADMIN", "MANAGER")
-                        .requestMatchers("/user/**", "/articles/**").hasAnyRole("ADMIN", "MANAGER", "USER")
+                        .requestMatchers("/user/**").hasAnyRole("ADMIN", "MANAGER", "USER")
+                        //.requestMatchers("/user/**", "/articles/**").hasAnyRole("ADMIN", "MANAGER", "USER")
                         .requestMatchers("/images/**","/css/**","/favicon.ico").permitAll()//이미지파일들 security filter 예외
-                        .anyRequest().authenticated() //어떠한 요청이라도 인증 필요
+                        //.requestMatchers("/api/articles/*/create_r").authenticated() // 특정 경로에 대해 인증 요구
+                        .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
                 )
-
+                .requestCache(cache -> cache.requestCache(requestCache)) // 요청 캐시 설정(저 ?continue=가야할경로 그거)
 
                 .formLogin((auth) -> auth.loginPage("/login") // form방식 로그인 사용, 커스텀 로그인 페이지 지정
                         .loginProcessingUrl("/loginProc") // submit 받을 url
@@ -57,9 +62,12 @@ public class SpringSecurityConfig {
                             }) // 로그아웃 성공 핸들러
                             .deleteCookies("remember-me") // 로그아웃 후 삭제할 쿠키 지정
                 )
+                
 
                 .csrf((auth) -> auth.disable())
                 .headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin));//h2콘솔접속용
+
+                
 
         return http.build();
         /*

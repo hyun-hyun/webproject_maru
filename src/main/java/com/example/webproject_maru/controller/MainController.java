@@ -42,7 +42,7 @@ public class MainController {
         model.addAttribute("id", email);
         model.addAttribute("role", role);
 
-        if(email!="anonymousUser"){
+        if(!email.equals("anonymousUser")){
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
             String nickname = userDetails.getNickname();
             model.addAttribute("nickname", nickname);

@@ -101,10 +101,18 @@ public class ArticleController {
     public String show(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails, Model model){//매개변수로 url의 id받아오기
         log.info("id= "+id);//id잘 받았는지 확인
 
-        String nickname = userDetails.member.getNickname();
-        Long member_id = userDetails.member.getId();
-        model.addAttribute("nickname", nickname);
-        model.addAttribute("member_id", member_id);
+        String nickname;
+        Long member_id=null;
+        if(userDetails!=null){
+            nickname = userDetails.member.getNickname();
+            member_id = userDetails.member.getId();
+            model.addAttribute("nickname", nickname);
+            model.addAttribute("member_id", member_id);
+        }else{
+            //로그인 안된경우
+            nickname="방문자";
+        }
+        
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -114,7 +122,7 @@ public class ArticleController {
         GrantedAuthority auth = iter.next();
         String role = auth.getAuthority();
 
-        if(email!="anonymousUser"){
+        if(!email.equals("anonymousUser")){
 
             if(role.equals("ROLE_ADMIN") || role.equals("ROLE_MANAGER")){
                 model.addAttribute("write", 1);
@@ -129,8 +137,8 @@ public class ArticleController {
         Article articleEntity=articleService.findByIdArticle(id);
         //전체 리뷰 가져오기
         List<ReviewForm> reviewDtos=reviewService.reviews(id);
-        //사용자 리뷰만 가져오기
-        ReviewForm reviewForm=reviewService.my_review(id, member_id);
+        //사용자 리뷰만 가져오기(미로그인 예외처리)
+        ReviewForm reviewForm = (member_id != null) ?reviewService.my_review(id, member_id):null;
         //등록된 tag 가져오기
         List<String> tags = articleService.getTagsByArticleId(id);
         //리뷰에서 선택되었던 tag만 tagName이랑 선택된 횟수 가져오기 
