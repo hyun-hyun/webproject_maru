@@ -1,7 +1,7 @@
 {{>layouts/header}}
 <div class="container">
 
-    <form class="px-4 py-3" action="/loginProc" method="post">
+    <form class="px-4 py-3" id="loginForm" action="/loginProc" method="post">
    <!-- <form class="px-4 py-3" th:action="@{/loginProc}" method="post">-->
       <div class="mb-3">
         <label for="exampleDropdownFormEmail1" class="form-label"><b>아이디</b> (이메일주소)</label>
@@ -29,4 +29,15 @@
     </form>
     <a class="dropdown-item" href="/join">처음 방문하셨나요? 회원가입</a>
 </div>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const continueUrl = urlParams.get('continue');
+      const form = document.getElementById('loginForm');
+
+      if (continueUrl) {
+          form.action += `?continue=${encodeURIComponent(continueUrl)}`;
+      }
+  });
+</script>
   {{>layouts/footer}}

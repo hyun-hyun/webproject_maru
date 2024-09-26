@@ -398,9 +398,10 @@
         
       // member_id가 없을 경우 로그인 페이지로 이동
       if (!memberIdElement || !memberIdElement.value) {
-          alert('로그인이 필요합니다.');
-          window.location.href = "/login"; // 로그인 페이지로 리다이렉트
-          return; // 함수 종료
+        const currentUrl = window.location.href; // 현재 URL 가져오기
+        alert('로그인이 필요합니다.');
+        window.location.href = "/login?continue=" + encodeURIComponent(currentUrl); // 로그인 페이지로 이동, 현재 URL 포함
+        return; // 함수 종료
       }
 
 

@@ -1,5 +1,6 @@
 package com.example.webproject_maru.config;
 
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,13 +19,13 @@ public class SpringSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         HttpSessionRequestCache requestCache=new HttpSessionRequestCache();
-        requestCache.setMatchingRequestParameterName(null);//continue로 사용하는게 스프링시큐리티 5에서 추가됨. 캐시효율성관련
+        requestCache.setMatchingRequestParameterName("continue");//continue로 사용하는게 스프링시큐리티 5에서 추가됨. 캐시효율성관련
 
         http
                 .authorizeHttpRequests((auth) -> auth
                         //.requestMatchers("/", "/**").permitAll()
 
-                        .requestMatchers("/", "/login", "/loginProc","/join","/joinProc", "/joined","/articles/anime/**").permitAll()
+                        .requestMatchers("/","/error", "/login", "/loginProc","/join","/joinProc", "/joined","/articles/anime/**").permitAll()
                         //h2용
                         //.requestMatchers("/h2-console/**").permitAll() 
 
@@ -33,14 +34,23 @@ public class SpringSecurityConfig {
                         .requestMatchers("/user/**").hasAnyRole("ADMIN", "MANAGER", "USER")
                         //.requestMatchers("/user/**", "/articles/**").hasAnyRole("ADMIN", "MANAGER", "USER")
                         .requestMatchers("/images/**","/css/**","/favicon.ico").permitAll()//이미지파일들 security filter 예외
-                        //.requestMatchers("/api/articles/*/create_r").authenticated() // 특정 경로에 대해 인증 요구
+                        .requestMatchers("/api/articles/*/create_r").authenticated() // 특정 경로에 대해 인증 요구
                         .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
                 )
                 .requestCache(cache -> cache.requestCache(requestCache)) // 요청 캐시 설정(저 ?continue=가야할경로 그거)
 
                 .formLogin((auth) -> auth.loginPage("/login") // form방식 로그인 사용, 커스텀 로그인 페이지 지정
                         .loginProcessingUrl("/loginProc") // submit 받을 url
-                        .defaultSuccessUrl("/") // 로그인 성공 시 이동할 경로
+                        //.defaultSuccessUrl("/", true) // 로그인 성공 시 이동할 경로
+                        .successHandler((request, response, authentication) -> {
+                                // continue 파라미터 가져오기
+                                String continueUrl = request.getParameter("continue");
+                                if (continueUrl != null && !continueUrl.isEmpty()) {
+                                    response.sendRedirect(continueUrl); // continue 파라미터가 있으면 해당 URL로 리다이렉트
+                                } else {
+                                    response.sendRedirect("/"); // 없으면 기본 페이지로
+                                }
+                            })
                         .failureUrl("/login?error=true") // 로그인 실패 시 이동할 경로
                       //  .usernameParameter("userEmail") // 아이디 파라미터 설정
                      //   .passwordParameter("password") // 패스워드 파라미터 설정
