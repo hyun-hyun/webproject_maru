@@ -2,6 +2,37 @@
 <div class="container">
 
 <h2>마이페이지</h2>
-{{nickname}}
-</div>
+{{nickname}}님 환영합니다.
+
+<!--키워드분석(워드클라우드)-->
+<div id="container"></div>
+
+
+추천 작품
+<div id="recommendations"></div>
+
+</style>  
+<script>
+    const memberId = {{member_id}}; // 예시로 회원 ID를 1로 설정
+    console.log('Member ID:', memberId);
+    // 워드클라우드 데이터 가져오기
+    fetch(`/api/mypage/wordcloud/${memberId}`)
+        .then(response => response.json())
+        .then(wordCounts => {
+            const wordCloudData = wordCounts.map(tag => ({ x: tag.tagName, value: tag.count }));
+            
+            anychart.onDocumentReady(function() {
+                var chart = anychart.tagCloud(wordCloudData);
+                chart.title("나의 키워드 분석");
+                chart.angles([0, 45, 90, -45]);
+                //chart.textDirection("vertical");
+                chart.container("container");
+                chart.draw();
+            });
+        });
+
+
+
+
+</script>
 {{>layouts/footer}}

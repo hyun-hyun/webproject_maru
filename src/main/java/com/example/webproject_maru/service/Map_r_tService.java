@@ -25,6 +25,7 @@ public class Map_r_tService {
     @Autowired
     Map_a_tService map_a_tService;
 
+    //게시글용 태그명, 태그수
     public List<TagCountForm> countTagSelectionsByArticleId(Long articleId) {
     List<Object[]> results = map_r_tRepository.countTagSelectionsByArticleId(articleId);
     return results.stream()
@@ -32,6 +33,16 @@ public class Map_r_tService {
                       result -> new TagCountForm((String) result[0],  // tagName
                       (Long) result[1])   // COUNT
                   ).collect(Collectors.toList());
+    }
+
+    //마이페이지용 태그명, 태그수 _100개상한
+    public List<TagCountForm> countTagSelectionsByMemberId(Long memberId){
+        List<Object[]> results=map_r_tRepository.countTagSelectionsByMemberId(memberId);
+        return results.stream()
+                    .map(
+                        result -> new TagCountForm((String) result[0],
+                                (Long) result[1])
+                    ).limit(100).collect(Collectors.toList());
     }
 
     //article만들 때 tag저장
@@ -54,7 +65,7 @@ public class Map_r_tService {
         return map_r_tRepository.findTagsByReviewId(reviewId);
     }
 
-    // articleId를 이용하여 태그 목록을 가져오는 메서드(메인화면용)
+    // articleId를 이용하여 태그 목록을 가져오는 메서드(메인화면용)_5개상한
     public List<String> getOnlyTagsByArticleId(Long articleId) {
         List<String> tags =map_r_tRepository.findOnlyTagsByArticleId(articleId);
         // 상위 5개만 반환

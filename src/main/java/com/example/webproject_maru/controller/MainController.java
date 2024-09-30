@@ -77,7 +77,10 @@ public class MainController {
     @GetMapping("/user/mypage")
     public String myPage(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         String nickname = userDetails.member.getNickname();
+        Long member_id = userDetails.member.getId();
+
         model.addAttribute("nickname", nickname);
+        model.addAttribute("member_id", member_id);
         return "user/mypage";
     }
 

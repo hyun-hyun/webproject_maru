@@ -12,8 +12,13 @@ import com.example.webproject_maru.entity.Map_r_t;
 import com.example.webproject_maru.entity.Tag;
 
 public interface Map_r_tRepository extends JpaRepository<Map_r_t, Long>{
+    //게시글용 태그명, 태그수
     @Query("SELECT m.tag.tag, COUNT(m.tag) FROM Map_r_t m WHERE m.review.article.id=:articleId GROUP BY m.tag.tag ORDER BY COUNT(m.tag) DESC" )
     List<Object[]> countTagSelectionsByArticleId(@Param("articleId") Long articleId);
+
+    //마이페이지용 태그명, 태그수
+    @Query("SELECT m.tag.tag, COUNT(m.tag) FROM Map_r_t m WHERE m.review.member.id=:memberId GROUP BY m.tag.tag ORDER BY COUNT(m.tag) DESC")
+    List<Object[]> countTagSelectionsByMemberId(@Param("memberId") Long memberId);
 
     //메인화면용
     @Query("SELECT m.tag.tag FROM Map_r_t m WHERE m.review.article.id = :articleId GROUP BY m.tag.tag ORDER BY COUNT(m.tag) DESC")
