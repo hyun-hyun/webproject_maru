@@ -61,6 +61,10 @@ public class Map_a_tService {
     public Long countByTagId(Long tagId){
         return map_a_tRepository.countByTagId(tagId);
     }
+
+    public List<Long> findArticleIdsByTagId(Long tagId){
+        return map_a_tRepository.findArticleIdsByTagId(tagId);
+    } 
 /* 
     public List<TagForm> findTagsByArticleId(Long articleId) {
         List<Object[]> results = map_a_tRepository.findTagsByArticleId(articleId);

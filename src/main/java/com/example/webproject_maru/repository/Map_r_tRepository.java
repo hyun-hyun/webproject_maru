@@ -16,7 +16,15 @@ public interface Map_r_tRepository extends JpaRepository<Map_r_t, Long>{
     @Query("SELECT m.tag.tag, COUNT(m.tag) FROM Map_r_t m WHERE m.review.article.id=:articleId GROUP BY m.tag.tag ORDER BY COUNT(m.tag) DESC" )
     List<Object[]> countTagSelectionsByArticleId(@Param("articleId") Long articleId);
 
-    //마이페이지용 태그명, 태그수
+    //마이페이지 작품 추천용 태그id, 태그명
+    @Query("SELECT m.tag.id, m.tag.tag FROM Map_r_t m WHERE m.review.member.id=:memberId GROUP BY m.tag.id, m.tag.tag ORDER BY COUNT(m.tag) DESC" )
+    List<Object[]> getTagSelectionsByMemberId(@Param("memberId") Long memberId);
+
+    //마이페이지 작품 추천용 각 작품의 태그별 선택된 수
+    @Query("SELECT COUNT(m.tag) FROM Map_r_t m WHERE m.tag.id=:tagId AND m.review.article.id=:articleId")
+    Long countTagByArticleIdAndTagId(@Param("tagId") Long tagId, @Param("articleId") Long articleId);
+
+    //마이페이지 워드클라우드용 태그명, 태그수
     @Query("SELECT m.tag.tag, COUNT(m.tag) FROM Map_r_t m WHERE m.review.member.id=:memberId GROUP BY m.tag.tag ORDER BY COUNT(m.tag) DESC")
     List<Object[]> countTagSelectionsByMemberId(@Param("memberId") Long memberId);
 

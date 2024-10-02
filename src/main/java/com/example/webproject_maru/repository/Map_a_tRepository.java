@@ -33,4 +33,7 @@ public interface Map_a_tRepository extends JpaRepository<Map_a_t, Long>{
     //tagId와 연결된 map_a_t수량파악
     @Query("SELECT COUNT(m) FROM Map_a_t m WHERE m.tag.id=:tagId")
     Long countByTagId(@Param("tagId") Long tagId);
+
+    @Query("SELECT m.article.id FROM Map_a_t m WHERE m.tag.id=:tagId")
+    List<Long> findArticleIdsByTagId(@Param("tagId") Long tagId);
 }

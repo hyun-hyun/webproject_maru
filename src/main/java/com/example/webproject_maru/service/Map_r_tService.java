@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.webproject_maru.dto.TagCountForm;
+import com.example.webproject_maru.dto.TagForm;
 import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.entity.Map_r_t;
 import com.example.webproject_maru.entity.Review;
@@ -35,7 +36,7 @@ public class Map_r_tService {
                   ).collect(Collectors.toList());
     }
 
-    //마이페이지용 태그명, 태그수 _100개상한
+    //마이페이지 워드클라우드용 태그명, 태그수 _100개상한
     public List<TagCountForm> countTagSelectionsByMemberId(Long memberId){
         List<Object[]> results=map_r_tRepository.countTagSelectionsByMemberId(memberId);
         return results.stream()
@@ -43,6 +44,21 @@ public class Map_r_tService {
                         result -> new TagCountForm((String) result[0],
                                 (Long) result[1])
                     ).limit(100).collect(Collectors.toList());
+    }
+
+    //마이페이지 추천용 태그명, 태그수 _20개상한
+    public List<TagForm> getTagSelectionsByMemberId(Long memberId){
+        List<Object[]> results=map_r_tRepository.getTagSelectionsByMemberId(memberId);
+        return results.stream()
+                    .map(
+                        result -> new TagForm((Long) result[0],
+                                (String) result[1])
+                    ).limit(20).collect(Collectors.toList());
+    }
+
+    //마이페이지 추천용 각 작품의 태그별 선택 수
+    public Long countTagByArticleIdAndTagId(Long tagId, Long articleId){
+        return map_r_tRepository.countTagByArticleIdAndTagId(tagId,articleId);
     }
 
     //article만들 때 tag저장

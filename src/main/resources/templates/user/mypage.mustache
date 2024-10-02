@@ -13,8 +13,9 @@
 
 </style>  
 <script>
-    const memberId = {{member_id}}; // 예시로 회원 ID를 1로 설정
+    const memberId = {{member_id}}; 
     console.log('Member ID:', memberId);
+
     // 워드클라우드 데이터 가져오기
     fetch(`/api/mypage/wordcloud/${memberId}`)
         .then(response => response.json())
@@ -29,9 +30,26 @@
                 chart.container("container");
                 chart.draw();
             });
+    });
+
+    // 추천 게시글 가져오기
+    fetch(`/api/mypage/recommended-articles/${memberId}`)
+        .then(response => response.json())
+        .then(articles => {
+            const recommendationsContainer = document.getElementById("recommendations");
+            if (!Array.isArray(articles)) {
+                const articleDiv = document.createElement("div");
+                articleDiv.className = "article";
+                articleDiv.innerHTML = `<h4>${article.title}</h4><p>${article.story}</p>`;
+            }
+            else{
+            articles.forEach(article => {
+                const articleDiv = document.createElement("div");
+                articleDiv.className = "article";
+                articleDiv.innerHTML = `<h4>${article.title}</h4><p>${article.story}</p>`;
+                recommendationsContainer.appendChild(articleDiv);
+            })};
         });
-
-
 
 
 </script>
