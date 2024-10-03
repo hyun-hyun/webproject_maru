@@ -65,12 +65,13 @@ public class RecommendationService {
         List<Map.Entry<Long, Long>> sortedArticles = new ArrayList<>(articleScores.entrySet());
         sortedArticles.sort((a, b) -> Long.compare(b.getValue(), a.getValue())); // 내림차순 정렬
 
-        // 상위 3개 Article ID 반환
+        // 상위 8개 Article ID 반환
         List<Long> recommendedArticleIds = new ArrayList<>();
-        for (int i = 0; i < Math.min(3, sortedArticles.size()); i++) {
+        for (int i = 0; i < Math.min(8, sortedArticles.size()); i++) {
             recommendedArticleIds.add(sortedArticles.get(i).getKey());
+        log.info("추천하는 첫번째 작품 id: {}",sortedArticles.get(i).getKey());
+
         }
-        log.info("추천하는 첫번째 작품 id: {}",recommendedArticleIds.get(0));
 
         return recommendedArticleIds;
     }

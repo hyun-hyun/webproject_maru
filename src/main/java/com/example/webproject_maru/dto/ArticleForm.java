@@ -28,6 +28,8 @@ public class ArticleForm {
     private String author;
     private Long memberId;
 
+    private String main_pic;
+
     //tag
     private List<String> tags;//게시글내 전체태그 ->안씀
     private List<String> usedTags;//리뷰에서 사용한 태그 ->안씀
@@ -48,10 +50,10 @@ public class ArticleForm {
         }
         return new ArticleForm(
             article.getId(), article.getCategory(), article.getTitle(), article.getGenre(), 
-            article.getBroad_date(), article.getAni_company(), article.getAuthor(), article.getMember().getId(), article.getStory());
+            article.getBroad_date(), article.getAni_company(), article.getAuthor(), article.getMember().getId(), article.getMain_pic(), article.getStory());
     }
 
-    public ArticleForm(Long id, String category, String title, String genre, LocalDate broad_date, String ani_company, String author, Long memberId, String story){
+    public ArticleForm(Long id, String category, String title, String genre, LocalDate broad_date, String ani_company, String author, Long memberId, String main_pic, String story){
         this.id=id;
         this.category=category;
         this.title=title;
@@ -60,6 +62,7 @@ public class ArticleForm {
         this.ani_company=ani_company;
         this.author=author;
         this.memberId=memberId;
+        this.main_pic=main_pic;
         this.story=story;
     }
 

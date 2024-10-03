@@ -1,17 +1,19 @@
 {{>layouts/header}}
 <div class="container">
-
+<br>
 <h2>마이페이지</h2>
-{{nickname}}님 환영합니다.
+<br>
+{{nickname}}님 환영합니다.<br><br>
 
+<h4>리뷰시 선택한 키워드 분석</h4>
 <!--키워드분석(워드클라우드)-->
 <div id="container"></div>
 
 
-추천 작품
+<h4>추천 작품</h4>
 <div id="recommendations"></div>
+  
 
-</style>  
 <script>
     const memberId = {{member_id}}; 
     console.log('Member ID:', memberId);
@@ -32,25 +34,56 @@
             });
     });
 
+
     // 추천 게시글 가져오기
     fetch(`/api/mypage/recommended-articles/${memberId}`)
         .then(response => response.json())
         .then(articles => {
             const recommendationsContainer = document.getElementById("recommendations");
             if (!Array.isArray(articles)) {
-                const articleDiv = document.createElement("div");
-                articleDiv.className = "article";
-                articleDiv.innerHTML = `<h4>${article.title}</h4><p>${article.story}</p>`;
+                articles = [articles]; // 단일 아티클도 배열로 변환
             }
-            else{
+            
             articles.forEach(article => {
                 const articleDiv = document.createElement("div");
                 articleDiv.className = "article";
-                articleDiv.innerHTML = `<h4>${article.title}</h4><p>${article.story}</p>`;
+                articleDiv.innerHTML = `
+                    <div class="article-content" data-article-id="${article.id}">
+                        <img src="/images/pic/anime/${article.main_pic}" width=150 alt="작품표지" class="article-image">
+                        <div class="article-info">
+                            <b>[${article.genre}] ${article.title}</b><br><br>
+                            ${article.broad_date} | ${article.ani_company} | ${article.author}<br>
+                            <span>${article.story}</span>
+                        </div>
+                    </div>
+                `;
                 recommendationsContainer.appendChild(articleDiv);
-            })};
+                // 클릭 이벤트 추가
+                articleDiv.querySelector('.article-content').addEventListener('click', () => {
+                    window.location.href = `/articles/anime/${article.id}`;
+                });
+            });
         });
 
-
 </script>
+
+<style>
+    .article-content {
+        display: flex;
+        margin-bottom: 20px; /* 각 게시글 간의 간격 */
+    }
+    
+    .article-image {
+        margin-right: 15px; /* 이미지와 텍스트 간의 간격 */
+    }
+    
+    .article-info {
+        flex: 1; /* 텍스트가 남은 공간을 차지하도록 설정 */
+    }
+    
+    .article b {
+        display: block; /* 제목을 블록으로 만들어 줄바꿈 가능하게 */
+        margin-bottom: 5px; /* 제목과 내용 간의 간격 */
+    }
+</style>
 {{>layouts/footer}}
