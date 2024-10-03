@@ -64,7 +64,8 @@ public class JoinService {
         data.setAppendDate(SeoulNow);
         data.setUpdateDate(SeoulNow);
 
-        data.setRole("ROLE_ADMIN");
+        //data.setRole("ROLE_ADMIN");
+        data.setRole("ROLE_USER");
 
         memberRepository.save(data);
     }
