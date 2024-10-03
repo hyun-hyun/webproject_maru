@@ -48,21 +48,28 @@
                 const articleDiv = document.createElement("div");
                 articleDiv.className = "article";
                 articleDiv.innerHTML = `
-                    <div class="article-content" data-article-id="${article.id}">
-                        <img src="/images/pic/anime/${article.main_pic}" width=150 alt="작품표지" class="article-image">
+                    <div class="article-content">
+                        <a href="/articles/animes/${article.id}">
+                            <img src="/images/pic/anime/${article.main_pic}" width=150 alt="작품표지" class="article-image">
+                        </a>
                         <div class="article-info">
-                            <b>[${article.genre}] ${article.title}</b><br><br>
-                            ${article.broad_date} | ${article.ani_company} | ${article.author}<br>
+                            <b>[${article.genre}] ${article.title}</b><br>
+                            ${article.broad_date} | ${article.author} | ${article.ani_company}
+                            <br>
                             <span>${article.story}</span>
                         </div>
                     </div>
                 `;
                 recommendationsContainer.appendChild(articleDiv);
-                // 클릭 이벤트 추가
+
+                /*
+                // 클릭 이벤트 추가(div전체 클릭가능)
                 articleDiv.querySelector('.article-content').addEventListener('click', () => {
                     window.location.href = `/articles/anime/${article.id}`;
                 });
+                */
             });
+            
         });
 
 </script>
