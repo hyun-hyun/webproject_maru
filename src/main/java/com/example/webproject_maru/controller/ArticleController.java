@@ -35,6 +35,7 @@ import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.entity.Map_a_t;
 import com.example.webproject_maru.entity.Tag;
 import com.example.webproject_maru.service.ArticleService;
+import com.example.webproject_maru.service.Map_r_tService;
 import com.example.webproject_maru.service.ReviewService;
 
 
@@ -48,6 +49,8 @@ public class ArticleController {
     private ArticleService articleService;
     @Autowired
     private ReviewService reviewService;
+    @Autowired
+    private Map_r_tService map_r_tService;
     
 
     //게시글 생성
@@ -100,7 +103,7 @@ public class ArticleController {
     @GetMapping("/articles/anime/{id}") //컨트롤러 변수{}, 뷰 변수{{}}
     public String show(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails, Model model){//매개변수로 url의 id받아오기
         log.info("id= "+id);//id잘 받았는지 확인
-
+        //미로그인시 에러처리
         String nickname;
         Long member_id=null;
         if(userDetails!=null){
@@ -195,13 +198,33 @@ public class ArticleController {
     //게시글 목록
     @GetMapping("/articles/anime")
     public String index(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
-        String nickname = userDetails.member.getNickname();
-        model.addAttribute("nickname", nickname);
-
+        //미로그인시 에러처리
+        String nickname;
+        Long member_id=null;
+        if(userDetails!=null){
+            nickname = userDetails.member.getNickname();
+            member_id = userDetails.member.getId();
+            model.addAttribute("nickname", nickname);
+            model.addAttribute("member_id", member_id);
+        }else{
+            //로그인 안된경우
+            nickname="방문자";
+        }
+        
+         //등록한 게시물 내림차순(최신등록작품)
         //1. 모든 데이터 가져오기 list<entity>
         ArrayList<Article> articleEntityList=articleService.findArticlesDesc();
+     
+        // 각 Article의 태그 리스트 가져오기
+        for (Article article : articleEntityList) {
+            Long articleId = article.getId();
+            List<String> usedTags = map_r_tService.getOnlyTagsByArticleId(articleId);  // List<String>으로 태그를 가져옴
+            article.setUsedTags(usedTags);  // Article 엔티티에 태그 리스트를 추가
+        }
         //2. 모델에 데이터 등록
         model.addAttribute("articleList", articleEntityList);
+
+
         //3. 뷰 페이지 설정
         return "articles/listAnime";
     }

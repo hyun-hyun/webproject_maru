@@ -58,9 +58,22 @@ public class MainController {
 
        // String nickname=LoginService.getNickname(email);
 
+       //3개월간 점수 높은 작품(점수순)
+       //1. 10개 데이터 가져오기 list<entity>
+       List<Article> highArticleEntityList=articleService.getRecentHighScoreArticles(15);
+       // 각 Article의 태그 리스트 가져오기
+       for (Article article : highArticleEntityList) {
+           Long articleId = article.getId();
+           List<String> usedTags = map_r_tService.getOnlyTagsByArticleId(articleId);  // List<String>으로 태그를 가져옴
+           article.setUsedTags(usedTags);  // Article 엔티티에 태그 리스트를 추가
+       }
+       //2. 모델에 데이터 등록
+       model.addAttribute("highArticleList", highArticleEntityList);
+
+
         //등록한 게시물 내림차순(최신등록작품)
         //1. 모든 데이터 가져오기 list<entity>
-        ArrayList<Article> articleEntityList=articleService.findArticlesDesc();
+        List<Article> articleEntityList=articleService.findLimitArticlesDesc(15);
         // 각 Article의 태그 리스트 가져오기
         for (Article article : articleEntityList) {
             Long articleId = article.getId();

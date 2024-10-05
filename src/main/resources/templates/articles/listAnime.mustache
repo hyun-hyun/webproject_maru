@@ -1,3 +1,55 @@
 {{>/layouts/header}}
-articles list
+<div class="container">
+    <br>
+    <h2>작품 목록</h2>
+    <br>
+    <hr>
+    <table class="table">
+        <tbody>
+        {{#articleList}}
+            <tr class="article-row" data-article-id="{{id}}">
+                <td rowspan="2"><img src="/images/pic/anime/{{main_pic}}" width=150 alt="작품표지"></img></td>
+                <th><strong>[{{genre}}] {{title}}</strong><br>
+                {{#usedTags}}
+                    <span class="btn btn-outline-info m-1 tag">{{.}}</span>
+                {{/usedTags}}
+                {{broad_date}} | {{author}} | {{ani_company}}<br>
+                </th>
+            </tr>
+            <tr class="article-row" data-article-id="{{id}}">
+                <td>{{story}}</img></td>
+            </tr>
+        {{/articleList}}
+        </tbody>
+    </table>
+
+</div>
+
 {{>/layouts/footer}}
+
+<script>
+    {
+      <!--작품목록중에서 선택하면 작품 상세페이지로 이동-->
+      document.addEventListener("DOMContentLoaded", function(){
+        const articleRows=document.querySelectorAll(".article-row");
+    
+        //각 row에 클릭 이벤트 핸들러 추가
+        articleRows.forEach(row=>{
+          row.addEventListener("click", function(){
+            //클릭한 row의 data-article-id 속성값 가져오기
+            const articleId=this.getAttribute("data-article-id");
+    
+            //리디렉션
+            window.location.href=`/articles/anime/${articleId}`;
+          })
+        })
+      })
+    }
+    </script>
+    <style>
+      .tag {
+        display: inline-block;
+        padding: 0.5em 1em; /* 버튼 내부 패딩 조정 */
+        font-size: 0.7em; /* 글자 크기 줄이기 */
+    }
+    </style>

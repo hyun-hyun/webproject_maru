@@ -16,6 +16,8 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -102,6 +104,20 @@ public class ArticleService {
     public ArrayList<Article> findArticlesDesc(){
         ArrayList<Article> articleEntityList=articleRepository.findAllByOrderByIdDesc();
         return articleEntityList;
+    }
+
+    //작품등록 최신순 정렬(15개 페이징)
+    public List<Article> findLimitArticlesDesc(int limit){
+        Pageable pageable = PageRequest.of(0, limit); // 페이지 번호 0, 개수 limit
+        List<Article> articleEntityList=articleRepository.findLimitByOrderByIdDesc(pageable).getContent();
+        return articleEntityList;
+    }
+
+    //3개월간 점수 높은순 정렬(15개 페이징)
+    public List<Article> getRecentHighScoreArticles(int limit) {
+        LocalDateTime threeMonthsAgo = LocalDateTime.now().minusMonths(3);
+        Pageable pageable = PageRequest.of(0, limit); // 페이지 번호 0, 개수 limit
+        return articleRepository.findRecentHighScoreArticles(threeMonthsAgo, pageable).getContent();
     }
     
     //articleId별 tag조회

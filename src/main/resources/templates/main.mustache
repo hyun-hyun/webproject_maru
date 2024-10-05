@@ -22,8 +22,8 @@
 
     <div class="row">
         <div class="col-md-6">
-            <h3>3개월간 점수 상위 작품!</h3>
-            가나다라1234
+          <br>
+            <h3>3개월간 TOP 15</h3><br>
             <div class="w-100"></div>
             <table class="table">
                 <thead class="table-light">
@@ -33,23 +33,27 @@
                     </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td rowspan="2"><img src="/images/pic/conan.jpg" width=150 alt="작품표지"></td>
-                    <th>작품제목</th>
+                  {{#highArticleList}}
+                  <tr class="article-row" data-article-id="{{id}}">
+                    <td rowspan="2"><img src="/images/pic/anime/{{main_pic}}" width=150 alt="작품표지"></img></td>
+                    <th>[{{genre}}] {{title}}<br>
+                      {{#usedTags}}
+                      <span class="btn btn-outline-info m-1 tag">{{.}}</span>
+                      {{/usedTags}}
+                    </th>
                   </tr>
-                  <tr>
-                    <td>줄거리_셜록 홈즈를 능가하는 추리력으로,
-                        모든 사건들에서 대활약을 벌이는 고교생 명탐정 쿠도 신이치!
-                        
-                        하지만 어느 날, 사건을 쫓던 그는 이상한 약의 힘으로 갑자기 어린아이가 되어버리는데...?!
-                        
-                        가명은 "에도가와 코난". 꼬마 명탐정이 등장한다!!</td>
+                  <tr class="article-row" data-article-id="{{id}}">
+                    <td>{{story}}</img></td>
                   </tr>
+                  {{/highArticleList}}
                 </tbody>
               </table>
         </div>
         <div class="col-md-6">
-            <h3>최근 등록된 작품</h3>
+          <br>
+            <h3>최근 등록 작품 
+            <a href="/articles/anime" class="btn btn-sm btn-info">전체 작품보기</a>
+          </h3><br>
             <div class="w-100 d-none d-md-block"></div>
             <table class="table">
                 <thead class="table-light">
