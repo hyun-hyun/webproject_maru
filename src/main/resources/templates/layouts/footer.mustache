@@ -3,7 +3,12 @@
         <hr>
         <div class="row justify-self-center" align="center">
             <p> 마루의 애니 추천 곳간 </p>
+            {{^nickname}}
             <p><a href="/login">로그인</a> | <a href="/join">회원가입</a> | 문의 메일 : abcd@abcd </p>
+            {{/nickname}}
+            {{#nickname}}
+            <p><a href="/logout">로그아웃</a> | <a href="/user/mypage">마이페이지</a> | 문의 메일 : abcd@abcd </p>
+            {{/nickname}}
         </div>
     </div>
 
