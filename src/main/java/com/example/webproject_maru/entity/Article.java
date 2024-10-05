@@ -19,6 +19,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,6 +27,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@Table(name="article")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Article {

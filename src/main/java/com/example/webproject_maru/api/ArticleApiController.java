@@ -15,13 +15,14 @@ import com.example.webproject_maru.service.ArticleService;
 @RestController
 @RequestMapping("/api/articles")
 public class ArticleApiController {
+    /*
     @Autowired
     private ArticleService articleService;
 
     @GetMapping("/{id}")
     public Article findByIdArticle(@PathVariable Long id){
         return articleService.findByIdArticle(id);
-    }
+    } */
 /*
     @GetMapping("/{id}/tags")
     public List<Map_a_t> getArticleTags(@PathVariable Long id){

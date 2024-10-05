@@ -24,12 +24,11 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/mypage")
 public class MyPageApiController {
+
     @Autowired
     private Map_r_tService map_r_tService;
-
     @Autowired
     private RecommendationService recommendationService;
-
     @Autowired
     private ArticleService articleService;
 

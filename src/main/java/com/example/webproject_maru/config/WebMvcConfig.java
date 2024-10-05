@@ -10,7 +10,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry){
         registry.addResourceHandler("/**")
-                .addResourceLocations("file:src/main/resources/static/");
+                //로컬테스트 주소
+                //.addResourceLocations("file:src/main/resources/static/");
+                //배포 기준 주소
+                .addResourceLocations("file:/usr/local/tomcat/webapps/");
 
         // registry.addResourceHandler("/**")
         //         .addResourceLocations("file:src/main/resources/templates/");

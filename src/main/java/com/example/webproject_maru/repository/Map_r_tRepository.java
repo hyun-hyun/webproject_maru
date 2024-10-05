@@ -32,7 +32,7 @@ public interface Map_r_tRepository extends JpaRepository<Map_r_t, Long>{
     @Query("SELECT m.tag.tag FROM Map_r_t m WHERE m.review.article.id = :articleId GROUP BY m.tag.tag ORDER BY COUNT(m.tag) DESC")
     List<String> findOnlyTagsByArticleId(@Param("articleId") Long articleId);
 
-    @Query("SELECT m.tag.tag FROM Map_r_t m WHERE m.review.id=:reviewId")
+    @Query("SELECT t.tag FROM Map_r_t m JOIN m.tag t WHERE m.review.id = :reviewId")
     List<String> findTagsByReviewId(@Param("reviewId") Long reviewId);
 
     //리뷰id와 태그명으로 Map_r_t삭제

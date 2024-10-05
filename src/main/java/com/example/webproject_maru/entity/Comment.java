@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -20,6 +21,7 @@ import lombok.ToString;
 
 
 @Entity //이 클래스는 entity 선언, 바탕으로 DB에 테이블 생성
+@Table(name="comment")
 @Getter
 @Setter
 @AllArgsConstructor

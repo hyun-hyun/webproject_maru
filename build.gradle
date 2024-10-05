@@ -44,7 +44,7 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 
 	//내장 톰켓 안씀(providedRuntime) war 배포 위함
-	//providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 }
 
 tasks.named('test') {

@@ -35,6 +35,7 @@ public class SpringSecurityConfig {
                         //.requestMatchers("/user/**", "/articles/**").hasAnyRole("ADMIN", "MANAGER", "USER")
                         .requestMatchers("/images/**","/css/**","/favicon.ico").permitAll()//이미지파일들 security filter 예외
                         .requestMatchers("/api/articles/*/create_r").authenticated() // 특정 경로에 대해 인증 요구
+                        .requestMatchers("/api/reviews/**").permitAll()
                         .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
                 )
                 .requestCache(cache -> cache.requestCache(requestCache)) // 요청 캐시 설정(저 ?continue=가야할경로 그거)

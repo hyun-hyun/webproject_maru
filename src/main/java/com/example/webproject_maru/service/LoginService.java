@@ -26,10 +26,12 @@ import lombok.extern.slf4j.Slf4j;
 public class LoginService implements UserDetailsService {
 	@Autowired
 	private MemberRepository memberRepository;
+
 	
 	@Override
 	public CustomUserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		
+		log.info("로그인시도 : {}"+email);
+        System.out.println("로그인시도11 : "+email);
 		Member memberData = memberRepository.findByEmail(email);
 		
         if (memberData != null) {
