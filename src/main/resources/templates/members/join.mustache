@@ -28,20 +28,131 @@
         <input type="password" class="form-control" name="pswd" required>
     </div>
     <div class="mb-3">
-        <label>
-            <input type="radio" name="gender" value="남" required> 남성
-        </label>
-        <label>
-            <input type="radio" name="gender" value="여" required> 여성
-        </label>
-        <label>
-            <input type="radio" name="gender" value="무" required> 비공개
-        </label>
-    </div>
+        <label class="form-label"><b>성별</b></label>
+        <div class="gender-container">
+          <input type="radio" name="gender" id="male" value="남" required>
+          <label class="gender-label" for="male">남성</label>
+          
+          <input type="radio" name="gender" id="female" value="여" required>
+          <label class="gender-label" for="female">여성</label>
+          
+          <input type="radio" name="gender" id="private" value="무" required>
+          <label class="gender-label" for="private">비공개</label>
+        </div>
+      </div>
+    <br>
+    <div>
+        <b>아래 사항을 확인 후 필수 사항에 동의하여 주시기 바랍니다.</b><br>
+        <label for="terms">1. 만 14세 이상입니다.</label> 
+        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" required>
+        <br>
+        <label for="terms">2. 서비스 이용 약관에 동의합니다.</label> 
+        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" required>
+        <div class="terms-container">
+          <p id="short-text-1" class="terms-text" onclick="toggleText('short-text-1', 'full-text-1')">
+            ⑴ 목적: 본 약관은 사용자(이하 '회원')가 사이트(이하 '서비스')를 이용함에 있어 회사와 회원 간의 권리, 의무 및 책임사항을 규정함을 목적으로 합니다...  [자세히보기]
+          </p>
+          <p id="full-text-1" class="terms-text" style="display: none;" onclick="toggleText('short-text-1', 'full-text-1')">
+            ⑴ 목적: 본 약관은 사용자(이하 '회원')가 사이트(이하 '서비스')를 이용함에 있어 회사와 회원 간의 권리, 의무 및 책임사항을 규정함을 목적으로 합니다.<br>
+            ⑵ 이용계약 체결:<br>
+            - 회원가입 시 제공된 정보는 사실이어야 하며, 이메일 인증을 통해 계정의 유효성을 확인합니다.<br>
+            - 만 14세 미만은 가입할 수 없습니다.<br>
+            ⑶ 개인정보 보호<br>
+            - 개인정보는 회원관리 및 서비스 제공 목적에 한해 수집, 이용됩니다.<br>
+            - 회원은 언제든지 자신의 개인정보를 조회하고 수정할 수 있으며, 탈퇴 시 모든 개인정보는 즉시 삭제됩니다.<br>
+            ⑷ 맞춤형 광고 제공:<br>
+            - 회원이 작성한 리뷰 및 활동 기록에 기반하여 사용자 맞춤형 광고 및 콘텐츠가 제공될 수 있습니다.<br>
+            - 이를 위해 회원의 서비스 사용 정보를 분석하여 맞춤형 정보를 제공합니다.<br>
+            ⑸ 게시물 관리:<br>
+            - 회원이 작성한 리뷰나 게시물은 타인의 권리를 침해해서는 안 되며, 관련 법령에 위반되는 내용은 삭제될 수 있습니다.<br>
+            ⑹ 책임과 의무:<br>
+            - 회원은 서비스 이용 중 발생하는 문제에 대해 법적 책임을 부담하며, 회사는 회원이 제공한 정보의 신뢰성에 대해 책임을 지지 않습니다.<br>
+            ⑺ 회원 탈퇴 및 서비스 중단:<br>
+            - 회원은 언제든지 탈퇴를 요청할 수 있으며, 탈퇴 시 관련된 모든 데이터는 삭제됩니다.<br>
+            - 서비스 운영 중단 시, 회원에게 사전 공지를 통해 안내합니다.
+          </p>
+        </div>
+        
+        <label for="terms">3. 개인정보 수집 및 이용에 동의합니다.</label> 
+        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" required>
+        <div class="terms-container">
+          <p id="short-text-2" class="terms-text" onclick="toggleText('short-text-2', 'full-text-2')">
+            ⑴ 수집 목적: 회원가입 및 서비스 이용 시 회원 관리, 맞춤형 콘텐츠 제공...  [자세히보기]
+          </p>
+          <p id="full-text-2" class="terms-text" style="display: none;" onclick="toggleText('short-text-2', 'full-text-2')">
+            ⑴ 수집 목적: 회원가입 및 서비스 이용 시 회원 관리, 맞춤형 콘텐츠 제공<br>
+            ⑵ 수집 항목: 이메일 주소, 비밀번호, 성별, 닉네임<br>
+            ⑶ 보유 및 이용 기간: 회원 탈퇴 시까지.<br>
+            ⑷ 제3자 제공: 회원의 동의를 받은 경우에 한하여, 맞춤형 광고 제공 및 서비스 개선을 목적으로 제3자에게 일부 정보를 제공할 수 있습니다.<br>
+            ⑸ 보안조치: 수집된 개인정보는 암호화하여 안전하게 저장됩니다.
+          </p>
+        </div>
+      </div>
 
     <button type="submit" class="btn btn-primary">가입하기</button>
     <a href="/" class="btn btn-sm btn-outline-success">뒤로가기</a>
 
 </form>
 </div>
+
+
 {{>layouts/footer}}
+
+//성별
+<style>
+    .gender-container {
+      display: flex; /* Flexbox 사용 */
+      justify-content: flex-start; /* 좌측 정렬 */
+      gap: 2; /* 간격 작게 */
+      margin-bottom: 15px; /* 아래쪽 여백 */
+    }
+  
+    .gender-label {
+      border: 1px solid #ccc; /* 테두리 */
+      border-radius: 5px; /* 둥근 모서리 */
+      width: 100px; /* 너비 설정 */
+      text-align: center; /* 텍스트 가운데 정렬 */
+      padding: 5px; /* 안쪽 여백 */
+      cursor: pointer; /* 커서 변경 */
+    }
+  
+    input[type="radio"] {
+      display: none; /* 라디오 버튼 숨기기 */
+    }
+  
+    input[type="radio"]:checked + .gender-label {
+      background-color: #007bff; /* 선택된 경우 배경 색상 변경 */
+      color: white; /* 선택된 경우 글자 색상 변경 */
+    }
+  </style>
+
+
+//이용약관
+<script>
+    function toggleText(shortTextId, fullTextId) {
+        var shortText = document.getElementById(shortTextId);
+        var fullText = document.getElementById(fullTextId);
+        if (fullText.style.display === "none") {
+          fullText.style.display = "block";
+          shortText.style.display = "none";
+        } else {
+          fullText.style.display = "none";
+          shortText.style.display = "block";
+        }
+      }
+  </script>
+  <style>
+    .terms-container {
+      padding: 5px; /* padding 줄임 */
+      border: 1px solid #ccc; /* 테두리 추가 */
+      border-radius: 5px; /* 둥근 모서리 */
+      width: 80.77%; /* 가로 크기를 3분의 2로 설정 */
+      margin: 0 auto 15px auto; /* 위쪽 여백 0, 아래쪽 여백 15px, 좌우 가운데 정렬 */
+    }
+  
+    .terms-text {
+      padding: 5px; /* 안쪽 여백 줄임 */
+      margin: 0; /* 기본 margin 제거 */
+      font-size: 14px; /* 글자 크기 줄임_기본은 16px */
+    }
+  </style>
