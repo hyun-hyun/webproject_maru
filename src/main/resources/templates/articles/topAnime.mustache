@@ -1,12 +1,12 @@
 {{>/layouts/header}}
 <div class="container">
     <br>
-    <h2>작품 목록</h2>
+    <h2>3개월간 TOP50</h2>
     <br>
     <hr>
     <table class="table">
         <tbody>
-        {{#articleList}}
+        {{#highArticleList}}
             <tr class="article-row" data-article-id="{{id}}">
                 <td rowspan="2"><img src="/images/pic/anime/{{main_pic}}" width=150 alt="작품표지"></img></td>
                 <th><strong>[{{genre}}] {{title}}</strong><br>
@@ -19,7 +19,7 @@
             <tr class="article-row" data-article-id="{{id}}">
                 <td>{{story}}</img></td>
             </tr>
-        {{/articleList}}
+        {{/highArticleList}}
         </tbody>
     </table>
 

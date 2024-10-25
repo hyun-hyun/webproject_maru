@@ -58,7 +58,7 @@ public class MainController {
 
        // String nickname=LoginService.getNickname(email);
 
-       //3개월간 점수 높은 작품(점수순)
+       //1개월간 점수 높은 작품(점수순)
        //1. 10개 데이터 가져오기 list<entity>
        List<Article> highArticleEntityList=articleService.getRecentHighScoreArticles(15);
        // 각 Article의 태그 리스트 가져오기

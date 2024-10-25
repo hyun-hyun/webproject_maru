@@ -264,4 +264,36 @@ public class ArticleController {
         
         return ResponseEntity.badRequest().body(Map.of("error", "삭제할 수 없습니다."));
     }
+
+    //게시글 3개월간 top 50
+    @GetMapping("/articles/anime/top")
+    public String top50(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
+        //미로그인시 에러처리
+        String nickname;
+        Long member_id=null;
+        if(userDetails!=null){
+            nickname = userDetails.member.getNickname();
+            member_id = userDetails.member.getId();
+            model.addAttribute("nickname", nickname);
+            model.addAttribute("member_id", member_id);
+        }else{
+            //로그인 안된경우
+            nickname="방문자";
+        }
+        
+       //3개월간 점수 높은 작품(점수순)
+       //1. 50개 데이터 가져오기 list<entity>
+       List<Article> highArticleEntityList=articleService.get3mRecentHighScoreArticles(50);
+       // 각 Article의 태그 리스트 가져오기
+       for (Article article : highArticleEntityList) {
+           Long articleId = article.getId();
+           List<String> usedTags = map_r_tService.getOnlyTagsByArticleId(articleId);  // List<String>으로 태그를 가져옴
+           article.setUsedTags(usedTags);  // Article 엔티티에 태그 리스트를 추가
+       }
+       //2. 모델에 데이터 등록
+       model.addAttribute("highArticleList", highArticleEntityList);
+
+        //3. 뷰 페이지 설정
+        return "articles/top50Anime";
+    }
 }

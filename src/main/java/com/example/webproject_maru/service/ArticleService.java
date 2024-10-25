@@ -113,11 +113,18 @@ public class ArticleService {
         return articleEntityList;
     }
 
-    //3개월간 점수 높은순 정렬(15개 페이징)
-    public List<Article> getRecentHighScoreArticles(int limit) {
+    //3개월간 점수 높은순 정렬(50개 페이징)
+    public List<Article> get3mRecentHighScoreArticles(int limit) {
         LocalDateTime threeMonthsAgo = LocalDateTime.now().minusMonths(3);
         Pageable pageable = PageRequest.of(0, limit); // 페이지 번호 0, 개수 limit
         return articleRepository.findRecentHighScoreArticles(threeMonthsAgo, pageable).getContent();
+    }
+
+    //1개월간 점수 높은순 정렬(15개 페이징)
+    public List<Article> getRecentHighScoreArticles(int limit) {
+        LocalDateTime oneMonthsAgo = LocalDateTime.now().minusMonths(1);
+        Pageable pageable = PageRequest.of(0, limit); // 페이지 번호 0, 개수 limit
+        return articleRepository.findRecentHighScoreArticles(oneMonthsAgo, pageable).getContent();
     }
     
     //articleId별 tag조회
