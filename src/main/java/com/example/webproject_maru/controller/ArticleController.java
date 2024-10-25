@@ -294,6 +294,6 @@ public class ArticleController {
        model.addAttribute("highArticleList", highArticleEntityList);
 
         //3. 뷰 페이지 설정
-        return "articles/top50Anime";
+        return "articles/topAnime";
     }
 }
