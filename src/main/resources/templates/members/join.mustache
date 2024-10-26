@@ -25,8 +25,9 @@
     <div id="emailMessage" class="alert" style="display:none;"></div>
 
     <div id="authContainer" style="display: none;">
-        <input type="text" id="authCode" placeholder="인증코드" maxlength="8">
+        <input type="text" id="authCode" name="authCode" placeholder="인증코드" maxlength="6">
         <button type="button" id="confirmAuth" class="btn btn-success">확인</button>
+        <span id="authOrNot"></span>
         <span id="timer">05:00</span>
     </div>
 
@@ -74,8 +75,8 @@
             ⑶ 개인정보 보호<br>
             - 개인정보는 회원관리 및 서비스 제공 목적에 한해 수집, 이용됩니다.<br>
             - 회원은 언제든지 자신의 개인정보를 조회하고 수정할 수 있으며, 탈퇴 시 모든 개인정보는 즉시 삭제됩니다.<br>
-            ⑷ 맞춤형 광고 제공:<br>
-            - 회원이 작성한 리뷰 및 활동 기록에 기반하여 사용자 맞춤형 광고 및 콘텐츠가 제공될 수 있습니다.<br>
+            ⑷ 맞춤형 컨텐츠 제공:<br>
+            - 회원이 작성한 리뷰 및 활동 기록에 기반하여 사용자 맞춤형 광고 및 컨텐츠가 제공될 수 있습니다.<br>
             - 이를 위해 회원의 서비스 사용 정보를 분석하여 맞춤형 정보를 제공합니다.<br>
             ⑸ 게시물 관리:<br>
             - 회원이 작성한 리뷰나 게시물은 타인의 권리를 침해해서는 안 되며, 관련 법령에 위반되는 내용은 삭제될 수 있습니다.<br>
@@ -91,10 +92,10 @@
         <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" required>
         <div class="terms-container">
           <p id="short-text-2" class="terms-text" onclick="toggleText('short-text-2', 'full-text-2')">
-            ⑴ 수집 목적: 회원가입 및 서비스 이용 시 회원 관리, 맞춤형 콘텐츠 제공...  [자세히보기]
+            ⑴ 수집 목적: 회원가입 및 서비스 이용 시 회원 관리, 맞춤형 컨텐츠 제공...  [자세히보기]
           </p>
           <p id="full-text-2" class="terms-text" style="display: none;" onclick="toggleText('short-text-2', 'full-text-2')">
-            ⑴ 수집 목적: 회원가입 및 서비스 이용 시 회원 관리, 맞춤형 콘텐츠 제공<br>
+            ⑴ 수집 목적: 회원가입 및 서비스 이용 시 회원 관리, 맞춤형 컨텐츠 제공<br>
             ⑵ 수집 항목: 이메일 주소, 비밀번호, 성별, 닉네임<br>
             ⑶ 보유 및 이용 기간: 회원 탈퇴 시까지.<br>
             ⑷ 제3자 제공: 회원의 동의를 받은 경우에 한하여, 맞춤형 광고 제공 및 서비스 개선을 목적으로 제3자에게 일부 정보를 제공할 수 있습니다.<br>
@@ -148,7 +149,7 @@
 
         const nickname = document.getElementById('nickname').value;
         // AJAX 요청으로 닉네임 중복 확인
-        fetch(`/checkNickname?nickname=${nickname}`)
+        fetch(`/api/checkNickname?nickname=${nickname}`)
             .then(response => response.json())
             .then(data => {
                 const messageDiv = document.getElementById('nicknameMessage');
@@ -174,7 +175,7 @@
 
         const email = document.getElementById('email').value;
         // AJAX 요청으로 이메일 중복 확인
-        fetch(`/checkEmail?email=${email}`)
+        fetch(`/api/checkEmail?email=${email}`)
             .then(response => response.json())
             .then(data => {
                 const messageDiv = document.getElementById('emailMessage');
@@ -188,17 +189,57 @@
                     document.getElementById('emailVerify').style.display = 'inline';
                     // 인증 버튼 클릭 시 처리
                     document.getElementById('emailVerify').addEventListener('click', function() {
-                        alert("입력하신 이메일로 인증코드를 보냈습니다.");
-                        document.getElementById('authContainer').style.display = 'block';
-                        startTimer();
+                      //인증코드 전송
+                      alert("입력하신 이메일로 인증코드를 보냈습니다.");
 
+                      fetch('/api/send-verification',{
+                        method:'POST',
+                        body:new URLSearchParams({email: email}),
+                      }).then(()=>{
+                        document.getElementById('authContainer').style.display = 'block';
+                        startTimer();                        
+                      });
                     });
+                      
                 }
                 messageDiv.style.display = 'block';
                 emailCheckCount++; // 요청 카운트 증가
             })
             .catch(error => console.error('Error:', error));
     });
+    document.getElementById('confirmAuth').addEventListener('click',function(){
+      const authCode = document.getElementById('authCode').value;
+      const email = document.getElementById('email').value;
+
+      fetch('/api/verify-code',{
+        method: 'POST',
+        body: new URLSearchParams({email: email, code: authCode})
+      }).then(response => response.json()).then(data=>{
+        const authMessage=document.getElementById('authOrNot');
+        if(data){
+          clearInterval(timer); // 타이머 멈추기
+          authMessage.textContent = '인증되었습니다.';
+          document.getElementById('confirmAuth').disabled = true; // 버튼 비활성화
+        }else{
+          authMessage.textContent='일치하지 않습니다.';
+        }
+      }).catch(error=>console.error('Error:',error));
+    });
+
+    document.getElementById('submitButton').addEventListener('click', function(event) {
+      const nicknameMessage = document.getElementById('nicknameMessage');
+      const emailMessage = document.getElementById('emailMessage');
+      const authMessage = document.getElementById('authOrNot');
+  
+      if (
+          !nicknameMessage.classList.contains('alert-success') ||
+          !emailMessage.classList.contains('alert-success') ||
+          authMessage.textContent !== "인증되었습니다."
+      ) {
+          event.preventDefault(); // 요청을 막음
+          alert("중복확인, 이메일 인증절차를 완료해주세요."); // 사용자에게 안내
+      }
+  });
 
     //인증 5분 타이머
     function startTimer() {
