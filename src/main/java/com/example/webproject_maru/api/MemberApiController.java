@@ -48,13 +48,13 @@ public class MemberApiController {
     }
 
     //이메일 인증
-    private final Map<String, String> verificationCodes = new HashMap<>();
+    //private final Map<String, String> verificationCodes = new HashMap<>();
 
     @PostMapping("/send-verification")
     public ResponseEntity<String> sendVerification(@RequestParam String email) throws MessagingException {
         String code = generateVerificationCode();
-        //redisTemplate.opsForValue().set(email, code, 5, TimeUnit.MINUTES); // 5분 후 만료
-        verificationCodes.put(email, code);
+        redisTemplate.opsForValue().set(email, code, 5, TimeUnit.MINUTES); // 5분 후 만료
+        //verificationCodes.put(email, code);
         try{
             emailService.sendVerificationEmail(email, code);
         }catch(Exception e){
@@ -65,8 +65,8 @@ public class MemberApiController {
 
     @PostMapping("/verify-code")
     public ResponseEntity<Boolean> verifyCode(@RequestParam String email, @RequestParam String code) {
-        String correctCode = verificationCodes.get(email);
-        //String correctCode = redisTemplate.opsForValue().get(email);
+        //String correctCode = verificationCodes.get(email);
+        String correctCode = redisTemplate.opsForValue().get(email);
 
         if (correctCode != null && correctCode.equals(code)) {
             return ResponseEntity.ok(true);
