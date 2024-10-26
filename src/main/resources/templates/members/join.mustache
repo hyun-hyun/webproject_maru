@@ -1,32 +1,46 @@
 {{>layouts/header}}
 <div class="container">
-
+<br>
 <h2><div style="text-align:center">회원가입</div></h2>
 
 <form class="px-4 py-3" action="/joinProc" method="post">
     <div class="mb-3">
         <label class="form-label"><b>닉네임</b></label>
-        <input type="text" class="form-control" name="nickname" required>
+        <div class="input-group">
+            <input type="text" class="form-control" name="nickname" id="nickname" placeholder="닉네임" required>
+            <button type="button" class="btn btn-outline-secondary" id="nicknameCheck">중복확인</button>
+        </div>
     </div>
-    {{#nicknameError}}
-    <div class="alert alert-danger">
-      이미 등록된 닉네임입니다. 다른 닉네임으로 시도하세요.
-    </div>
-    {{/nicknameError}}
+    <div id="nicknameMessage" class="alert" style="display:none;"></div>
+
     <div class="mb-3">
         <label class="form-label"><b>이메일</b></label><br>
         <p>*가입 시 ID로 활용되고 안내사항이 있을 경우 이 메일주소로 안내됩니다.*</p>
-        <input type="email" class="form-control" name="email" required>
+        <div class="input-group">
+            <input type="email" class="form-control" name="email" id="email" placeholder="이메일" required>
+            <button type="button" class="btn btn-outline-secondary" id="emailCheck">중복확인</button>
+            <button type="button" id="emailVerify" class="btn btn-success" style="display:none;">인증</button>
+        </div>
     </div>
-    {{#emailError}}
-    <div class="alert alert-danger">
-        이미 등록된 이메일입니다. 다른 이메일으로 시도하세요.
+    <div id="emailMessage" class="alert" style="display:none;"></div>
+
+    <div id="authContainer" style="display: none;">
+        <input type="text" id="authCode" placeholder="인증코드" maxlength="8">
+        <button type="button" id="confirmAuth" class="btn btn-success">확인</button>
+        <span id="timer">05:00</span>
     </div>
-    {{/emailError}}
+
     <div class="mb-3">
         <label class="form-label"><b>비밀번호</b></label>
-        <input type="password" class="form-control" name="pswd" required>
+        <input type="password" class="form-control" name="pswd" id="password" placeholder="비밀번호" required>
+        <div class="alert alert-danger" id="passwordLengthError" style="display:none;">비밀번호는 최소 5자 이상 입력해주세요.</div>
+        <div class="alert alert-danger" id="passwordCharacterError" style="display:none;">영어와 숫자를 섞어서 비밀번호를 만들어주세요.</div>
+        
+        <input type="password" class="form-control" id="confirmPassword" placeholder="비밀번호 확인" required>
+        <div class="alert alert-danger" id="confirmPasswordError" style="display:none;">비밀번호가 일치하지 않습니다.</div>
+        <div class="alert alert-success" id="confirmPasswordSuccess" style="display:none;">비밀번호가 일치합니다.</div>
     </div>
+
     <div class="mb-3">
         <label class="form-label"><b>성별</b></label>
         <div class="gender-container">
@@ -43,10 +57,10 @@
     <br>
     <div>
         <b>아래 사항을 확인 후 필수 사항에 동의하여 주시기 바랍니다.</b><br>
-        <label for="terms">1. 만 14세 이상입니다.</label> 
+        <label for="terms">1. 만 14세 이상입니다.(필수)</label> 
         <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" required>
         <br>
-        <label for="terms">2. 서비스 이용 약관에 동의합니다.</label> 
+        <label for="terms">2. 서비스 이용 약관에 동의합니다.(필수)</label> 
         <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" required>
         <div class="terms-container">
           <p id="short-text-1" class="terms-text" onclick="toggleText('short-text-1', 'full-text-1')">
@@ -73,7 +87,7 @@
           </p>
         </div>
         
-        <label for="terms">3. 개인정보 수집 및 이용에 동의합니다.</label> 
+        <label for="terms">3. 개인정보 수집 및 이용에 동의합니다.(필수)</label> 
         <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" required>
         <div class="terms-container">
           <p id="short-text-2" class="terms-text" onclick="toggleText('short-text-2', 'full-text-2')">
@@ -89,14 +103,152 @@
         </div>
       </div>
 
-    <button type="submit" class="btn btn-primary">가입하기</button>
-    <a href="/" class="btn btn-sm btn-outline-success">뒤로가기</a>
+    <button type="submit" id="submitButton" class="btn btn-primary">가입하기</button>
+    <a href="/" class="btn btn-sm btn-outline-success">메인으로</a>
 
 </form>
 </div>
 
 
 {{>layouts/footer}}
+
+//중복확인, 비밀번호 검사
+<script>
+    // 닉네임 중복 확인 버튼 활성화/비활성화
+    const nicknameInput = document.getElementById('nickname');
+    const nicknameCheckButton = document.getElementById('nicknameCheck');
+
+    nicknameInput.addEventListener('input', function() {
+        const firstChar = this.value.charAt(0);
+        const isValid = this.value && /^[a-zA-Z0-9가-힣]/.test(firstChar); // 첫 글자가 빈칸, 특수문자, 한국어가 아닌지 체크
+        nicknameCheckButton.disabled = !isValid; // 조건에 따라 비활성화
+    });
+
+    // 이메일 중복 확인 버튼 활성화/비활성화
+    const emailInput = document.getElementById('email');
+    const emailCheckButton = document.getElementById('emailCheck');
+
+    emailInput.addEventListener('input', function() {
+        emailCheckButton.disabled = !this.value; // 입력값이 없으면 비활성화
+    });
+
+    // 초기 상태에서 버튼 비활성화
+    nicknameCheckButton.disabled = true; // 초기에는 비활성화
+    emailCheckButton.disabled = true; // 초기에는 비활성화
+
+    let nicknameCheckCount = 0; // 닉네임 중복확인 요청 카운트
+    let emailCheckCount = 0; // 이메일 중복확인 요청 카운트
+
+    // 닉네임 중복 확인
+    document.getElementById('nicknameCheck').addEventListener('click', function() {
+        if (nicknameCheckCount >= 20) {
+            alert("닉네임 중복 확인 요청은 20번을 초과할 수 없습니다.");
+            return; // 요청하지 않음
+        }
+
+        const nickname = document.getElementById('nickname').value;
+        // AJAX 요청으로 닉네임 중복 확인
+        fetch(`/checkNickname?nickname=${nickname}`)
+            .then(response => response.json())
+            .then(data => {
+                const messageDiv = document.getElementById('nicknameMessage');
+                if (data.exists) {
+                    messageDiv.className = 'alert alert-danger';
+                    messageDiv.textContent = '이미 등록된 닉네임입니다. 다른 닉네임으로 시도하세요.';
+                } else {
+                    messageDiv.className = 'alert alert-success';
+                    messageDiv.textContent = '사용 가능한 닉네임입니다.';
+                }
+                messageDiv.style.display = 'block';
+                nicknameCheckCount++; // 요청 카운트 증가
+            })
+            .catch(error => console.error('Error:', error));
+    });
+
+    // 이메일 중복 확인
+    document.getElementById('emailCheck').addEventListener('click', function() {
+        if (emailCheckCount >= 20) {
+            alert("이메일 중복 확인 요청은 20번을 초과할 수 없습니다.");
+            return; // 요청하지 않음
+        }
+
+        const email = document.getElementById('email').value;
+        // AJAX 요청으로 이메일 중복 확인
+        fetch(`/checkEmail?email=${email}`)
+            .then(response => response.json())
+            .then(data => {
+                const messageDiv = document.getElementById('emailMessage');
+                if (data.exists) {
+                    messageDiv.className = 'alert alert-danger';
+                    messageDiv.textContent = '이미 등록된 이메일입니다. 다른 이메일로 시도하세요.';
+                    document.getElementById('emailVerify').style.display = 'none';
+                } else {
+                    messageDiv.className = 'alert alert-success';
+                    messageDiv.textContent = '사용 가능한 이메일입니다.';
+                    document.getElementById('emailVerify').style.display = 'inline';
+                    // 인증 버튼 클릭 시 처리
+                    document.getElementById('emailVerify').addEventListener('click', function() {
+                        alert("입력하신 이메일로 인증코드를 보냈습니다.");
+                        document.getElementById('authContainer').style.display = 'block';
+                        startTimer();
+
+                    });
+                }
+                messageDiv.style.display = 'block';
+                emailCheckCount++; // 요청 카운트 증가
+            })
+            .catch(error => console.error('Error:', error));
+    });
+
+    //인증 5분 타이머
+    function startTimer() {
+        let timeLeft = 300; // 5분
+        const timerDisplay = document.getElementById('timer');
+        const authContainer = document.getElementById('authContainer');
+        authContainer.style.display = 'block';
+
+        const timer = setInterval(() => {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            timeLeft--;
+
+            if (timeLeft < 0) {
+                clearInterval(timer);
+                document.getElementById('confirmAuth').disabled = true;
+                document.getElementById('confirmAuth').classList.remove('btn-success');
+                document.getElementById('confirmAuth').classList.add('btn-secondary');
+                document.getElementById('confirmAuth').textContent = '인증시간 만료';
+            }
+        }, 1000);
+    }
+
+    // 비밀번호 유효성 검사
+    document.getElementById('password').addEventListener('input', function() {
+        const password = this.value;
+        const lengthError = document.getElementById('passwordLengthError');
+        const characterError = document.getElementById('passwordCharacterError');
+
+        lengthError.style.display = password.length < 5 ? 'block' : 'none';
+        characterError.style.display = !(/\d/.test(password) && /[a-zA-Z]/.test(password)) ? 'block' : 'none';
+    });
+
+    // 비밀번호 확인 검사
+    document.getElementById('confirmPassword').addEventListener('input', function() {
+        const confirmPassword = this.value;
+        const password = document.getElementById('password').value;
+        const confirmPasswordError = document.getElementById('confirmPasswordError');
+        const confirmPasswordSuccess = document.getElementById('confirmPasswordSuccess');
+
+        if (confirmPassword !== password) {
+            confirmPasswordError.style.display = 'block';
+            confirmPasswordSuccess.style.display = 'none';
+        } else {
+            confirmPasswordError.style.display = 'none';
+            confirmPasswordSuccess.style.display = 'block';
+        }
+    });
+</script>
 
 //성별
 <style>

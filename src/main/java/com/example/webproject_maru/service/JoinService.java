@@ -25,33 +25,6 @@ public class JoinService {
     Boolean isNick;
     Boolean isEmail;
     public void joinProcess(MemberForm memberForm){
-/*
-        //DB에 이미 동일한 nickname, email을 가진 회원이 존재하는지?
-        if(memberRepository.existsByNickname(memberForm.getNickname())!=null){
-            isNick=true;
-            log.info("join의 isNick=1");
-        }
-        else{
-            isNick=false;
-            log.info("join의 isNick=0");
-
-        }
-        if(memberRepository.existsByEmail(memberForm.getEmail())!=null){
-            isEmail=true;
-        }
-        else{
-            isEmail=false;
-        }
-        
-        if(isNick!=null){
-            log.info("중복member 존재");
-        }
-
-        else if((isEmail!=null)){
-            log.info("중복member 존재");
-        }
-        log.info("중복member 존재없음!");
-*/
 
         Member data=new Member();
 
@@ -69,6 +42,15 @@ public class JoinService {
 
         memberRepository.save(data);
     }
+
+    public boolean getIsNick(String nickname) {
+        return memberRepository.existsByNickname(nickname).size() > 0;
+    }
+
+    public boolean getIsEmail(String email) {
+        return memberRepository.existsByEmail(email).size() > 0;
+    }
+
 
     public Boolean getIsNick(MemberForm memberForm){
         if(memberRepository.existsByNickname(memberForm.getNickname()).size()==0){
