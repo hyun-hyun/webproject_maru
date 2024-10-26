@@ -49,7 +49,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
 	//email인증용 Redis
-	#implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	//implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	//------배포시 수정부분------
 	//내장 톰켓 안씀(providedRuntime) war 배포 위함
