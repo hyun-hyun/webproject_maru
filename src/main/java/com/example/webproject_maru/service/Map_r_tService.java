@@ -5,10 +5,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.example.webproject_maru.dto.TagCountForm;
-import com.example.webproject_maru.dto.TagForm;
+import com.example.webproject_maru.dto.TagCountDto;
+import com.example.webproject_maru.dto.TagDto;
 import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.entity.Map_r_t;
 import com.example.webproject_maru.entity.Review;
@@ -27,31 +29,31 @@ public class Map_r_tService {
     Map_a_tService map_a_tService;
 
     //게시글용 태그명, 태그수
-    public List<TagCountForm> countTagSelectionsByArticleId(Long articleId) {
+    public List<TagCountDto> countTagSelectionsByArticleId(Long articleId) {
     List<Object[]> results = map_r_tRepository.countTagSelectionsByArticleId(articleId);
     return results.stream()
                   .map(
-                      result -> new TagCountForm((String) result[0],  // tagName
+                      result -> new TagCountDto((String) result[0],  // tagName
                       (Long) result[1])   // COUNT
                   ).collect(Collectors.toList());
     }
 
     //마이페이지 워드클라우드용 태그명, 태그수 _100개상한
-    public List<TagCountForm> countTagSelectionsByMemberId(Long memberId){
+    public List<TagCountDto> countTagSelectionsByMemberId(Long memberId){
         List<Object[]> results=map_r_tRepository.countTagSelectionsByMemberId(memberId);
         return results.stream()
                     .map(
-                        result -> new TagCountForm((String) result[0],
+                        result -> new TagCountDto((String) result[0],
                                 (Long) result[1])
                     ).limit(100).collect(Collectors.toList());
     }
 
     //마이페이지 추천용 태그명, 태그수 _20개상한
-    public List<TagForm> getTagSelectionsByMemberId(Long memberId){
+    public List<TagDto> getTagSelectionsByMemberId(Long memberId){
         List<Object[]> results=map_r_tRepository.getTagSelectionsByMemberId(memberId);
         return results.stream()
                     .map(
-                        result -> new TagForm((Long) result[0],
+                        result -> new TagDto((Long) result[0],
                                 (String) result[1])
                     ).limit(20).collect(Collectors.toList());
     }
@@ -83,15 +85,18 @@ public class Map_r_tService {
 
     // articleId를 이용하여 태그 목록을 가져오는 메서드(메인화면용)_5개상한
     public List<String> getOnlyTagsByArticleId(Long articleId) {
-        List<String> tags =map_r_tRepository.findOnlyTagsByArticleId(articleId);
         // 상위 5개만 반환
-        return tags.stream().limit(5).collect(Collectors.toList());
+        int limit=5;
+        Pageable pageable=PageRequest.of(0,limit);
+        List<String> tags =map_r_tRepository.findOnlyTagsByArticleId(articleId, pageable).getContent();
+        return tags.stream().collect(Collectors.toList());
+        //return tags.stream().limit(5).collect(Collectors.toList());
 
     }
 
     // articleId를 이용하여 태그 목록을 가져오는 메서드(게시글 수정용)
-    public List<String> getOnlyAllTagsByArticleId(Long articleId) {
-        List<String> tags =map_r_tRepository.findOnlyTagsByArticleId(articleId);
+    public List<String> getAllTagsByArticleId(Long articleId) {
+        List<String> tags =map_r_tRepository.findAllTagsByArticleId(articleId);
         return tags.stream().collect(Collectors.toList());
 
     }

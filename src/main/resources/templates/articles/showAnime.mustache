@@ -44,58 +44,15 @@
 <label class="form-label">등장인물</label>
 <br>
 <div class="image-container" align="center">
-
-  {{#subPic1.realChar}}
+  {{#subPics}}
   <div class="image-item">
-  <img src="../../images/pic/anime/{{subPic1.pic}}" class="addImage_m" alt="등장인물1"></img>
-  {{subPic1.realChar}}<br>
-  <div class="gray-text">{{subPic1.realVoiceChar}}</div>
-  {{subPic1.korChar}}<br>
-  <div class="gray-text">{{subPic1.korVoiceChar}}</div>
+    <img src="../../images/pic/anime/{{pic}}" class="addImage_m" alt="등장인물">
+    {{realChar}}<br>
+    <div class="gray-text">{{realVoiceChar}}</div>
+    {{korChar}}<br>
+    <div class="gray-text">{{korVoiceChar}}</div>
   </div>
-  {{/subPic1.realChar}}
-
-  {{#subPic2.realChar}}
-  <div class="image-item">
-  <img src="../../images/pic/anime/{{subPic2.pic}}" class="addImage_m" alt="등장인물2"></img>
-  {{subPic2.realChar}}<br>
-  <div class="gray-text">{{subPic2.realVoiceChar}}</div>
-  {{subPic2.korChar}}<br>
-  <div class="gray-text">{{subPic2.korVoiceChar}}</div>
-  </div>
-  {{/subPic2.realChar}}
-
-
-  {{#subPic3.realChar}}
-  <div class="image-item">
-  <img src="../../images/pic/anime/{{subPic3.pic}}" class="addImage_m" alt="등장인물3"></img>
-  {{subPic3.realChar}}<br>
-  <div class="gray-text">{{subPic3.realVoiceChar}}</div>
-  {{subPic3.korChar}}<br>
-  <div class="gray-text">{{subPic3.korVoiceChar}}</div>
-  </div>
-  {{/subPic3.realChar}}
-  
-  {{#subPic4.realChar}}
-  <div class="image-item">
-  <img src="../../images/pic/anime/{{subPic4.pic}}" class="addImage_m" alt="등장인물4"></img>
-  {{subPic4.realChar}}<br>
-  <div class="gray-text">{{subPic4.realVoiceChar}}</div>
-  {{subPic4.korChar}}<br>
-  <div class="gray-text">{{subPic4.korVoiceChar}}</div>
-  </div>
-  {{/subPic4.realChar}}
-
-  {{#subPic5.realChar}}
-  <div class="image-item">
-  <img src="../../images/pic/anime/{{subPic5.pic}}" class="addImage_m" alt="등장인물5"></img>
-  {{subPic5.realChar}}<br>
-  <div class="gray-text">{{subPic5.realVoiceChar}}</div>
-  {{subPic5.korChar}}<br>
-  <div class="gray-text">{{subPic5.korVoiceChar}}</div>
-  </div>
-  {{/subPic5.realChar}}
-
+  {{/subPics}}
 
 </div>
 <br> 
@@ -134,7 +91,7 @@
 <br>
 
 <!--나의 리뷰-->
-{{#my_review}}
+{{#myReview}}
 <div class="card mb-3" id="reviews-{{id}}">
   <div class="card-body">
 <div id="review-section">
@@ -169,9 +126,9 @@
 </div>
 </div>
 
-{{/my_review}}
+{{/myReview}}
 
-{{^my_review}}
+{{^myReview}}
 <!--로그인ㅇ&리뷰x-->
   <!--<link href="/resources/templates/layouts/css.mustache" rel="stylesheet"/>-->
   <!--<form class="mb-3" name="starform" action="/articles/{{id}}/create_r" id="scoreForm" method="post">-->
@@ -192,12 +149,12 @@
       <!-- 기존 태그 선택 -->
       <div id="existing-tags">
       <span>작품의 <strong>키워드</strong>를 선택해주세요</span><br>
-        {{#tagList}}
+        {{#allTags}}
         <label class="checkbox-label">
           <input type="checkbox" name="selectingTags" value="{{.}}">
           <span>{{.}}</span>
         </label>
-        {{/tagList}}
+        {{/allTags}}
       </div>
       <!-- 추가된 태그 표시 -->
       <div id="addedTagContainer" style="display: none;">
@@ -223,7 +180,7 @@
     <button type="button" class="btn btn-primary" id="reviewCreateBtn">리뷰 작성</button>
   </form>	
 
-{{/my_review}}
+{{/myReview}}
 
 <!--리뷰수정-->
 <!-- Modal -->
@@ -268,12 +225,12 @@
             <div class="mb-3">
               <label class="form-label">키워드 선택</label>
               <div id="existing-tags">
-                {{#tagList}}
+                {{#allTags}}
                   <label class="checkbox-label">
                     <input type="checkbox" name="selectingTags" value={{.}} {{#selected}}checked{{/selected}}>
                     <span>{{.}}</span>
                   </label>
-                {{/tagList}}
+                {{/allTags}}
               </div>
             </div>
             <!--한줄평 입력-->

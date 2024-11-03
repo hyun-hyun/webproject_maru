@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
+//import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,20 +14,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.webproject_maru.service.EmailService;
+//import com.example.webproject_maru.service.EmailService;
 import com.example.webproject_maru.service.JoinService;
 
-import jakarta.mail.MessagingException;
+//import jakarta.mail.MessagingException;
 
 @RestController
 @RequestMapping("/api")
 public class MemberApiController {
     @Autowired
     private JoinService joinService;
-    @Autowired
-    private EmailService emailService;
-    @Autowired
-    private StringRedisTemplate redisTemplate;
+    //@Autowired
+    //private EmailService emailService;
+    //@Autowired
+    //private StringRedisTemplate redisTemplate;
 
     // 닉네임 중복 확인
     @GetMapping("/checkNickname")
@@ -46,7 +46,7 @@ public class MemberApiController {
         response.put("exists", exists);
         return ResponseEntity.ok(response);
     }
-
+/* 
     //이메일 인증
     //private final Map<String, String> verificationCodes = new HashMap<>();
 
@@ -87,5 +87,5 @@ public class MemberApiController {
         }
         return code.toString();
     }
-    
+    */
 }

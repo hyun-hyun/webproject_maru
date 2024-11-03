@@ -8,8 +8,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.webproject_maru.dto.TagForm;
-import com.example.webproject_maru.dto.TagCountForm;
+import com.example.webproject_maru.dto.TagDto;
+import com.example.webproject_maru.dto.TagCountDto;
 import com.example.webproject_maru.repository.ArticleRepository;
 import com.example.webproject_maru.repository.ReviewRepository;
 
@@ -33,7 +33,7 @@ public class RecommendationService {
     public List<Long> recommendArticleIds(Long memberId) {
         log.info("추천 서비스 진입");
         // 1단계: 멤버의 태그 데이터 가져오기
-        List<TagForm> memberTags = map_r_tService.getTagSelectionsByMemberId(memberId);
+        List<TagDto> memberTags = map_r_tService.getTagSelectionsByMemberId(memberId);
         
         // 2단계: 태그 점수 매핑 (1위: 10점, 2위: 9점 ...)
         Map<Long, Integer> tagScores = new HashMap<>();
@@ -50,7 +50,7 @@ public class RecommendationService {
         // 3단계: 각 게시글별 리뷰에서 선택된 태그의 종류와 개수 찾기
         Map<Long, Long> articleScores = new HashMap<>(); // 게시글 ID와 총 점수를 저장
 
-        for (TagForm tag : memberTags) {
+        for (TagDto tag : memberTags) {
             List<Long> articleIds = map_a_tService.findArticleIdsByTagId(tag.getT_id());
 
             for (Long articleId : articleIds) {

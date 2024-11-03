@@ -23,8 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.webproject_maru.dto.ArticleForm;
 import com.example.webproject_maru.dto.SubPicForm;
-import com.example.webproject_maru.dto.TagCountForm;
-import com.example.webproject_maru.dto.TagForm;
+import com.example.webproject_maru.dto.TagCountDto;
+import com.example.webproject_maru.dto.TagDto;
 import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.entity.Map_a_t;
 import com.example.webproject_maru.entity.Member;
@@ -131,8 +131,8 @@ public class ArticleService {
     public List<String> getTagsByArticleId(Long articleId){
         return map_a_tService.getTagsByArticleId(articleId);
     }
-
-    public List<TagCountForm> countTagSelectionsByArticleId(Long articleId){
+/* 
+    public List<TagCountDto> countTagSelectionsByArticleId(Long articleId){
         return map_r_tService.countTagSelectionsByArticleId(articleId);
     }
 
@@ -145,27 +145,30 @@ public class ArticleService {
             if(tags!=null){
                 articleEntity.setAllTags(tags);
             }
-            List<String> usedTags=map_r_tService.getOnlyAllTagsByArticleId(articleId);
+            List<String> usedTags=map_r_tService.getAllTagsByArticleId(articleId);
             if(usedTags!=null){
                 articleEntity.setUsedTags(usedTags);
             }
         }
         return articleEntity;
     }
-
+*/
     //수정데이터 반영
     @Transactional
     public Article update(ArticleForm form, MultipartFile[] newFiles, SubPicForm[] subPicForms, String category){
         //1. Article 조회
         Article article=articleRepository.findById(form.getId())
-                .orElseThrow(() -> new IllegalArgumentException("리뷰 생성 실패!"+
-                        "대상 게시글이 없습니다."));//부모게시글 없으면 에러 메시지 출력
+                .orElseThrow(() -> new IllegalArgumentException("게시글 수정 실패!"+
+                        "대상 게시글이 없습니다."));//해당게시글 없으면 에러 메시지 출력
+        Member member=memberRepository.findById(form.getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException("게시글 수정 실패!"+
+                        "작성자 memberId가 없습니다."));//해당게시글 없으면 에러 메시지 출력
         //기존태그 리스트
         List<String> beforeTags=getTagsByArticleId(form.getId());
         //2. Article 수정
         //기본내용
-        article.patch(form);
-        Article updating=updateSubPic(subPicForms, article);
+        article.patch(form, member);
+        Article updating=updateSubPics(subPicForms, article);
         //이미지
         try{
             updateImage(newFiles, category, updating);
@@ -248,314 +251,142 @@ public class ArticleService {
     }
 
     private void createSubPic(SubPicForm[] subPicForms, Article article) {
+        List<SubPic> subPics = new ArrayList<>();
+    
         for (int i = 0; i < subPicForms.length; i++) {
             SubPicForm subPicForm = subPicForms[i];
-
-            log.info("subPicForm밑");
-            if(subPicForm != null){
+            if (subPicForm != null) {
                 SubPic subPic = subPicForm.toEntity();
-                log.info("subPicForm.toEntity");
-                switch (i) {
-                    case 0:
-                        article.setSubPic1(subPic);
-                        break;
-                    case 1:
-                        article.setSubPic2(subPic);
-                        break;
-                    case 2:
-                        article.setSubPic3(subPic);
-                        break;
-                    case 3:
-                        article.setSubPic4(subPic);
-                        break;
-                    case 4:
-                        article.setSubPic5(subPic);
-                        break;
-                    default:
-                        // 예외 처리나 로깅 등
-                        break;
+                // Name과 Pic 값 설정
+                if (i > 0) { // 첫 번째 서브픽은 메인픽에서 가져옴
+                    subPic.setName(subPicForm.getRealChar()); // 예시로 실사 캐릭터명을 name으로 사용
+                    subPic.setPic(""); // 나중에 파일 저장 후 설정
                 }
+                subPics.add(subPic);
             }
+        }
+        article.setSubPics(subPics);
+    }
+    
+    private Article updateSubPics(SubPicForm[] subPicForms, Article article) {
+        List<SubPic> subPics = article.getSubPics();
+    
+        for (int i = 0; i < subPicForms.length; i++) {
+            SubPicForm subPicForm = subPicForms[i];
+    
+            if (subPicForm != null && i < subPics.size()) {
+                updateSubPic(subPics.get(i), subPicForm);
+            }
+        }
+    
+        return article;
+    }
+    
+    private void updateSubPic(SubPic subPic, SubPicForm subPicForm) {
+        if (subPic.getRealChar() != null && !subPic.getRealChar().equals(subPicForm.getRealChar())) {
+            subPic.setRealChar(subPicForm.getRealChar());
+        }
+        if (subPic.getRealVoiceChar() != null && !subPic.getRealVoiceChar().equals(subPicForm.getRealVoiceChar())) {
+            subPic.setRealVoiceChar(subPicForm.getRealVoiceChar());
+        }
+        if (subPic.getKorChar() != null && !subPic.getKorChar().equals(subPicForm.getKorChar())) {
+            subPic.setKorChar(subPicForm.getKorChar());
+        }
+        if (subPic.getKorVoiceChar() != null && !subPic.getKorVoiceChar().equals(subPicForm.getKorVoiceChar())) {
+            subPic.setKorVoiceChar(subPicForm.getKorVoiceChar());
         }
     }
     
-    private Article updateSubPic(SubPicForm[] subPicForms, Article article) {
-        for (int i = 0; i < subPicForms.length; i++) {
-            SubPicForm subPicForm = subPicForms[i];
-
-            log.info("subPicForm밑");
-            if(subPicForm != null){
-                //SubPic subPic = subPicForm.toEntity();
-                String realChar=subPicForm.getRealChar();
-                String realVoiceChar=subPicForm.getRealVoiceChar();
-                String korChar=subPicForm.getKorChar();
-                String korVoiceChar=subPicForm.getKorVoiceChar();
-                log.info("subPicForm.toEntity");
-                switch (i) {
-                    case 0:
-                        if(article.getSubPic1().getRealChar()!=realChar){
-                            article.getSubPic1().setRealChar(realChar);
-                        }
-                        if(article.getSubPic1().getRealVoiceChar()!=realVoiceChar){
-                            article.getSubPic1().setRealVoiceChar(realVoiceChar);
-                        }
-                        if(article.getSubPic1().getKorChar()!=korChar){
-                            article.getSubPic1().setKorChar(korChar);
-                        }
-                        if(article.getSubPic1().getKorVoiceChar()!=korVoiceChar){
-                            article.getSubPic1().setKorVoiceChar(korVoiceChar);
-                        }
-                        break;
-                    case 1:
-                        if(article.getSubPic2().getRealChar()!=realChar){
-                            article.getSubPic2().setRealChar(realChar);
-                        }
-                        if(article.getSubPic2().getRealVoiceChar()!=realVoiceChar){
-                            article.getSubPic2().setRealVoiceChar(realVoiceChar);
-                        }
-                        if(article.getSubPic2().getKorChar()!=korChar){
-                            article.getSubPic2().setKorChar(korChar);
-                        }
-                        if(article.getSubPic2().getKorVoiceChar()!=korVoiceChar){
-                            article.getSubPic2().setKorVoiceChar(korVoiceChar);
-                        }
-                        break;
-                    case 2:
-                        if(article.getSubPic3().getRealChar()!=realChar){
-                            article.getSubPic3().setRealChar(realChar);
-                        }
-                        if(article.getSubPic3().getRealVoiceChar()!=realVoiceChar){
-                            article.getSubPic3().setRealVoiceChar(realVoiceChar);
-                        }
-                        if(article.getSubPic3().getKorChar()!=korChar){
-                            article.getSubPic3().setKorChar(korChar);
-                        }
-                        if(article.getSubPic3().getKorVoiceChar()!=korVoiceChar){
-                            article.getSubPic3().setKorVoiceChar(korVoiceChar);
-                        }
-                        break;
-                    case 3:
-                        if(article.getSubPic4().getRealChar()!=realChar){
-                            article.getSubPic4().setRealChar(realChar);
-                        }
-                        if(article.getSubPic4().getRealVoiceChar()!=realVoiceChar){
-                            article.getSubPic4().setRealVoiceChar(realVoiceChar);
-                        }
-                        if(article.getSubPic4().getKorChar()!=korChar){
-                            article.getSubPic4().setKorChar(korChar);
-                        }
-                        if(article.getSubPic4().getKorVoiceChar()!=korVoiceChar){
-                            article.getSubPic4().setKorVoiceChar(korVoiceChar);
-                        }
-                        break;
-                    case 4:
-                        if(article.getSubPic5().getRealChar()!=realChar){
-                            article.getSubPic5().setRealChar(realChar);
-                        }
-                        if(article.getSubPic5().getRealVoiceChar()!=realVoiceChar){
-                            article.getSubPic5().setRealVoiceChar(realVoiceChar);
-                        }
-                        if(article.getSubPic5().getKorChar()!=korChar){
-                            article.getSubPic5().setKorChar(korChar);
-                        }
-                        if(article.getSubPic5().getKorVoiceChar()!=korVoiceChar){
-                            article.getSubPic5().setKorVoiceChar(korVoiceChar);
-                        }
-                        break;
-                    default:
-                        // 예외 처리나 로깅 등
-                        break;
-                }
-            }
-        }
-        return article;
-    }
 
     private void saveImage(MultipartFile[] files, String category, Article article) throws IOException {
-        for(int i=0;i<files.length;i++){
-            if(!files[i].isEmpty()){
+        for (int i = 0; i < files.length; i++) {
+            if (!files[i].isEmpty()) {
                 log.info("저장시작");
-                UUID uuid=UUID.randomUUID();
-                String ori_name=files[i].getOriginalFilename();
-                //확장자 추출
-                String extention = ori_name.substring(ori_name.lastIndexOf("."));
-                // 랜덤 id 값 + 파일 확장자
-                String saveFileName = uuid.toString() + extention;
-                // 파일을 서버에 저장
-                Path filePath = Paths.get(uploadDir+category + "/" + saveFileName);
-
+                UUID uuid = UUID.randomUUID();
+                String ori_name = files[i].getOriginalFilename();
+                String extension = ori_name.substring(ori_name.lastIndexOf("."));
+                String saveFileName = uuid.toString() + extension;
+                Path filePath = Paths.get(uploadDir + category + "/" + saveFileName);
+    
                 Files.createDirectories(filePath.getParent());
                 files[i].transferTo(filePath);
-                //files[i].transferTo(new File(uploadDir+genR+"_"+files[i].getOriginalFilename()));
-
-                log.info(uploadDir+category + "/" + saveFileName);
-                log.info("i="+i);
-
-                switch(i){
-                    case 0 : article.setMain_pic_name(files[0].getOriginalFilename());
-                            article.setMain_pic(saveFileName);
-                            break;
-                    case 1 : article.getSubPic1().setName(files[1].getOriginalFilename());
-                            article.getSubPic1().setPic(saveFileName);
-                            break;
-                    case 2 : article.getSubPic2().setName(files[2].getOriginalFilename());
-                            article.getSubPic2().setPic(saveFileName);
-                            break;
-                    case 3 : article.getSubPic3().setName(files[3].getOriginalFilename());
-                            article.getSubPic3().setPic(saveFileName);
-                            break;
-                    case 4 : article.getSubPic4().setName(files[4].getOriginalFilename());
-                            article.getSubPic4().setPic(saveFileName);
-                            break;
-                    case 5 : article.getSubPic5().setName(files[5].getOriginalFilename());
-                            article.getSubPic5().setPic(saveFileName);
-                            break;
+    
+                log.info(uploadDir + category + "/" + saveFileName);
+                log.info("i=" + i);
+    
+                if (i == 0) {
+                    article.setMain_pic_name(files[0].getOriginalFilename());
+                    article.setMain_pic(saveFileName);
+                } else {
+                    SubPic subPic = article.getSubPics().get(i - 1); // 서브픽은 인덱스가 1부터 시작
+                    subPic.setName(files[i].getOriginalFilename());
+                    subPic.setPic(saveFileName);
                 }
-            
             }
-
         }
     }
 
     private void updateImage(MultipartFile[] newFiles, String category, Article article) throws IOException {
-        for(int i=0;i<newFiles.length;i++){
-            if(!newFiles[i].isEmpty()){
-                log.info("기존이미지삭제 : ",article.getMain_pic());
-                
-                switch(i){
-                    case 0 : String beforeFilePath0=uploadDir+category + "/"+article.getMain_pic();
-                            File beforeFile0=new File(beforeFilePath0);
-                            if(beforeFile0.exists()){
-                                beforeFile0.delete();
-                            }
-                            break;
-                    case 1 : String beforeFilePath1=uploadDir+category + "/"+article.getSubPic1().getPic();
-                            File beforeFile1=new File(beforeFilePath1);
-                            if(beforeFile1.exists()){
-                                beforeFile1.delete();
-                            }
-                            break;
-                    case 2 : String beforeFilePath2=uploadDir+category + "/"+article.getSubPic2().getPic();
-                            File beforeFile2=new File(beforeFilePath2);
-                            if(beforeFile2.exists()){
-                                beforeFile2.delete();
-                            }
-                            break;
-                    case 3 : String beforeFilePath3=uploadDir+category + "/"+article.getSubPic3().getPic();
-                            File beforeFile3=new File(beforeFilePath3);
-                            if(beforeFile3.exists()){
-                                beforeFile3.delete();
-                            }
-                            break;
-                    case 4 : String beforeFilePath4=uploadDir+category + "/"+article.getSubPic4().getPic();
-                            File beforeFile4=new File(beforeFilePath4);
-                            if(beforeFile4.exists()){
-                                beforeFile4.delete();
-                            }
-                            break;
-                    case 5 : String beforeFilePath5=uploadDir+category + "/"+article.getSubPic5().getPic();
-                            File beforeFile5=new File(beforeFilePath5);
-                            if(beforeFile5.exists()){
-                                beforeFile5.delete();
-                            }
-                            break;
-                }   
-
+        for (int i = 0; i < newFiles.length; i++) {
+            if (!newFiles[i].isEmpty()) {
+                log.info("기존이미지삭제 : ", article.getMain_pic());
+    
+                if (i == 0) {
+                    String beforeFilePath0 = uploadDir + category + "/" + article.getMain_pic();
+                    deleteFile(beforeFilePath0);
+                } else {
+                    if (i - 1 < article.getSubPics().size()) {
+                        String beforeFilePath = uploadDir + category + "/" + article.getSubPics().get(i - 1).getPic();
+                        deleteFile(beforeFilePath);
+                    }
+                }
+    
                 // 새로운 이미지 저장
                 UUID uuid = UUID.randomUUID();
                 String oriName = newFiles[i].getOriginalFilename();
                 String extension = oriName.substring(oriName.lastIndexOf("."));
                 String saveFileName = uuid.toString() + extension;
                 Path filePath = Paths.get(uploadDir + category + "/" + saveFileName);
-                log.info("신규 이미지 저장 : ",saveFileName);
+                log.info("신규 이미지 저장 : ", saveFileName);
                 Files.createDirectories(filePath.getParent());
                 newFiles[i].transferTo(filePath);
-
-                switch(i){
-                    case 0 : article.setMain_pic_name(newFiles[0].getOriginalFilename());
-                            article.setMain_pic(saveFileName);
-                            break;
-                    case 1 : article.getSubPic1().setName(newFiles[1].getOriginalFilename());
-                            article.getSubPic1().setPic(saveFileName);
-                            break;
-                    case 2 : article.getSubPic2().setName(newFiles[2].getOriginalFilename());
-                            article.getSubPic2().setPic(saveFileName);
-                            break;
-                    case 3 : article.getSubPic3().setName(newFiles[3].getOriginalFilename());
-                            article.getSubPic3().setPic(saveFileName);
-                            break;
-                    case 4 : article.getSubPic4().setName(newFiles[4].getOriginalFilename());
-                            article.getSubPic4().setPic(saveFileName);
-                            break;
-                    case 5 : article.getSubPic5().setName(newFiles[5].getOriginalFilename());
-                            article.getSubPic5().setPic(saveFileName);
-                            break;
-                }                
+    
+                if (i == 0) {
+                    article.setMain_pic_name(newFiles[0].getOriginalFilename());
+                    article.setMain_pic(saveFileName);
+                } else {
+                    if (i - 1 < article.getSubPics().size()) {
+                        SubPic subPic = article.getSubPics().get(i - 1);
+                        subPic.setName(newFiles[i].getOriginalFilename());
+                        subPic.setPic(saveFileName);
+                    }
+                }
             }
         }
     }
-
+    
     private void deleteImage(String category, Article article) {
-        for(int i=0;i<6;i++){
-            
-            log.info("이미지삭제 : {}", i);
-            switch(i){
-                case 0 :
-                    if(article.getMain_pic()!=null){
-                        String beforeFilePath0=uploadDir+category + "/"+article.getMain_pic();
-                        File beforeFile0=new File(beforeFilePath0);
-                        if(beforeFile0.exists()){
-                            beforeFile0.delete();
-                        }
-                    }    
-                    break;
-                case 1 : 
-                    if(!article.getSubPic1().getPic().isEmpty()){
-                        String beforeFilePath1=uploadDir+category + "/"+article.getSubPic1().getPic();
-                        File beforeFile1=new File(beforeFilePath1);
-                        if(beforeFile1.exists()){
-                            beforeFile1.delete();
-                        }
-                    }
-                    break;
-                case 2 : 
-                    if(!article.getSubPic2().getPic().isEmpty()){
-                        String beforeFilePath2=uploadDir+category + "/"+article.getSubPic2().getPic();
-                        File beforeFile2=new File(beforeFilePath2);
-                        if(beforeFile2.exists()){
-                            beforeFile2.delete();
-                        }
-                    }
-                    break;
-                    
-                case 3 : 
-                    if(!article.getSubPic3().getPic().isEmpty()){
-                        String beforeFilePath3=uploadDir+category + "/"+article.getSubPic3().getPic();
-                        File beforeFile3=new File(beforeFilePath3);
-                        if(beforeFile3.exists()){
-                            beforeFile3.delete();
-                        }
-                    }
-                    break;
-                case 4 : 
-                    if(!article.getSubPic4().getPic().isEmpty()){
-                        String beforeFilePath4=uploadDir+category + "/"+article.getSubPic4().getPic();
-                        File beforeFile4=new File(beforeFilePath4);
-                        if(beforeFile4.exists()){
-                            beforeFile4.delete();
-                        }
-                    }
-                    break;
-                case 5 : 
-                    if(!article.getSubPic5().getPic().isEmpty()){
-                        String beforeFilePath5=uploadDir+category + "/"+article.getSubPic5().getPic();
-                        File beforeFile5=new File(beforeFilePath5);
-                        if(beforeFile5.exists()){
-                            beforeFile5.delete();
-                        }
-                    }
-                    break;
-                }   
+        // 메인이미지 삭제
+        if (article.getMain_pic() != null) {
+            String beforeFilePath0 = uploadDir + category + "/" + article.getMain_pic();
+            deleteFile(beforeFilePath0);
+        }
+    
+        // 등장인물 이미지 삭제
+        for (SubPic subPic : article.getSubPics()) {
+            if (subPic.getPic() != null && !subPic.getPic().isEmpty()) {
+                String beforeFilePath = uploadDir + category + "/" + subPic.getPic();
+                deleteFile(beforeFilePath);
             }
+        }
     }
+    
+    // 이미지 삭제
+    private void deleteFile(String filePath) {
+        File file = new File(filePath);
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+    
 }

@@ -24,9 +24,12 @@ public class SubPicForm {
 
 
     public SubPic toEntity(){
-
-        return new SubPic(realChar, realVoiceChar, korChar, korVoiceChar);
+        SubPic subPic=new SubPic();
+        subPic.setRealChar(realChar);
+        subPic.setRealVoiceChar(realVoiceChar);
+        subPic.setKorChar(korChar);
+        subPic.setKorVoiceChar(korVoiceChar);
+        return subPic;
     }
-
 
 }

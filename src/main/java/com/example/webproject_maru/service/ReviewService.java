@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.webproject_maru.dto.ReviewDto;
 import com.example.webproject_maru.dto.ReviewForm;
 import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.entity.Map_r_t;
@@ -34,10 +35,10 @@ public class ReviewService {
     private Map_r_tService map_r_tService;
 
     //리뷰 조회(전체)
-    public List<ReviewForm> reviews(Long articleId){
+    public List<ReviewDto> reviews(Long articleId){
         return reviewRepository.findByArticleId(articleId)//리뷰 엔터티 목록 조회
                 .stream()//댓글 엔티티 목록을 스트림으로 변환
-                .map(review -> ReviewForm.createReviewForm(review))//엔티티를 DTO로 매핑
+                .map(review -> ReviewDto.createReviewDto(review))//엔티티를 DTO로 매핑
                 .collect(Collectors.toList());//스트림을 리스트 자료형으로 변환
     }
     //리뷰 조회(존재여부만)
@@ -73,7 +74,7 @@ public class ReviewService {
         review.setUpdateTime(SeoulNow);
         Review created=reviewRepository.save(review);
         //리뷰 개수 갱신(article 값)
-        Integer t_c_score=article.getC_score();
+        Long t_c_score=article.getC_score();
         article.setC_score(t_c_score+1);
         //리뷰 평균 갱신(article 값)
         Double t_avg_score=reviewRepository.getScoreAverage(dto.getArticle_id());
@@ -156,7 +157,7 @@ public class ReviewService {
         Article article=articleRepository.findById(articleId)
                 .orElseThrow(() -> new IllegalArgumentException("리뷰 삭제 실패!"+
                         "대상 게시글이 없습니다."));//부모게시글 없으면 에러 메시지 출력
-        Integer t_c_score=article.getC_score();
+        Long t_c_score=article.getC_score();
         article.setC_score(t_c_score-1);
         //리뷰 평균 갱신(article 값)
         Double t_avg_score=reviewRepository.getScoreAverage(articleId);

@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.example.webproject_maru.dto.TagForm;
+import com.example.webproject_maru.dto.TagDto;
 import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.entity.Map_a_t;
 

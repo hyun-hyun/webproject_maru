@@ -25,14 +25,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.webproject_maru.dto.ArticleDetailDto;
 import com.example.webproject_maru.dto.ArticleForm;
 import com.example.webproject_maru.dto.CustomUserDetails;
+import com.example.webproject_maru.dto.ReviewDto;
 import com.example.webproject_maru.dto.ReviewForm;
 import com.example.webproject_maru.dto.SubPicForm;
-import com.example.webproject_maru.dto.TagCountForm;
-import com.example.webproject_maru.dto.TagForm;
+import com.example.webproject_maru.dto.TagCountDto;
+import com.example.webproject_maru.dto.TagDto;
 import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.entity.Map_a_t;
+import com.example.webproject_maru.entity.SubPic;
 import com.example.webproject_maru.entity.Tag;
 import com.example.webproject_maru.service.ArticleService;
 import com.example.webproject_maru.service.Map_r_tService;
@@ -57,12 +60,12 @@ public class ArticleController {
     @GetMapping("/write/article/anime")
     public String goNewAnime(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
         String nickname = userDetails.member.getNickname();
-        Long memgber_id = userDetails.member.getId();
+        Long member_id = userDetails.member.getId();
 
-        List<String> defaultTags = Arrays.asList("깔끔한_작화", "느낌있는_작화", "잘생긴_등장인물", "귀여운_등장인물", "예쁜_등장인물"); // 기본 태그 목록
+        List<String> defaultTags = Arrays.asList("깔끔한_작화", "느낌있는_작화", "매력적인_인물"); // 기본 태그 목록
 
         model.addAttribute("nickname", nickname);
-        model.addAttribute("member_id", memgber_id);
+        model.addAttribute("member_id", member_id);
         model.addAttribute("defaultTags", defaultTags);
 
         return "articles/newAnime";
@@ -74,8 +77,8 @@ public class ArticleController {
                                 @RequestParam("korChar") String[] korChars, @RequestParam("korVoiceChar")String[] korVoiceChars,
                                 @PathVariable String category) {//폼 데이터를 DTO로 받기
         log.info(form.toString());
-        SubPicForm[] subPicForms=new SubPicForm[5];
-        for(int i=0;i<5;i++){
+        SubPicForm[] subPicForms=new SubPicForm[realChars.length];
+        for(int i=0;i<realChars.length;i++){
             if(realChars[i]!=null && !realChars[i].isEmpty()){
                 subPicForms[i] =new SubPicForm(realChars[i],realVoiceChars[i],korChars[i],korVoiceChars[i]);
             }
@@ -85,17 +88,6 @@ public class ArticleController {
         }
         log.info("서비스 create시작");
         Article saved=articleService.create(form, mfile, subPicForms, category);
-        /*
-        //System.out.println(form.toString());//DTO에 잘 담겼는지 확인        
-        //1. DTO -> entity
-        Article article = form.toEntity();
-        log.info(article.toString());
-        //System.out.println(article.toString());//엔티티 변환확인
-        //2. save entity in repository(DB)
-        Article saved=articleRepository.save(article);
-        log.info(saved.toString());
-        //System.out.println(saved.toString());//DB저장확인
-*/
 
         return "redirect:/articles/anime/"+saved.getId();
     }  
@@ -138,21 +130,26 @@ public class ArticleController {
 
         //1. id조회해서 데이터(entity, Optional<Article>) 가져오기
         Article articleEntity=articleService.findByIdArticle(id);
+
         //전체 리뷰 가져오기
-        List<ReviewForm> reviewDtos=reviewService.reviews(id);
+        List<ReviewDto> reviewDtos=reviewService.reviews(id);
         //사용자 리뷰만 가져오기(미로그인 예외처리)
-        ReviewForm reviewForm = (member_id != null) ?reviewService.my_review(id, member_id):null;
+        ReviewForm myReview = (member_id != null) ?reviewService.my_review(id, member_id):null;
+        //리뷰에서 사용된 태그(상세보기에서는 tagSelectionsCounts로 사용)
+        List<String> usedTags=map_r_tService.getAllTagsByArticleId(id);
         //등록된 tag 가져오기
-        List<String> tags = articleService.getTagsByArticleId(id);
+        List<String> allTags = articleService.getTagsByArticleId(id);
         //리뷰에서 선택되었던 tag만 tagName이랑 선택된 횟수 가져오기 
-        List<TagCountForm> tagSelectionCounts = articleService.countTagSelectionsByArticleId(id);
-        //2. 모델에 데이터 등록
-        model.addAttribute("article", articleEntity);
-        model.addAttribute("reviewDtos", reviewDtos);
-        model.addAttribute("my_review", reviewForm);
-        model.addAttribute("tagList", tags);
-        model.addAttribute("tagSelectionCounts", tagSelectionCounts);
-        // model.addAttribute("commentDtos", commentsDtos);
+        List<TagCountDto> tagSelectionCounts = map_r_tService.countTagSelectionsByArticleId(id);
+        
+        ArticleDetailDto articleDetailDto=ArticleDetailDto.createArticleDetailDto(articleEntity, usedTags, allTags,tagSelectionCounts,reviewDtos,myReview);
+        //2. 모델에 데이터 등록  
+        //model.addAttribute("article", articleEntity);
+        //model.addAttribute("reviewDtos", reviewDtos);
+        //model.addAttribute("my_review", reviewForm);
+        //model.addAttribute("tagList", tags);
+        //model.addAttribute("tagSelectionCounts", tagSelectionCounts);
+        model.addAttribute("article", articleDetailDto);
 
         //3. 뷰 페이지 반환
         return "articles/showAnime";
@@ -165,10 +162,21 @@ public class ArticleController {
                         @PathVariable Long id, Model model){
         //header관련
         String nickname = userDetails.member.getNickname();
-        model.addAttribute("nickname", nickname);
+        Long member_id = userDetails.member.getId();
 
-        Article articleEntity=articleService.getArticleWithTags(id);
-        model.addAttribute(("article"), articleEntity);
+        model.addAttribute("nickname", nickname);
+        model.addAttribute("member_id", member_id);
+
+        //리뷰에서 사용된 태그(상세보기에서는 tagSelectionsCounts로 사용)
+        List<String> usedTags=map_r_tService.getAllTagsByArticleId(id);
+        //등록된 tag 가져오기
+        List<String> allTags = articleService.getTagsByArticleId(id);
+
+        Article articleEntity=articleService.findByIdArticle(id);
+        ArticleDetailDto articleDetailDto=ArticleDetailDto.createArticleDetailDto(articleEntity, usedTags, allTags);
+
+        //Article articleEntity=articleService.getArticleWithTags(id);
+        model.addAttribute(("article"), articleDetailDto);
 
         return "articles/editAnime";
     }

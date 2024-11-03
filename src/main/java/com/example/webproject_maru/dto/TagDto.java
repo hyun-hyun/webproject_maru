@@ -9,7 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TagCountForm {
-    private String tagName;
-    private Long count;
+public class TagDto {
+    private Long t_id;
+    private String t_name;
+
 }

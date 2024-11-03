@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.webproject_maru.dto.ArticleForm;
-import com.example.webproject_maru.dto.TagCountForm;
+import com.example.webproject_maru.dto.TagCountDto;
 import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.service.ArticleService;
 import com.example.webproject_maru.service.Map_r_tService;
@@ -34,9 +34,9 @@ public class MyPageApiController {
 
 
     @GetMapping("/wordcloud/{memberId}")
-    public ResponseEntity<List<TagCountForm>> getWordCloudData(@PathVariable Long memberId) {
+    public ResponseEntity<List<TagCountDto>> getWordCloudData(@PathVariable Long memberId) {
         log.info("wordcloud api");
-        List<TagCountForm> tags = map_r_tService.countTagSelectionsByMemberId(memberId);
+        List<TagCountDto> tags = map_r_tService.countTagSelectionsByMemberId(memberId);
         return ResponseEntity.ok(tags);
     }
 

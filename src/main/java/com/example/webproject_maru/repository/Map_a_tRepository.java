@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.example.webproject_maru.dto.TagForm;
+import com.example.webproject_maru.dto.TagDto;
 import com.example.webproject_maru.entity.Map_a_t;
 import com.example.webproject_maru.entity.Tag;
 
@@ -17,7 +17,7 @@ public interface Map_a_tRepository extends JpaRepository<Map_a_t, Long>{
     List<Object[]> findTagsByArticleId(@Param("articleId") Long articleId);
 */
     // articleId로 태그 목록을 가져오는 쿼리
-    @Query("SELECT m.tag.tag FROM Map_a_t m WHERE m.article.id = :articleId" )
+    @Query("SELECT m.tag.tag FROM Map_a_t m LEFT JOIN Map_r_t r ON m.tag.tag = r.tag.tag AND r.review.article.id = :articleId WHERE m.article.id = :articleId GROUP BY m.tag.tag ORDER BY COUNT(r.tag) DESC" )
     List<String> getTagsByArticleId(@Param("articleId") Long articleId);
 
     //articleId와 태그명으로 Map_a_t삭제

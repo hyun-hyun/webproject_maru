@@ -36,6 +36,21 @@
     <label class="form-label">등장인물</label>
     <p>***사진, 이름, 성우 모두 빈칸 없이 작성해주세요***</p><br>
     <div class="image-container">
+        {{#subPics}}
+        <div class="image-item">
+            <div class="addImage_m" id="image-show"> <!-- 등장인물 -->
+                <img id="current-image" src="/images/pic/anime/{{pic}}" alt="기존이미지" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <input type="file" accept="image/jpeg, image/png, image/gif, image/webp" onchange="loadFile(this, 'image-show')" name="pic">
+            (원작)캐릭터 이름<input type="text" name="realChar" value="{{realChar}}" required>
+            (원작)캐릭터 성우<input type="text" name="realVoiceChar" value="{{realVoiceChar}}" required>
+            (한국)캐릭터 이름<input type="text" name="korChar" value="{{korChar}}" required>
+            (한국)캐릭터 성우<input type="text" name="korVoiceChar" value="{{korVoiceChar}}" required>
+        </div>
+        {{/subPics}}
+    </div>
+    <!--
+    <div class="image-container">
         {{#subPic1.realChar}}
         <div class="image-item">
         <div class="addImage_m" id="image-show1"> <!-- 등장인물1 -->
@@ -101,10 +116,11 @@
         </div>
         {{/subPic5.realChar}}
     </div>
+    -->
 </div>
 <div class="mb-3">
 <!--작성자-->
-<input type="hidden" name="memberId" value="{{member.id}}"><br>
+<input type="hidden" name="memberId" value="{{member_id}}"><br>
 
 
 <!--관련태그-->

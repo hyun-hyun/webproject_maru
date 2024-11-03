@@ -3,6 +3,8 @@ package com.example.webproject_maru.repository;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -28,10 +30,15 @@ public interface Map_r_tRepository extends JpaRepository<Map_r_t, Long>{
     @Query("SELECT m.tag.tag, COUNT(m.tag) FROM Map_r_t m WHERE m.review.member.id=:memberId GROUP BY m.tag.tag ORDER BY COUNT(m.tag) DESC")
     List<Object[]> countTagSelectionsByMemberId(@Param("memberId") Long memberId);
 
-    //메인화면용
+    //해당 게시글에서 선택된 태그들
     @Query("SELECT m.tag.tag FROM Map_r_t m WHERE m.review.article.id = :articleId GROUP BY m.tag.tag ORDER BY COUNT(m.tag) DESC")
-    List<String> findOnlyTagsByArticleId(@Param("articleId") Long articleId);
+    List<String> findAllTagsByArticleId(@Param("articleId") Long articleId);
 
+    //해당 게시글에서 선택된 태그 5개만
+    @Query("SELECT m.tag.tag FROM Map_r_t m WHERE m.review.article.id = :articleId GROUP BY m.tag.tag ORDER BY COUNT(m.tag) DESC")
+    Page<String> findOnlyTagsByArticleId(@Param("articleId") Long articleId, Pageable pageable);
+
+    //리뷰시 내가 선택한 태그들
     @Query("SELECT t.tag FROM Map_r_t m JOIN m.tag t WHERE m.review.id = :reviewId")
     List<String> findTagsByReviewId(@Param("reviewId") Long reviewId);
 

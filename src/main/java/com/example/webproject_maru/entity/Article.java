@@ -10,7 +10,9 @@ import com.example.webproject_maru.dto.ArticleForm;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -60,7 +62,7 @@ public class Article {
     @Column
     private Double avg_score=0.0;
     @Column
-    private Integer c_score=0;
+    private Long c_score=0L;
 
     //tag
     @OneToMany(mappedBy = "article")
@@ -78,6 +80,10 @@ public class Article {
     @OneToMany(mappedBy="article", cascade=CascadeType.ALL)
     private List<Review> reviews=new ArrayList<>();
 
+    @ElementCollection
+    @CollectionTable(name = "sub_pics", joinColumns = @JoinColumn(name = "article_id"))
+    private List<SubPic> subPics = new ArrayList<>();
+/* 
     @Embedded
     @AttributeOverrides({
         @AttributeOverride(name = "pic", column = @Column(name = "sub_pic1_pic")),
@@ -132,7 +138,7 @@ public class Article {
         @AttributeOverride(name = "korVoiceChar", column = @Column(name = "sub_pic5_kor_voice_char"))
     })
     private SubPic subPic5;
-
+*/
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
@@ -156,7 +162,7 @@ public class Article {
     }
 
     //게시글 수정내용 반영
-    public void patch(ArticleForm form){
+    public void patch(ArticleForm form, Member member){
         //예외발생
         if(this.id != form.getId())
             throw new IllegalArgumentException("게시글 수정 실패! 잘못된 id가 입력됐습니다.");
@@ -173,6 +179,8 @@ public class Article {
             this.ani_company=form.getAni_company();
         if(form.getAuthor()!=null)
             this.author=form.getAuthor();
+        if(form.getMemberId()!=null)
+            this.member=member;
         if(form.getStory()!=null)
             this.story=form.getStory();
 

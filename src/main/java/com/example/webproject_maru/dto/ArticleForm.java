@@ -30,6 +30,8 @@ public class ArticleForm {
 
     private String main_pic;
 
+    private List<SubPicForm> subPics; // SubPicForm 리스트 추가
+
     //tag
     private List<String> tags;//게시글내 전체태그 ->안씀
     private List<String> usedTags;//리뷰에서 사용한 태그 ->안씀
