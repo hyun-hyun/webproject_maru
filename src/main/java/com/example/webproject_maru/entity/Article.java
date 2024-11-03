@@ -54,9 +54,7 @@ public class Article {
     @Column
     private String main_pic_name;
 
-    //전체리뷰정리용
-    @Column
-    private Integer score;//안씀
+
     @Column
     private String score_reason;//ai로 요약적기
     @Column
