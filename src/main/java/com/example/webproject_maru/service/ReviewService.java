@@ -33,6 +33,8 @@ public class ReviewService {
     private MemberRepository memberRepository;
     @Autowired
     private Map_r_tService map_r_tService;
+    @Autowired
+    private Map_a_tService map_a_tService;
 
     //리뷰 조회(전체)
     public List<ReviewDto> reviews(Long articleId){
@@ -85,7 +87,7 @@ public class ReviewService {
         //selectingTags 저장
         for(String tagName:dto.getSelectingTags()){
             if(!tagName.equals("") && !tagName.equals("on")){
-            Tag tag=map_r_tService.findOrCreateTag(article, tagName);
+            Tag tag=map_r_tService.findOrCreateTag(article, tagName, resultR.getId());
             log.info(tag.getTag());
             map_r_tService.saveMap_r_t(review, tag);
             }
@@ -163,6 +165,17 @@ public class ReviewService {
         Double t_avg_score=reviewRepository.getScoreAverage(articleId);
         article.setAvg_score(t_avg_score !=null ? (double)Math.round(t_avg_score*10.0)/10.0 : 0.0);
         articleRepository.save(article);
+
+        //사용자 추가 태그 다른사용자가 미사용시 map_a_t와 tag에서 삭제
+        Tag tag=map_a_tService.findTagIdByReviewId(id);
+        log.info("삭제시 tag");
+        if(tag!=null){
+            boolean isTagUsed=map_r_tService.isTagUsed(tag.getId(), articleId);
+            log.info("isTagUsed : {}"+isTagUsed);
+            if(!isTagUsed){
+                map_a_tService.deleteByArticleIdAndTagName(articleId, tag.getTag());
+            }
+        }
 
         //3. 삭제 리뷰를 dto로 변환 및 반환
         return ReviewForm.createReviewForm(target);

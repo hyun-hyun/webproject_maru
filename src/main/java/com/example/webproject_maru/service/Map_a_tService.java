@@ -38,10 +38,20 @@ public class Map_a_tService {
         Map_a_t map=new Map_a_t(article, tag);
         map_a_tRepository.save(map);
     }
+    @Transactional//리뷰생성시
+    public void saveMap_a_t(Article article, Tag tag, Long reviewId){
+        Map_a_t map=new Map_a_t(article, tag, reviewId);
+        map_a_tRepository.save(map);
+    }
 
     //tag찾기
     public List<String> getTagsByArticleId(Long articleId){
         return map_a_tRepository.getTagsByArticleId(articleId);
+    }
+
+    //article과 tagId로 이 게시글에 해당 태그 있는지 확인
+    public Tag findByTagIdAndArticleId(Long tagId, Long articleId){
+        return map_a_tRepository.findByTagIdAndArticleId(tagId, articleId);
     }
 
     //article과 tag명을 통해 Map_a_t삭제
@@ -61,7 +71,7 @@ public class Map_a_tService {
     public Long countByTagId(Long tagId){
         return map_a_tRepository.countByTagId(tagId);
     }
-
+    //추천용
     public List<Long> findArticleIdsByTagId(Long tagId){
         return map_a_tRepository.findArticleIdsByTagId(tagId);
     } 
@@ -75,5 +85,11 @@ public class Map_a_tService {
                   ).collect(Collectors.toList());
     }
 */
+    //삭제하려는 리뷰id와 일치하는 tag 반환(사용자가 추가한 태그)
+    public Tag findTagIdByReviewId(Long reviewId) {
+        return map_a_tRepository.findTagIdsByReviewId(reviewId);
+    }
+
+    
     
 }

@@ -18,7 +18,9 @@ import com.example.webproject_maru.entity.Tag;
 import com.example.webproject_maru.repository.Map_r_tRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class Map_r_tService {
     @Autowired
@@ -70,6 +72,30 @@ public class Map_r_tService {
         if(tag==null){
             tag=tagService.saveTag(new Tag(tagName));
             map_a_tService.saveMap_a_t(article, tag);
+        }else{
+            Tag tagA=map_a_tService.findByTagIdAndArticleId(tag.getId(), article.getId());
+            if(tagA==null){
+                map_a_tService.saveMap_a_t(article, tag);
+            }
+        }
+        return tag;
+    }
+
+    //리뷰 추가시 tag저장
+    @Transactional
+    public Tag findOrCreateTag(Article article, String tagName, Long reviewId){
+        Tag tag=tagService.findByTag(tagName);
+        if(tag==null){
+            tag=tagService.saveTag(new Tag(tagName));
+            map_a_tService.saveMap_a_t(article, tag, reviewId);
+            log.info("추가부분 서비ㅡㅅ reviewId:{}"+reviewId);
+        }else{
+            Tag tagA=map_a_tService.findByTagIdAndArticleId(tag.getId(), article.getId());
+            if(tagA==null){
+                map_a_tService.saveMap_a_t(article, tag, reviewId);
+            }
+            map_a_tService.saveMap_a_t(article, tag);
+
         }
         return tag;
     }
@@ -112,5 +138,10 @@ public class Map_r_tService {
     @Transactional
     public void deleteByReviewAndTagName(Long reviewId, String tagName){
         map_r_tRepository.deleteByReviewIdAndTagName(reviewId, tagName);
+    }
+
+    //사용자가 추가한 태그가 사용중인지 확인
+    public boolean isTagUsed(Long tagId, Long articleId) {
+        return map_r_tRepository.existsByTagIdAndArticleId(tagId, articleId);
     }
 }

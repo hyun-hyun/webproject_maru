@@ -51,4 +51,9 @@ public interface Map_r_tRepository extends JpaRepository<Map_r_t, Long>{
     @Modifying
     @Query("DELETE FROM Map_r_t m WHERE m.review.id=:reviewId")
     void deleteByReviewId(@Param("reviewId") Long reviewId);
+
+    //사용자가 추가한 태그가 사용중인지 확인
+    @Query("SELECT COUNT(m) > 0 FROM Map_r_t m WHERE m.tag.id = :tagId AND m.review.article.id = :articleId")
+    boolean existsByTagIdAndArticleId(@Param("tagId") Long tagId, @Param("articleId") Long articleId);
+    
 }

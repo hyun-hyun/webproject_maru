@@ -2,6 +2,7 @@ package com.example.webproject_maru.entity;
 
 import java.util.Optional;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -34,8 +35,17 @@ public class Map_a_t {
     @JoinColumn(name="tag_id")
     private Tag tag;
 
+    @Column//사용자 추가 구분용
+    private Long reviewId;
+
     public Map_a_t(Article article, Tag tag){
         this.article=article;
         this.tag=tag;
+    }
+
+    public Map_a_t(Article article, Tag tag, Long reviewId){
+        this.article=article;
+        this.tag=tag;
+        this.reviewId=reviewId;
     }
 }
