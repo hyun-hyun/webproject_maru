@@ -90,6 +90,8 @@ public class Map_a_tService {
         return map_a_tRepository.findTagIdsByReviewId(reviewId);
     }
 
-    
-    
+    //사용자가 추가한 태그가 전체적으로 사용중인지 확인
+    public boolean isTagUsedTotal(Long tagId) {
+        return map_a_tRepository.existsByTagId(tagId);
+    }
 }

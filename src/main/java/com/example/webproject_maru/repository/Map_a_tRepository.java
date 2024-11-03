@@ -45,5 +45,9 @@ public interface Map_a_tRepository extends JpaRepository<Map_a_t, Long>{
     @Query("SELECT m.tag FROM Map_a_t m WHERE m.reviewId=:reviewId")
     Tag findTagIdsByReviewId(@Param("reviewId") Long reviewId);
 
+    //사용자가 추가한 태그가 전체적으로 사용중인지 확인
+    @Query("SELECT COUNT(m) > 0 FROM Map_a_t m WHERE m.tag.id = :tagId")
+    boolean existsByTagId(@Param("tagId") Long tagId);
+
   
 }

@@ -144,4 +144,6 @@ public class Map_r_tService {
     public boolean isTagUsed(Long tagId, Long articleId) {
         return map_r_tRepository.existsByTagIdAndArticleId(tagId, articleId);
     }
+
+    
 }

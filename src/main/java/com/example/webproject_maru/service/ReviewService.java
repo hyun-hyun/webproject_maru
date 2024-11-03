@@ -35,6 +35,8 @@ public class ReviewService {
     private Map_r_tService map_r_tService;
     @Autowired
     private Map_a_tService map_a_tService;
+    @Autowired
+    private TagService tagService;
 
     //리뷰 조회(전체)
     public List<ReviewDto> reviews(Long articleId){
@@ -174,6 +176,10 @@ public class ReviewService {
             log.info("isTagUsed : {}"+isTagUsed);
             if(!isTagUsed){
                 map_a_tService.deleteByArticleIdAndTagName(articleId, tag.getTag());
+                boolean isTagUsedTotal=map_a_tService.isTagUsedTotal(tag.getId());
+                if(!isTagUsedTotal){
+                    tagService.deleteById(tag.getId());
+                }
             }
         }
 
