@@ -6,7 +6,9 @@ import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.entity.Review;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@Getter
 @AllArgsConstructor
 public class ArticleReviewDto {
     private Long articleId;

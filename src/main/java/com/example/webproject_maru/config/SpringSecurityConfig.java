@@ -34,7 +34,7 @@ public class SpringSecurityConfig {
                         .requestMatchers("/user/**").hasAnyRole("ADMIN", "MANAGER", "USER")
                         //.requestMatchers("/user/**", "/articles/**").hasAnyRole("ADMIN", "MANAGER", "USER")
                         .requestMatchers("/images/**","/css/**","/favicon.ico").permitAll()//이미지파일들 security filter 예외
-                        .requestMatchers("/api/articles/*/create_r").authenticated() // 특정 경로에 대해 인증 요구
+                        .requestMatchers("/api/articles/*/create_r", "/api/mypage/**").authenticated() // 특정 경로에 대해 인증 요구
                         .requestMatchers("/api/reviews/**","/api/**").permitAll()
                         .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
                 )

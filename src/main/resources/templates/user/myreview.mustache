@@ -5,44 +5,18 @@
 <br>
 {{nickname}}님 환영합니다.<br><br>
 
-<h4>리뷰시 선택한 키워드 분석</h4>
-<!--키워드분석(워드클라우드)-->
-<div id="container"></div>
-
-<h4>내가 찜한 작품</h4>
-
 
 <div class="recent-reviews">
-    <h4>최근 리뷰한 작품</h4>  <a href="/user/mypage/myreview" class="btn btn-sm btn-info">전체 리뷰보기</a>
+    <h4>최근 리뷰한 작품</h4>
     <div class="article-list" id="article-list">
         <!-- Fetch된 데이터가 여기에 추가됩니다. -->
     </div>
 </div>
 
-<h4>추천 작품</h4>
-<div id="recommendations"></div>
-
-  
 
 <script>
     const memberId = {{member_id}}; 
     console.log('Member ID:', memberId);
-
-    // 워드클라우드 데이터 가져오기
-    fetch(`/api/mypage/wordcloud/${memberId}`)
-        .then(response => response.json())
-        .then(wordCounts => {
-            const wordCloudData = wordCounts.map(tag => ({ x: tag.tagName, value: tag.count }));
-            
-            anychart.onDocumentReady(function() {
-                var chart = anychart.tagCloud(wordCloudData);
-                chart.title("나의 키워드 분석");
-                chart.angles([0, 45, 90, -45]);
-                //chart.textDirection("vertical");
-                chart.container("container");
-                chart.draw();
-            });
-        });
 
     //최근 리뷰한 작품
     fetch(`/api/mypage/myreview/${memberId}`)
@@ -54,10 +28,8 @@
         })
         .then(data => {
             const articleList = document.getElementById('article-list');
-            // 처음 5개 항목만 선택
-            const limitedReviews = data.slice(0, 5);
 
-            limitedReviews.forEach(articleReview => {
+            data.forEach(articleReview => {
                 // 새로운 div 생성
                 const articleItem = document.createElement('div');
                 articleItem.className = 'article-item';
@@ -103,43 +75,6 @@
             }
         });
     }
-
-    // 추천 게시글 가져오기
-    fetch(`/api/mypage/recommended-articles/${memberId}`)
-        .then(response => response.json())
-        .then(articles => {
-            const recommendationsContainer = document.getElementById("recommendations");
-            if (!Array.isArray(articles)) {
-                articles = [articles]; // 단일 아티클도 배열로 변환
-            }
-            
-            articles.forEach(article => {
-                const articleDiv = document.createElement("div");
-                articleDiv.className = "article";
-                articleDiv.innerHTML = `
-                    <div class="article-content">
-                        <a href="/articles/anime/${article.id}">
-                            <img src="/images/pic/anime/${article.main_pic}" width=150 alt="작품표지" class="article-image">
-                        </a>
-                        <div class="article-info">
-                            <b>[${article.genre}] ${article.title}</b><br>
-                            ${article.broad_date} | ${article.author} | ${article.ani_company}
-                            <br>
-                            <span>${article.story}</span>
-                        </div>
-                    </div>
-                `;
-                recommendationsContainer.appendChild(articleDiv);
-
-                /*
-                // 클릭 이벤트 추가(div전체 클릭가능)
-                articleDiv.querySelector('.article-content').addEventListener('click', () => {
-                    window.location.href = `/articles/anime/${article.id}`;
-                });
-                */
-            });
-            
-        });
 
 </script>
 
@@ -200,23 +135,6 @@
         color: inherit; /* 부모의 글자 색상 상속 */
     }
 
-    /*추천 게시글*/
-    .article-content {
-        display: flex;
-        margin-bottom: 20px; /* 각 게시글 간의 간격 */
-    }
-    
-    .article-image {
-        margin-right: 15px; /* 이미지와 텍스트 간의 간격 */
-    }
-    
-    .article-info {
-        flex: 1; /* 텍스트가 남은 공간을 차지하도록 설정 */
-    }
-    
-    .article b {
-        display: block; /* 제목을 블록으로 만들어 줄바꿈 가능하게 */
-        margin-bottom: 5px; /* 제목과 내용 간의 간격 */
-    }
+
 </style>
 {{>layouts/footer}}

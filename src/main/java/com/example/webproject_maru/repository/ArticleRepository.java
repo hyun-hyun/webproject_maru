@@ -30,7 +30,6 @@ public interface ArticleRepository extends JpaRepository<Article,Long> {
     @Query("SELECT a FROM Article a JOIN a.reviews r WHERE r.appendTime >= :threeMonthsAgo GROUP BY a.id ORDER BY SUM(r.score) DESC")
     Page<Article> findRecentHighScoreArticles(@Param("threeMonthsAgo") LocalDateTime threeMonthsAgo, Pageable pageable);
 
-
    /* //articleId에 따른 tag
     @Query("SELECT a.tag.id, a.tag.tag FROM Article a WHERE a.id=:articleId")
     List <TagForm> findTagsByArticleId(@Param("articleId") Long articleId);

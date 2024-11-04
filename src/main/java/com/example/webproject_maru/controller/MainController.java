@@ -96,6 +96,16 @@ public class MainController {
         model.addAttribute("member_id", member_id);
         return "user/mypage";
     }
+    
+    @GetMapping("/user/mypage/myreview")
+    public String myReview(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        String nickname = userDetails.member.getNickname();
+        Long member_id = userDetails.member.getId();
+
+        model.addAttribute("nickname", nickname);
+        model.addAttribute("member_id", member_id);
+        return "user/myreview";
+    }
 
     @GetMapping("/admin/member")
     public String adminMember(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){

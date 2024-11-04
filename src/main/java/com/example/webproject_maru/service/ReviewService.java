@@ -19,6 +19,7 @@ import com.example.webproject_maru.repository.ArticleRepository;
 import com.example.webproject_maru.repository.MemberRepository;
 import com.example.webproject_maru.repository.ReviewRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
@@ -191,6 +192,17 @@ public class ReviewService {
     @Transactional
     public void deleteByArticleId(Long articleId){
         reviewRepository.deleteByArticleId(articleId);
+    }
+
+    //자신이 쓴 리뷰목록
+    public Article findArticleByReviewId(Long reviewId) {
+        return reviewRepository.findById(reviewId)
+            .map(Review::getArticle)  // Review에서 Article을 가져옴
+            .orElseThrow(() -> new EntityNotFoundException("reviewId에 따른 게시글 찾지 못함 : " + reviewId));
+    }
+    public Review findById(Long reviewId) {
+        return reviewRepository.findById(reviewId)
+            .orElseThrow(() -> new EntityNotFoundException("reviewId에 따른 리뷰 찾지 못함: " + reviewId));
     }
 
 /*
