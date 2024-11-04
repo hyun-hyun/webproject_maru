@@ -95,7 +95,13 @@
         margin-bottom: 20px; /* 세로 간격 */
         position: relative; /* 자식 요소의 절대 위치를 기준으로 설정 */
     }
-    
+    /* 모바일 화면에서 한 줄에 3개씩 보이도록 설정 */
+    @media (max-width: 768px) {
+        .article-item {
+            width: calc(33.33% - 10px);  /*3개가 한 줄에 표시되도록 설정 (여백 고려) */
+            /*width: calc(50% - 10px);  모바일에서는 2개씩 표시 */
+        }
+    }
     .main-pic {
         width: 100%; /* 전체 폭을 차지 */
         /*aspect-ratio: 7 / 5;  7:5 비율 */
