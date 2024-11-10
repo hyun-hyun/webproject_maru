@@ -48,7 +48,7 @@
     fetch(`/api/mypage/myreview/${memberId}`)
         .then(response => {
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                throw new Error('네트워크 응답을 확인해주세요.');
             }
             return response.json();
         })
@@ -65,7 +65,7 @@
 
                 // HTML 구성
                 articleItem.innerHTML = `
-                    <a href="/articles/anime/${articleReview.articleId}">
+                    <a href="/articles/anime/${articleReview.articleId}" class="a">
                         <div class="score"></div> <!-- 별을 표시할 부분 -->
                         <img src="/images/pic/anime/${articleReview.main_pic}" alt="메인사진" class="main-pic">
                         <div class="title"><b>[${articleReview.genre}]${articleReview.title}</b></div>
@@ -79,6 +79,8 @@
 
             // 별 표시 함수 호출
             displayStars();
+            // 창 크기 변경 시 별 크기 재조정
+            window.addEventListener('resize', displayStars);
         })
         .catch(error => {
             console.error('Error fetching the data:', error);
@@ -262,8 +264,8 @@
     }
 
     .article-image {
-        width: 150px;
-        height: 150px;
+        width: 180px;
+        height: auto;
         object-fit: cover;
         border-radius: 10px;
         margin-right: 20px;
@@ -274,6 +276,7 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        justify-content: flex-start /*텍스트 위쪽정렬*/
     }
 
 
