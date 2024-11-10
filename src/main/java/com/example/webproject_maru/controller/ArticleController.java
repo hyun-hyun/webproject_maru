@@ -218,7 +218,7 @@ public class ArticleController {
             //로그인 안된경우
             nickname="방문자";
         }
-        
+        /* 
          //등록한 게시물 내림차순(최신등록작품)
         //1. 모든 데이터 가져오기 list<entity>
         ArrayList<Article> articleEntityList=articleService.findArticlesDesc();
@@ -231,7 +231,7 @@ public class ArticleController {
         }
         //2. 모델에 데이터 등록
         model.addAttribute("articleList", articleEntityList);
-
+*/
 
         //3. 뷰 페이지 설정
         return "articles/listAnime";
@@ -288,7 +288,7 @@ public class ArticleController {
             //로그인 안된경우
             nickname="방문자";
         }
-        
+        /* 
        //3개월간 점수 높은 작품(점수순)
        //1. 50개 데이터 가져오기 list<entity>
        List<Article> highArticleEntityList=articleService.get3mRecentHighScoreArticles(50);
@@ -300,7 +300,7 @@ public class ArticleController {
        }
        //2. 모델에 데이터 등록
        model.addAttribute("highArticleList", highArticleEntityList);
-
+*/
         //3. 뷰 페이지 설정
         return "articles/topAnime";
     }

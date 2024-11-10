@@ -105,6 +105,12 @@ public class ArticleService {
         ArrayList<Article> articleEntityList=articleRepository.findAllByOrderByIdDesc();
         return articleEntityList;
     }
+    //작품등록 최신순 정렬(페이징)
+    public ArrayList<Article> findArticlesDesc(Pageable pageable){
+        ArrayList<Article> articleEntityList=articleRepository.findAllByOrderByIdDesc(pageable);
+        return articleEntityList;
+    }
+
 
     //작품등록 최신순 정렬(15개 페이징)
     public List<Article> findLimitArticlesDesc(int limit){

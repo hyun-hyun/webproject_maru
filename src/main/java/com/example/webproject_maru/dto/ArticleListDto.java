@@ -24,7 +24,7 @@ public class ArticleListDto {
     private Long c_score;
     private List<String> usedTags;//리뷰에서 사용된 태그
 
-    public ArticleListDto createArticleListDto(Article article, List<String> usedTags){
+    public static ArticleListDto createArticleListDto(Article article, List<String> usedTags){
         if(article==null){
             return null;
         }

@@ -23,6 +23,9 @@ public interface ArticleRepository extends JpaRepository<Article,Long> {
     // ID 내림차순으로 모든 Article 가져오기
     ArrayList<Article> findAllByOrderByIdDesc();
 
+    // ID 내림차순으로 모든 Article 가져오기(페이징)
+    ArrayList<Article> findAllByOrderByIdDesc(Pageable pageable);
+
     // ID 내림차순으로 15개 Article 가져오기
     @Query("SELECT a FROM Article a ORDER BY a.id DESC")
     Page<Article> findLimitByOrderByIdDesc(Pageable pageable);
