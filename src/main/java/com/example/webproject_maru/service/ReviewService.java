@@ -205,6 +205,11 @@ public class ReviewService {
             .orElseThrow(() -> new EntityNotFoundException("reviewId에 따른 리뷰 찾지 못함: " + reviewId));
     }
 
+    //사용자가 작성한 리뷰 전체
+    public List<Long> getAllReviewIdByMemberId(Long memberId) {
+        return reviewRepository.getAllReviewIdByMemberId(memberId);
+    }
+
 /*
     //articleId에 따른 tag 선택된거 조회
     public List<Map_r_t> getReviewTagsByArticleId(Long articleId){

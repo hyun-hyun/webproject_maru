@@ -145,10 +145,7 @@ public class Map_r_tService {
         return map_r_tRepository.existsByTagIdAndArticleId(tagId, articleId);
     }
 
-    //사용자가 작성한 리뷰 전체
-    public List<Long> getAllReviewIdByMemberId(Long memberId) {
-        return map_r_tRepository.getAllReviewIdByMemberId(memberId);
-    }
+    
 
     
 }

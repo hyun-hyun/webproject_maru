@@ -38,6 +38,10 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
 
     //articleId로 리뷰 삭제
     void deleteByArticleId(Long articleId);
+
+    //사용자가 작성한 리뷰 전체
+    @Query("SELECT r.id FROM Review r WHERE r.member.id=:memberId ORDER BY r.id DESC")
+    List<Long> getAllReviewIdByMemberId(@Param("memberId") Long memberId);
     
     /*@Query("SELECT r.selectedTags FROM Review r WHERE r.article.id =:articleId")
     List<Map_r_t> findTagsByArticleId(@Param("articleId") Long articleId);

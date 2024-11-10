@@ -56,10 +56,6 @@ public interface Map_r_tRepository extends JpaRepository<Map_r_t, Long>{
     @Query("SELECT COUNT(m) > 0 FROM Map_r_t m WHERE m.tag.id = :tagId AND m.review.article.id = :articleId")
     boolean existsByTagIdAndArticleId(@Param("tagId") Long tagId, @Param("articleId") Long articleId);
 
-    //사용자가 작성한 리뷰 전체
-    @Query("SELECT m.review.id FROM Map_r_t m WHERE m.review.member.id=:memberId ORDER BY m.review.id DESC")
-    List<Long> getAllReviewIdByMemberId(@Param("memberId") Long memberId);
-
 
     
 }

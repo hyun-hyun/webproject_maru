@@ -48,7 +48,7 @@
         });
 
     //최근 리뷰한 작품
-    fetch(`/api/mypage/myreview/${memberId}`)
+    fetch(`/api/mypage/myreviewOnly/${memberId}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('네트워크 응답을 확인해주세요.');

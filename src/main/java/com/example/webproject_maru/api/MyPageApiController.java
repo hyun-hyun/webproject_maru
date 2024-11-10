@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -56,24 +58,64 @@ public class MyPageApiController {
         return ResponseEntity.ok(tags);
     }
 
-    @GetMapping("/myreview/{memberId}")
-    public ResponseEntity<List<ArticleReviewDto>> getMyReviewArticles(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long memberId){
+    //일부
+    @GetMapping("/myreviewOnly/{memberId}")
+    public ResponseEntity<List<ArticleReviewDto>> getMyReviewOnlyArticles(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long memberId){
         Long member_id = userDetails.member.getId();
         // memberId와 로그인된 member_id가 다를 경우 예외 처리
         if (!memberId.equals(member_id)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "유효하지 않은 접근입니다.");
         }
+
         //리뷰한 리뷰id
-        List<Long> reviewedReviewIds=map_r_tService.getAllReviewIdByMemberId(memberId);
+        List<Long> reviewedReviewIds=reviewService.getAllReviewIdByMemberId(memberId);
+
         List<ArticleReviewDto>articleReviewDtos=new ArrayList<>();
-        log.info("hi");
         for(Long reviewId:reviewedReviewIds){
+            ArticleReviewDto articleReviewDto=ArticleReviewDto.createArticleReviewDto(reviewService.findArticleByReviewId(reviewId), reviewService.findById(reviewId));
+            if(articleReviewDto!=null){
+                articleReviewDtos.add(articleReviewDto);
+            }
+        }
+
+        return ResponseEntity.ok(articleReviewDtos);
+
+    }
+
+    //전체
+    @GetMapping("/myreview/{memberId}")
+    public ResponseEntity<List<ArticleReviewDto>> getMyReviewArticles(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long memberId, @RequestParam("page") int page){
+        Long member_id = userDetails.member.getId();
+        // memberId와 로그인된 member_id가 다를 경우 예외 처리
+        if (!memberId.equals(member_id)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "유효하지 않은 접근입니다.");
+        }
+
+        //리뷰한 리뷰id
+        List<Long> reviewedReviewIds=reviewService.getAllReviewIdByMemberId(memberId);
+
+        // 페이징 처리: 요청된 페이지 번호에 맞는 게시글 반환
+        int size=20;
+        int fromIndex = page * size;
+        int toIndex = Math.min(fromIndex + size, reviewedReviewIds.size());
+
+        // 범위를 벗어나지 않도록 처리
+        if (fromIndex >= reviewedReviewIds.size()) {
+            return ResponseEntity.ok(new ArrayList<>()); // 페이지가 범위를 초과할 경우 빈 리스트 반환
+        }
+
+        // 해당 페이지의 게시글 ID 서브리스트 생성
+        List<Long> pagedArticleIds = reviewedReviewIds.subList(fromIndex, toIndex);
+
+        List<ArticleReviewDto>articleReviewDtos=new ArrayList<>();
+        for(Long reviewId:pagedArticleIds){
             ArticleReviewDto articleReviewDto=ArticleReviewDto.createArticleReviewDto(reviewService.findArticleByReviewId(reviewId), reviewService.findById(reviewId));
             if(articleReviewDto!=null){
                 articleReviewDtos.add(articleReviewDto);
                 log.info("controller dto추가 :articleId"+articleReviewDto.getArticleId());
             }
         }
+
         return ResponseEntity.ok(articleReviewDtos);
 
     }
