@@ -144,7 +144,7 @@
                     <div class="article-content">
                         <img src="/images/pic/anime/${article.main_pic}" width="150" alt="작품표지" class="article-image">
                         <div class="article-info">
-                            <b>[${article.genre}] ${article.title}</b>
+                            <b class="title">[${article.genre}] ${article.title}</b>
                             <div class="tags">${tagsHtml}</div>
                             <div class="meta-info">
                                 ${article.broad_date} | ${article.author} | ${article.ani_company}
@@ -183,34 +183,25 @@
         width: calc(20% - 10px); /* 5개 단위로 가로 배치, 간격을 고려 */
         margin-bottom: 20px; /* 세로 간격 */
         position: relative; /* 자식 요소의 절대 위치를 기준으로 설정 */
-    }
-
-    /* 모바일 화면에서 한 줄에 3개씩 보이도록 설정 */
-    @media (max-width: 768px) {
-        .article-item {
-            width: calc(33.33% - 10px); /* 3개가 한 줄에 표시되도록 설정 (여백 고려) */
-            /*width: calc(50% - 10px);  모바일에서는 2개씩 표시 */
-        }
+        padding: 15px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        cursor: pointer;
     }
     
+    .article-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+
     .main-pic {
         width: 100%; /* 전체 폭을 차지 */
         /*aspect-ratio: 7 / 5;  7:5 비율 */
         object-fit: cover; /* 비율 유지하며 이미지 잘림 방지 */
     }
     
-    .title {
-        display: inline-block; /* 내용을 감싸는 만큼만 너비 설정 */
-        background-color: white; /* 흰색 배경 */
-        color: black; /* 검정색 글자 */
-        text-align: center; /* 중앙 정렬 */
-        max-width: 100%; /* 최대 너비 설정 */
-        white-space: nowrap; /* 줄 바꿈 방지 */
-        overflow: hidden; /* 넘치는 텍스트 숨기기 */
-        text-overflow: ellipsis; /* ... 표시 */
-        text-align: center; /* 중앙 정렬 */
-    }
-
     .score-reason {
         background-color: white; /* 흰색 배경 */
         color: black; /* 검정색 글자 */
@@ -225,19 +216,32 @@
     .score {
         text-align: center; /* 중앙 정렬 */
     }
-    /* 하이퍼링크의 밑줄 제거 */
-    .article-item a {
-        text-decoration: none; /* 기본 밑줄 제거 */
-        color: inherit; /* 부모의 글자 색상 상속 */
+
+    .title {
+        display: inline-block; /* 내용을 감싸는 만큼만 너비 설정 */
+        background-color: white; /* 흰색 배경 */
+        color: black; /* 검정색 글자 */
+        max-width: 100%; /* 최대 너비 설정 */
+        white-space: nowrap; /* 줄 바꿈 방지 */
+        overflow: hidden; /* 넘치는 텍스트 숨기기 */
+        text-overflow: ellipsis; /* ... 표시 */
     }
-    */
+
+    /* 모바일 화면에서 한 줄에 3개씩 보이도록 설정 */
+    @media (max-width: 768px) {
+        .article-item {
+            width: calc(33.33% - 10px); /* 3개가 한 줄에 표시되도록 설정 (여백 고려) */
+            /*width: calc(50% - 10px);  모바일에서는 2개씩 표시 */
+        }
+    }
+
+
     /*추천 게시글*/
-    /* 추천 게시글 */
     .recommendations {
         margin-top: 30px;
         display: flex;
         flex-direction: column;
-        gap: 30px; /* 각 추천 항목 간 간격 */
+        gap: 20px; /* 각 추천 항목 간 간격 */
     }
 
     .article-content {
@@ -272,38 +276,6 @@
         justify-content: space-between;
     }
 
-    .article-info b {
-        font-size: 1.2em;
-        font-weight: 600;
-        margin-bottom: 10px;
-        color: #333;
-    }
-
-    .tags {
-        margin-top: 10px;
-        margin-bottom: 15px;
-    }
-
-    .tag {
-        font-size: 0.85em;
-        padding: 5px 10px;
-        margin-right: 5px;
-        background-color: #e0f7fa;
-        color: #00796b;
-        border-radius: 20px;
-        transition: background-color 0.3s ease;
-    }
-
-    .tag:hover {
-        background-color: #00796b;
-        color: white;
-    }
-
-    .meta-info {
-        font-size: 0.9em;
-        color: #888;
-        margin-bottom: 15px;
-    }
 
     .story {
         font-size: 0.95em;

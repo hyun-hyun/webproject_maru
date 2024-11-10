@@ -94,7 +94,19 @@
         width: calc(20% - 10px); /* 5개 단위로 가로 배치, 간격을 고려 */
         margin-bottom: 20px; /* 세로 간격 */
         position: relative; /* 자식 요소의 절대 위치를 기준으로 설정 */
+        padding: 15px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        cursor: pointer;
     }
+    
+    .article-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+
     /* 모바일 화면에서 한 줄에 3개씩 보이도록 설정 */
     @media (max-width: 768px) {
         .article-item {
