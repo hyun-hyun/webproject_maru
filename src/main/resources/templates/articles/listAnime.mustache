@@ -27,7 +27,7 @@
       loading = true;
       document.getElementById('loading').style.display = 'block'; // 로딩 인디케이터 표시
   
-      fetch(`/api/articles/?page=${page}`)
+      fetch(`/api/articles/list?page=${page}`)
           .then(response => response.json())
           .then(articles => {
               const articleListContainer = document.getElementById('article-list');
@@ -53,6 +53,7 @@
                   <div class="article-content">
                     <img src="/images/pic/anime/${article.main_pic}" width="150" alt="작품표지" class="article-image">
                     <div class="article-info">
+                        평점 ${article.avg_score}점 / ${article.c_score} 리뷰<br>
                         <b class="title">[${article.genre}] ${article.title}</b>
                         <div class="tags">${tagsHtml}</div>
                         <div class="meta-info">
@@ -61,7 +62,7 @@
                         <span class="story">${article.story}</span>
                     </div>
                 </div>
-            `;
+                  `;
                   articleListContainer.appendChild(articleRow);
   
                   // 클릭 이벤트 추가 (게시글 클릭 시 상세 페이지로 이동)

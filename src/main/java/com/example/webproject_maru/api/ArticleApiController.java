@@ -29,7 +29,7 @@ public class ArticleApiController {
     private Map_r_tService map_r_tService;
 
     //게시글 목록
-    @GetMapping("/")
+    @GetMapping("/list")
     public ResponseEntity<List<ArticleListDto>> getArticles(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                         @RequestParam("page") int page) {
 
@@ -51,4 +51,27 @@ public class ArticleApiController {
 
         return ResponseEntity.ok(articleListDtos);
     }
+
+    //top50 3개월간 점수 높은 작품(점수순)
+    @GetMapping("/top")
+    public ResponseEntity<List<ArticleListDto>> getArticles(@AuthenticationPrincipal CustomUserDetails userDetails) {
+
+       //1. 50개 데이터 가져오기 list<entity>
+       List<Article> highArticleEntityList=articleService.get3mRecentHighScoreArticles(50);
+
+        List<ArticleListDto> articleListDtos = new ArrayList<>();
+       //모든 데이터 가져오기 list<entity>
+
+       // 각 Article의 태그 리스트 가져오기
+       for (Article article : highArticleEntityList) {
+            List<String> usedTags=map_r_tService.getOnlyTagsByArticleId(article.getId());//태그
+            ArticleListDto articleListDto=ArticleListDto.createArticleListDto(article,usedTags);
+            if (articleListDto != null) {
+                articleListDtos.add(articleListDto);
+            }
+       }
+
+        return ResponseEntity.ok(articleListDtos);
+    }
+
 }

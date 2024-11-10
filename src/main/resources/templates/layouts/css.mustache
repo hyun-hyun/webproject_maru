@@ -147,7 +147,15 @@
         -webkit-line-clamp: 4; /* 최대 4줄로 제한 */
     }
 
-
+    .title {
+        display: inline-block; /* 내용을 감싸는 만큼만 너비 설정 */
+        background-color: white; /* 흰색 배경 */
+        color: black; /* 검정색 글자 */
+        max-width: 100%; /* 최대 너비 설정 */
+        white-space: nowrap; /* 줄 바꿈 방지 */
+        overflow: hidden; /* 넘치는 텍스트 숨기기 */
+        text-overflow: ellipsis; /* ... 표시 */
+    }
 
     /* Radio 버튼 스타일 */
     #scoreForm fieldset {
