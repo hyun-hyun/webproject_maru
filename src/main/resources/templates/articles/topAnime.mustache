@@ -4,9 +4,9 @@
     <h2>3개월간 TOP50</h2>
     <br>
     <hr>
-    <table class="table" id="article-table">
-        <tbody id="article-list"></tbody>
-    </table>
+    <div class="article-list" id="article-list">
+        <!-- 내용 -->
+    </div>
 </div>
 {{>layouts/footer}}
 
@@ -69,9 +69,29 @@
 </script>
 
 <style>
+    .article-list {
+        margin-top: 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px; /* 각 추천 항목 간 간격 */
+    }
+
     .tag {
         display: inline-block;
         padding: 0.5em 1em;
         font-size: 0.7em;
+    }
+
+    /* 반응형 디자인 */
+    @media (max-width: 768px) {
+        .article-content {
+            flex-direction: column; /* 모바일에서는 세로로 쌓이게 */
+            align-items: flex-start;
+        }
+
+        .article-image {
+            margin-right: 0;
+            margin-bottom: 15px;
+        }
     }
 </style>
