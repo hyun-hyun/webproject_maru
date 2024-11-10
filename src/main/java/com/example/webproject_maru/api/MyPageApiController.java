@@ -92,9 +92,9 @@ public class MyPageApiController {
         List<ArticleRecommendDto> articleRecommendDtos = new ArrayList<>();
         for (Long articleId : recommendedArticleIds) {
             List<String> usedTags=map_r_tService.getOnlyTagsByArticleId(articleId);//태그
-            ArticleRecommendDto articleRecommendForm=ArticleRecommendDto.createArticleRecommendDto(articleService.findByIdArticle(articleId),usedTags);
-            if (articleRecommendForm != null) {
-                articleRecommendDtos.add(articleRecommendForm);
+            ArticleRecommendDto articleRecommendDto=ArticleRecommendDto.createArticleRecommendDto(articleService.findByIdArticle(articleId),usedTags);
+            if (articleRecommendDto != null) {
+                articleRecommendDtos.add(articleRecommendDto);
             }
         }
 

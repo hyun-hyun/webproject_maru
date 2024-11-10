@@ -17,7 +17,7 @@ public class ArticleMainDto {
     private String story;
     private List<String> usedTags;//리뷰에서 사용된 태그
 
-    public ArticleMainDto createArticleMainDto(Article article, List<String> usedTags){
+    public static ArticleMainDto createArticleMainDto(Article article, List<String> usedTags){
         if(article==null){
             return null;
         }
