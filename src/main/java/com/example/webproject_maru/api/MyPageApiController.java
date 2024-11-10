@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.webproject_maru.dto.ArticleForm;
+import com.example.webproject_maru.dto.ArticleRecommendDto;
 import com.example.webproject_maru.dto.ArticleReviewDto;
 import com.example.webproject_maru.dto.CustomUserDetails;
 import com.example.webproject_maru.dto.TagCountDto;
@@ -77,7 +78,7 @@ public class MyPageApiController {
     }
 
     @GetMapping("/recommended-articles/{memberId}")
-    public ResponseEntity<List<ArticleForm>> getRecommendedArticles(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long memberId) {
+    public ResponseEntity<List<ArticleRecommendDto>> getRecommendedArticles(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long memberId) {
         log.info("추천 api 진입");
         Long member_id = userDetails.member.getId();
         // memberId와 member_id가 다를 경우 예외 처리
@@ -88,16 +89,16 @@ public class MyPageApiController {
         List<Long> recommendedArticleIds = recommendationService.recommendArticleIds(memberId);
 
         // Article로 변환
-        List<ArticleForm> articles = new ArrayList<>();
+        List<ArticleRecommendDto> articleRecommendDtos = new ArrayList<>();
         for (Long articleId : recommendedArticleIds) {
-            ArticleForm articleForm=ArticleForm.createArticleForm(articleService.findByIdArticle(articleId));
-            //Article article = articleService.findByIdArticle(articleId);
-            if (articleForm != null) {
-                articles.add(articleForm);
+            List<String> usedTags=map_r_tService.getOnlyTagsByArticleId(articleId);//태그
+            ArticleRecommendDto articleRecommendForm=ArticleRecommendDto.createArticleRecommendDto(articleService.findByIdArticle(articleId),usedTags);
+            if (articleRecommendForm != null) {
+                articleRecommendDtos.add(articleRecommendForm);
             }
         }
 
-        return ResponseEntity.ok(articles);
+        return ResponseEntity.ok(articleRecommendDtos);
     }
 
     

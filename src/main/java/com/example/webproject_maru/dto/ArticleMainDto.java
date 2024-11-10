@@ -5,8 +5,10 @@ import java.util.List;
 import com.example.webproject_maru.entity.Article;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @AllArgsConstructor
+@Getter
 public class ArticleMainDto {
     private Long id;
     private String title;
