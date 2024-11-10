@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -48,7 +49,7 @@ public class MyPageApiController {
         Long member_id = userDetails.member.getId();
         // memberId와 member_id가 다를 경우 예외 처리
         if (!memberId.equals(member_id)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Unauthorized access: memberId does not match.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "유효하지 않은 접근입니다.");
         }
 
         List<TagCountDto> tags = map_r_tService.countTagSelectionsByMemberId(memberId);
@@ -60,7 +61,7 @@ public class MyPageApiController {
         Long member_id = userDetails.member.getId();
         // memberId와 로그인된 member_id가 다를 경우 예외 처리
         if (!memberId.equals(member_id)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Unauthorized access: memberId does not match.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "유효하지 않은 접근입니다.");
         }
         //리뷰한 리뷰id
         List<Long> reviewedReviewIds=map_r_tService.getAllReviewIdByMemberId(memberId);
@@ -78,21 +79,39 @@ public class MyPageApiController {
     }
 
     @GetMapping("/recommended-articles/{memberId}")
-    public ResponseEntity<List<ArticleRecommendDto>> getRecommendedArticles(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long memberId) {
-        log.info("추천 api 진입");
+    public ResponseEntity<List<ArticleRecommendDto>> getRecommendedArticles(
+            @AuthenticationPrincipal CustomUserDetails userDetails, 
+            @PathVariable Long memberId,
+            @RequestParam("page") int page) {
+        
         Long member_id = userDetails.member.getId();
         // memberId와 member_id가 다를 경우 예외 처리
         if (!memberId.equals(member_id)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Unauthorized access: memberId does not match.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "유효하지 않은 접근입니다.");
         }
+
         // 추천 게시글 ID 목록 가져오기
         List<Long> recommendedArticleIds = recommendationService.recommendArticleIds(memberId);
 
+        // 페이징 처리: 요청된 페이지 번호에 맞는 게시글 반환
+        int size=20;
+        int fromIndex = page * size;
+        int toIndex = Math.min(fromIndex + size, recommendedArticleIds.size());
+
+        // 범위를 벗어나지 않도록 처리
+        if (fromIndex >= recommendedArticleIds.size()) {
+            return ResponseEntity.ok(new ArrayList<>()); // 페이지가 범위를 초과할 경우 빈 리스트 반환
+        }
+
+        // 해당 페이지의 게시글 ID 서브리스트 생성
+        List<Long> pagedArticleIds = recommendedArticleIds.subList(fromIndex, toIndex);
+
         // Article로 변환
         List<ArticleRecommendDto> articleRecommendDtos = new ArrayList<>();
-        for (Long articleId : recommendedArticleIds) {
-            List<String> usedTags=map_r_tService.getOnlyTagsByArticleId(articleId);//태그
-            ArticleRecommendDto articleRecommendDto=ArticleRecommendDto.createArticleRecommendDto(articleService.findByIdArticle(articleId),usedTags);
+        for (Long articleId : pagedArticleIds) {
+            List<String> usedTags = map_r_tService.getOnlyTagsByArticleId(articleId); // 태그
+            ArticleRecommendDto articleRecommendDto = ArticleRecommendDto.createArticleRecommendDto(
+                    articleService.findByIdArticle(articleId), usedTags);
             if (articleRecommendDto != null) {
                 articleRecommendDtos.add(articleRecommendDto);
             }
@@ -100,6 +119,7 @@ public class MyPageApiController {
 
         return ResponseEntity.ok(articleRecommendDtos);
     }
+
 
     
 }

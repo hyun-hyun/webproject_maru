@@ -88,7 +88,7 @@
       const documentHeight = document.documentElement.scrollHeight;
   
       // 페이지 하단에 도달하면 다음 페이지 로드
-      if (scrollPosition >= documentHeight - 500 && hasMoreData) {
+      if (scrollPosition >= documentHeight - 500 && hasMoreData && !loading) {
           currentPage++;
           loadArticles(currentPage); // 새로운 페이지의 게시글을 로드
       }
