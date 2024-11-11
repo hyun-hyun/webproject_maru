@@ -16,12 +16,14 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.webproject_maru.dto.ArticleForm;
+import com.example.webproject_maru.dto.ArticleListDto;
 import com.example.webproject_maru.dto.SubPicForm;
 import com.example.webproject_maru.dto.TagCountDto;
 import com.example.webproject_maru.dto.TagDto;
@@ -89,6 +91,10 @@ public class ArticleService {
     }
 
 
+    //검색
+    public Page<Article> searchArticles(String query, Pageable pageable) {
+        return articleRepository.searchByQuery(query, pageable);
+    }
     
     public ArrayList<Article> findArticles(){
         ArrayList<Article> articleEntityList=articleRepository.findAll();
@@ -106,9 +112,8 @@ public class ArticleService {
         return articleEntityList;
     }
     //작품등록 최신순 정렬(페이징)
-    public ArrayList<Article> findArticlesDesc(Pageable pageable){
-        ArrayList<Article> articleEntityList=articleRepository.findAllByOrderByIdDesc(pageable);
-        return articleEntityList;
+    public Page<Article> findArticlesDesc(Pageable pageable){
+        return articleRepository.findAllByOrderByIdDesc(pageable);
     }
 
 

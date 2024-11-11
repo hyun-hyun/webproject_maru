@@ -58,8 +58,8 @@
                 </div>
                 <br>
                 <div class="col-lg-4 d-flex justify-content-end">
-                        <form class="d-flex">
-                            <input class="form-control me-2" type="search" placeholder="개발중" aria-label="Search">
+                        <form class="d-flex" id="searchForm" action="/articles/anime" method="get" style="display: inline-block;">
+                            <input class="form-control me-2" type="search" name="search" id="searchQuery" placeholder="제목,성우,등장인물,제작사 등" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">검색</button>
                         </form>
                 </div>
@@ -75,3 +75,16 @@
         aria-label="Close"></button>
       </div>
       {{/msg}}
+
+<script>
+  // 검색 버튼을 눌렀을 때 검색어 유효성을 확인하는 스크립트
+    document.getElementById('searchForm').addEventListener('submit', function(event) {
+        const query = document.getElementById('searchQuery').value.trim();
+        if (query === '') {
+            alert('검색어를 입력하세요.');
+            event.preventDefault(); // 빈 검색어일 경우 페이지 이동 방지
+        }
+    });
+
+</script>
+

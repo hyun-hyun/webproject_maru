@@ -17,88 +17,91 @@
 {{>layouts/footer}}
 
 <script>
-  let currentPage = 0; // 현재 페이지 (무한 스크롤을 위한)
-  let loading = false; // 데이터 로딩 중인지 체크
-  let hasMoreData = true; // 더 이상 데이터가 있는지 체크
+    let currentPage = 0; // 현재 페이지 (무한 스크롤을 위한)
+    let loading = false; // 데이터 로딩 중인지 체크
+    let hasMoreData = true; // 더 이상 데이터가 있는지 체크
+    
+    // 검색 결과를 로드하는 함수
+    function loadArticles(page, query = '') {
+        if (loading || !hasMoreData) return; // 이미 데이터를 로딩 중이거나 더 이상 데이터가 없으면 요청을 하지 않음
+        loading = true;
+        document.getElementById('loading').style.display = 'block'; // 로딩 인디케이터 표시
   
-  // 게시글 목록을 로드하는 함수
-  function loadArticles(page) {
-      if (loading || !hasMoreData) return; // 이미 데이터를 로딩 중이거나 더 이상 데이터가 없으면 요청을 하지 않음
-      loading = true;
-      document.getElementById('loading').style.display = 'block'; // 로딩 인디케이터 표시
-  
-      fetch(`/api/articles/list?page=${page}`)
-          .then(response => response.json())
-          .then(articles => {
-              const articleListContainer = document.getElementById('article-list');
-              if (articles.length === 0) {
-                  hasMoreData = false;  // 더 이상 불러올 데이터가 없으면 hasMoreData를 false로 설정
-                  document.getElementById('loading').style.display = 'none'; // 로딩 숨김
-                  return;
-              }
-  
-              articles.forEach(article => {
-                  const articleRow = document.createElement('tr');
-                  articleRow.className = 'article-row';
-                  articleRow.setAttribute('data-article-id', article.id);
-  
-                  let tagsHtml = '';
-                  if (article.usedTags && Array.isArray(article.usedTags)) {
-                      article.usedTags.forEach(tag => {
-                          tagsHtml += `<span class="btn btn-outline-info m-1 tag">${tag}</span>`;
-                      });
-                  }
-  
-                  articleRow.innerHTML = `
-                  <div class="article-content">
-                    <img src="/images/pic/anime/${article.main_pic}" width="150" alt="작품표지" class="article-image">
-                    <div class="article-info">
-                        평점 ${article.avg_score}점 / ${article.c_score} 리뷰<br>
-                        <b class="title">[${article.genre}] ${article.title}</b>
-                        <div class="tags">${tagsHtml}</div>
-                        <div class="meta-info">
-                            ${article.broad_date} | ${article.author} | ${article.ani_company}
-                        </div>
-                        <span class="story">${article.story}</span>
-                    </div>
-                </div>
-                  `;
-                  articleListContainer.appendChild(articleRow);
-  
-                  // 클릭 이벤트 추가 (게시글 클릭 시 상세 페이지로 이동)
-                  articleRow.addEventListener('click', function() {
-                      window.location.href = `/articles/anime/${article.id}`;
-                  });
-              });
-  
-              // 로딩 상태 초기화
-              loading = false;
-              document.getElementById('loading').style.display = 'none'; // 로딩 숨김
-          })
-          .catch(error => {
-              console.error('Error fetching articles:', error);
-              loading = false;
-              document.getElementById('loading').style.display = 'none'; // 로딩 숨김
-          });
-  }
-  
-  // 무한 스크롤 이벤트 처리
-  window.addEventListener('scroll', function() {
-      const scrollPosition = window.innerHeight + window.scrollY;
-      const documentHeight = document.documentElement.scrollHeight;
-  
-      // 페이지 하단에 도달하면 다음 페이지 로드
-      if (scrollPosition >= documentHeight - 500 && hasMoreData && !loading) {
-          currentPage++;
-          loadArticles(currentPage); // 새로운 페이지의 게시글을 로드
-      }
-  });
-  
-  // 페이지 로드 시 첫 번째 페이지의 게시글을 불러오기
-  document.addEventListener('DOMContentLoaded', function() {
-      loadArticles(currentPage); // 첫 번째 페이지 로드
-  });
-</script>
+        const url = query ? `/api/articles/list?page=${page}&search=${query}` : `/api/articles/list?page=${page}`;
+    
+        fetch(url)
+            .then(response => response.json())
+            .then(articles => {
+                const articleListContainer = document.getElementById('article-list');
+                if (articles.length === 0) {
+                    hasMoreData = false;  // 더 이상 불러올 데이터가 없으면 hasMoreData를 false로 설정
+                    document.getElementById('loading').style.display = 'none'; // 로딩 숨김
+                    return;
+                }
+    
+                articles.forEach(article => {
+                    const articleRow = document.createElement('tr');
+                    articleRow.className = 'article-row';
+                    articleRow.setAttribute('data-article-id', article.id);
+    
+                    let tagsHtml = '';
+                    if (article.usedTags && Array.isArray(article.usedTags)) {
+                        article.usedTags.forEach(tag => {
+                            tagsHtml += `<span class="btn btn-outline-info m-1 tag">${tag}</span>`;
+                        });
+                    }
+    
+                    articleRow.innerHTML = `
+                    <div class="article-content">
+                      <img src="/images/pic/anime/${article.main_pic}" width="150" alt="작품표지" class="article-image">
+                      <div class="article-info">
+                          평점 ${article.avg_score}점 / ${article.c_score} 리뷰<br>
+                          <b class="title">[${article.genre}] ${article.title}</b>
+                          <div class="tags">${tagsHtml}</div>
+                          <div class="meta-info">
+                              ${article.broad_date} | ${article.author} | ${article.ani_company}
+                          </div>
+                          <span class="story">${article.story}</span>
+                      </div>
+                  </div>
+                    `;
+                    articleListContainer.appendChild(articleRow);
+    
+                    // 클릭 이벤트 추가 (게시글 클릭 시 상세 페이지로 이동)
+                    articleRow.addEventListener('click', function() {
+                        window.location.href = `/articles/anime/${article.id}`;
+                    });
+                });
+    
+                // 로딩 상태 초기화
+                loading = false;
+                document.getElementById('loading').style.display = 'none'; // 로딩 숨김
+            })
+            .catch(error => {
+                console.error('Error fetching articles:', error);
+                loading = false;
+                document.getElementById('loading').style.display = 'none'; // 로딩 숨김
+            });
+    }
+    
+    // 무한 스크롤 이벤트 처리
+    window.addEventListener('scroll', function() {
+        const scrollPosition = window.innerHeight + window.scrollY;
+        const documentHeight = document.documentElement.scrollHeight;
+    
+        // 페이지 하단에 도달하면 다음 페이지 로드
+        if (scrollPosition >= documentHeight - 500 && hasMoreData && !loading) {
+            currentPage++;
+            loadArticles(currentPage, document.getElementById('searchQuery').value); // 새로운 페이지의 게시글을 로드
+        }
+    });
+    
+    // 페이지 로드 시 첫 번째 페이지의 게시글을 불러오기
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchQuery = new URLSearchParams(window.location.search).get('search'); // URL에서 search 파라미터 가져오기
+        loadArticles(currentPage, searchQuery || ''); // 첫 번째 페이지 로드
+    });
+  </script>
 
 <style>
   /* 로딩 컨테이너 */
