@@ -66,12 +66,6 @@ public class Article {
     @OneToMany(mappedBy = "article")
     private List<Map_a_t> tags;
 
-    @Transient  // 데이터베이스에 저장하지 않기 위해 Transient 사용
-    private List<String> usedTags;  // 리뷰에서 사용한 태그 리스트 추가
-
-    @Transient
-    private List<String> allTags;
-
     @Column
     private String story;
 
