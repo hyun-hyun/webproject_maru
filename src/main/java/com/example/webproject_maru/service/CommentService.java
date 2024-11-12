@@ -96,7 +96,7 @@ public class CommentService {
 
     // 댓글 삭제
     @Transactional
-    public CommentForm delete(Long commentId) {
+    public CommentDto delete(Long commentId) {
         //댓글 조회 및 예외발생
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(()->new IllegalArgumentException("댓글 수정 실패!"+"대상 댓글이 없습니다."));
@@ -104,7 +104,7 @@ public class CommentService {
 
         //댓글삭제
         commentRepository.delete(comment);
-        return CommentForm.createCommentForm(comment);
+        return CommentDto.createCommentDto(comment);
     }
 
     // 특정 게시글에 대한 댓글 목록 조회

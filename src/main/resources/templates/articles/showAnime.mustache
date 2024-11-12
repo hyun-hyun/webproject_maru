@@ -874,14 +874,14 @@
                 body: body
             }),
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert("댓글 수정에 실패했습니다.");
-            }
-        });
+        .then(response =>  {
+          //HTTP 응답코드에 따른 메시지 출력
+          const msg=(response.ok)?"댓글 수정 완료! ":"댓글 수성 중 오류가 발생하였습니다.";
+          alert(msg);
+          //현재 페이지 새로고침
+          window.location.reload();
+        })
+        
     }
 
     // 댓글 삭제
@@ -889,14 +889,26 @@
         fetch(`/api/comments/delete/${commentId}`, {
             method: "DELETE",
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                document.getElementById(`comment-content-${commentId}`).textContent = "삭제된 댓글입니다.";
-            } else {
-                alert("댓글 삭제에 실패했습니다.");
-            }
-        });
+        .then(response=>{
+          //댓글 삭제 실패 처리
+          if(!response.ok){
+            alert("댓글 삭제 실패..!");
+            return;
+          }else{
+            return response.json();
+          }
+          
+      })
+      .then(data => {
+    
+        // 응답이 성공적
+          if (data) {
+            const msg=`${data.nickname}님의 댓글을 삭제했습니다.`;
+          alert(msg);
+          //현재 페이지 새로고침
+          window.location.reload();
+        } 
+    });
     }
 
   </script>
