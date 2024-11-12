@@ -6,27 +6,36 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 @ToString
 public class CommentForm {
-    private Long id;//댓글의 id
-    private Long articleId;//댓글의 부모id
-    private String nickname;//댓글 작성자
+    private Long id;//댓글의D id
+    private Long article_id;//댓글의 부모id
+    private Long member_id;
     private String body;//댓글 본문
-    private LocalDateTime appendTime;
-    private LocalDateTime updateTime;
-    public static CommentForm createCommentDto(Comment comment) {
+    private Long parent_id;//댓글부모(답글시)
+
+    public static CommentForm createCommentForm(Comment comment) {
+        if(comment==null) return null;
+        Long p_id;
+        if(comment.getParentComment()==null){
+            p_id=null;
+        }else{
+            p_id=comment.getParentComment().getId();
+        }
         return new CommentForm(
-            comment.getId(),//댓글 엔티티의 id
-            comment.getArticle().getId(),//댓글 엔티티가 속한 부모 게시글의 id
-            comment.getMember().getNickname(),//댓글 엔티티의 nickname
-            comment.getBody(),//댓글 엔티티의 body,
-            comment.getAppendTime(),
-            comment.getUpdateTime()
+            comment.getId(),
+            comment.getArticle().getId(),
+            comment.getMember().getId(),
+            comment.getBody(),
+            p_id
         );
     }
+
 }

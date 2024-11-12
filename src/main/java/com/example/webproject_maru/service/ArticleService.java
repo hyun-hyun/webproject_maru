@@ -105,6 +105,9 @@ public class ArticleService {
         Article articleEntity=articleRepository.findById(id).orElse(null);
         return articleEntity;
     }
+    public Optional<Article> findById(Long id){
+        return articleRepository.findById(id);
+    }
 
     //작품등록 최신순 정렬
     public ArrayList<Article> findArticlesDesc(){

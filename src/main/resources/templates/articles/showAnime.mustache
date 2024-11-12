@@ -278,6 +278,42 @@
   </div>
 </div>
 
+<section class="comments-section">
+<!--댓글-->
+<h4>댓글</h4>
+<form id="commentForm">
+  <input type="hidden" name="article-id" value="{{article.id}}">
+  {{#member_id}}
+    <input type="hidden" id="member-id" value="{{.}}"><br>
+  {{/member_id}}
+  <textarea class="col-auto form-control" type="text" id="body" placeholder="댓글을 입력하세요"></textarea>
+  <button type="button" class="btn btn-primary" id="commentCreateBtn">댓글 작성</button>
+</form>
+
+<div id="comment-list">
+    {{#comments}}
+    <div class="comment">
+        <p><strong>{{nickname}}</strong>: {{body}}</p>
+        <button onclick="showReplyBox({{id}}, '{{nickname}}')">답글 달기</button>
+          
+        <!-- 대댓글 섹션 -->
+        <div class="replies">
+            {{#replies}}
+            <div class="reply">
+                <p><strong>{{nickname}}</strong>: {{body}}</p>
+            </div>
+            {{/replies}}
+        </div>
+          
+        <!-- 수정 및 삭제 모달 트리거 버튼 -->
+        <button onclick="openEditModal({{id}})">수정</button>
+        <button onclick="deleteComment({{id}})">삭제</button>
+    </div>
+    {{/comments}}
+</div>
+</section>
+<br>
+
 {{#write}}
   <a href="/write/article/anime/{{id}}/edit" class="btn btn-sm btn-primary">작품 수정</a>
   <a href="#" class="btn btn-sm btn-outline-danger" onclick="confirmDelete('{{id}}', false)">작품 삭제</a>
@@ -604,7 +640,266 @@
     }
     }
 </script>
+<script>
+  //댓글
+  //member-id 요소에서 값 가져오기
+    const memberIdElement = document.querySelector("#member-id");
+  // 페이지 로드 시 댓글과 답글을 서버에서 가져와서 표시
+  window.addEventListener('load', function() {
+      const articleId = document.querySelector("input[name='article-id']").value; // 게시글 ID 가져오기
+      
+      fetch(`/api/comments/article/${articleId}`)
+          .then(response => response.json())
+          .then(comments => {
+              const commentList = document.getElementById("comment-list");
+              commentList.innerHTML = ''; // 기존 댓글 목록 초기화
 
+              // 댓글과 답글을 렌더링
+              comments.forEach(comment => {
+                  const commentDiv = createCommentDiv(comment); // 댓글을 생성하는 함수
+                  commentList.appendChild(commentDiv);
+              });
+          })
+          .catch(error => {
+              console.error('댓글 불러오기 실패:', error);
+          });
+  });
+
+  // 댓글 생성 함수
+  function createCommentDiv(comment) {
+      const commentDiv = document.createElement('div');
+      commentDiv.classList.add('comment');
+      commentDiv.setAttribute('id', `comment-${comment.id}`);
+      
+      // 댓글 내용
+      commentDiv.innerHTML = `
+          <p><strong>${comment.nickname}</strong>: ${comment.body}</p>
+          <button onclick="showReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
+          <button onclick="openEditModal(${comment.id})">수정</button>
+          <button onclick="deleteComment(${comment.id})">삭제</button>
+          <div id="replies-${comment.id}" class="replies"></div>
+      `;
+      
+      // 답글을 렌더링
+      if (comment.replies && comment.replies.length > 0) {
+          const repliesContainer = commentDiv.querySelector(`#replies-${comment.id}`);
+          comment.replies.forEach(reply => {
+              const replyDiv = createCommentDiv(reply); // 답글도 댓글과 동일하게 생성
+              repliesContainer.appendChild(replyDiv);
+          });
+      }
+  
+      return commentDiv;
+  }
+  
+
+
+  //댓글 생성 버튼 변수화
+  const commentCreateBtn=document.querySelector("#commentCreateBtn");
+  //이벤트 감지되면 이벤트 처리 함수 실행
+  commentCreateBtn.addEventListener("click",function(){
+          
+    // member_id가 없을 경우 로그인 페이지로 이동
+    if (!memberIdElement || !memberIdElement.value) {
+      const currentUrl = window.location.href; // 현재 URL 가져오기
+      alert('로그인이 필요합니다.');
+      window.location.href = "/login?continue=" + encodeURIComponent(currentUrl); // 로그인 페이지로 이동, 현재 URL 포함
+      return; // 함수 종료
+    }
+    //새 댓글 객체 생성
+    const bodyElement=document.querySelector("#body")
+    const comment={
+      member_id:memberIdElement.value,
+      article_id:document.querySelector("#article-id").value,
+      body: bodyElement ?bodyElement.value:null
+    };
+    //내용 미작성시 경고 메시지 출력 후 함수 종료
+    if (!bodyElement || bodyElement.value.trim() === "") {
+      alert('내용을 입력해주세요.');
+      return;
+    }
+    console.log(comment);
+
+  const url="/api/comments/create_c"
+    fetch(url,{
+      method:"POST",
+      headers:{
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(comment)//comment객체를 JSON 문자열로 변환해 전송
+    })
+    .then(response =>  {
+      //HTTP 응답코드에 따른 메시지 출력
+      const msg=(response.ok)?"댓글 작성 완료! ":"댓글 작성 중 오류가 발생하였습니다.";
+      if(response.ok){
+        alert(msg);
+        return response.json();
+      }else{
+        alert(msg);
+      }
+    })
+    .then(data => {
+
+      // 응답이 성공적이면 댓글을 화면에 추가
+        if (data) {
+            const commentList = document.getElementById("comment-list");
+            const newCommentDiv = document.createElement("div");
+            newCommentDiv.classList.add("comment");
+            newCommentDiv.setAttribute("id", "comment-" + data.id);
+
+            // 댓글 내용 작성
+            newCommentDiv.innerHTML = `
+                <p><strong>${data.nickname}</strong>: ${data.body}</p>
+                <button onclick="showReplyBox(${data.id}, '${data.nickname}')">답글 달기</button>
+                <div class="replies" id="replies-${data.id}"></div>
+                <button onclick="openEditModal(${data.id})">수정</button>
+                <button onclick="deleteComment(${data.id})">삭제</button>
+            `;
+            commentList.appendChild(newCommentDiv);
+
+            // 댓글 작성 후 내용 초기화
+            document.querySelector("#body").value = "";
+        } else {
+            alert("댓글 작성 중 오류가 발생하였습니다.");
+        }
+    })
+    .catch((error)=>{
+      console.error('Error:',error);
+    });
+
+  });
+    // 답글 입력 박스 표시
+    function showReplyBox(commentId, nickname) {
+        const replyBox = document.createElement("textarea");
+        replyBox.name = "content";
+        replyBox.placeholder = "@" + nickname + " 에게 답글 쓰기";
+        replyBox.dataset.parentId = commentId; // 대댓글의 부모 댓글 ID 저장
+        replyBox.classList.add("reply-input");
+        
+        // 이미 reply-box가 존재하는지 확인하고 없으면 추가
+        let replyContainer = document.getElementById("reply-box-" + commentId);
+        if (!replyContainer) {
+            replyContainer = document.createElement("div");
+            replyContainer.id = "reply-box-" + commentId;
+            document.getElementById("comment-" + commentId).appendChild(replyContainer);
+        }
+        replyContainer.innerHTML = '';  // 이전 입력 박스를 초기화하고 추가
+        replyContainer.appendChild(replyBox);
+
+        // 답글 달기 버튼
+        const replyButton = document.createElement("button");
+        replyButton.textContent = "답글 달기";
+        replyButton.onclick = () => submitReply(commentId);
+        replyContainer.appendChild(replyButton);
+    }
+
+    // 답글 작성
+    function submitReply(parentCommentId) {
+        const replyBox = document.querySelector(`#reply-box-${parentCommentId} .reply-input`);
+        const body = replyBox.value;
+        const article_id = document.querySelector("input[name='article-id']").value;
+
+        // member_id가 없을 경우 로그인 페이지로 이동
+        if (!memberIdElement || !memberIdElement.value) {
+          const currentUrl = window.location.href; // 현재 URL 가져오기
+          alert('로그인이 필요합니다.');
+          window.location.href = "/login?continue=" + encodeURIComponent(currentUrl); // 로그인 페이지로 이동, 현재 URL 포함
+          return; // 함수 종료
+        }
+
+        fetch(`/api/comments/reply`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              member_id:memberIdElement.value,
+              article_id: article_id,
+              body: body,
+              parent_id: parentCommentId
+            }),
+        })
+        .then(response =>  {
+          //HTTP 응답코드에 따른 메시지 출력
+          const msg=(response.ok)?"답글 작성 완료! ":"답글 작성 중 오류가 발생하였습니다.";
+          if(response.ok){
+            alert(msg);
+            return response.json();
+          }else{
+            alert(msg);
+          }
+        })
+        .then(data => {
+    
+          // 응답이 성공적이면 답글을 화면에 추가
+            if (data) {
+              const repliesContainer = document.getElementById("replies-" + parentCommentId);
+              const newReplyDiv = document.createElement("div");
+              newReplyDiv.classList.add("replies");
+  
+              // 답글 내용 작성
+              newReplyDiv.innerHTML = `
+                  <p><strong>${data.nickname}</strong>: ${data.body}</p>
+              `;
+              repliesContainer.appendChild(newReplyDiv);
+  
+              // 답글 작성 박스 초기화
+              replyBox.value = "";
+          } 
+      });
+        
+    }
+  
+
+    // 댓글 수정 모달 열기
+    function openEditModal(commentId) {
+        const modal = document.getElementById("editCommentModal");
+        modal.style.display = "block";
+        document.getElementById("editCommentContent").value = document.getElementById(`comment-content-${commentId}`).textContent;
+        document.getElementById("saveEditButton").onclick = function() {
+            saveEditedComment(commentId);
+        };
+    }
+
+    // 댓글 수정
+    function saveEditedComment(commentId) {
+        const body = document.getElementById("editCommentContent").value;
+
+        fetch(`/api/comments/edit/${commentId}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                body: body
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert("댓글 수정에 실패했습니다.");
+            }
+        });
+    }
+
+    // 댓글 삭제
+    function deleteComment(commentId) {
+        fetch(`/api/comments/delete/${commentId}`, {
+            method: "DELETE",
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById(`comment-content-${commentId}`).textContent = "삭제된 댓글입니다.";
+            } else {
+                alert("댓글 삭제에 실패했습니다.");
+            }
+        });
+    }
+
+  </script>
 
 <style>
   /* CSS */
