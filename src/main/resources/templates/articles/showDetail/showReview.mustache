@@ -253,113 +253,122 @@
     const removeTagBtn = document.querySelector('#removeTagBtn');
 
     // 태그 추가 버튼 클릭 시
-    addTagBtn.addEventListener('click', function () {
-    const newTag = newTagInput.value.trim();
-    if (newTag !== '') {
-        // 입력된 태그를 추가하고 input 비활성화
-        addedTagText.textContent = newTag;
-        addedTagCheckbox.value = newTag;
-        addedTagContainer.style.display = 'inline-block'; // 태그 컨테이너 보이기
-        newTagInput.disabled = true;  // input 비활성화
-        addTagBtn.disabled = true;    // 추가 버튼 비활성화
+    if(addTagBtn){
+      addTagBtn.addEventListener('click', function () {
+        const newTag = newTagInput.value.trim();
+        if (newTag !== '') {
+            // 입력된 태그를 추가하고 input 비활성화
+            addedTagText.textContent = newTag;
+            addedTagCheckbox.value = newTag;
+            addedTagContainer.style.display = 'inline-block'; // 태그 컨테이너 보이기
+            newTagInput.disabled = true;  // input 비활성화
+            addTagBtn.disabled = true;    // 추가 버튼 비활성화
+        }
+        else{
+            addedTagCheckbox.value='';
+        }
+        });
     }
-    else{
-        addedTagCheckbox.value='';
-    }
-    });
+    
 
     // 태그 삭제 버튼 클릭 시
-    removeTagBtn.addEventListener('click', function () {
-    // 추가된 태그를 제거하고 input 활성화
-    addedTagContainer.style.display = 'none'; // 태그 컨테이너 숨기기
-    newTagInput.value = '';                   // input 필드 초기화
-    newTagInput.disabled = false;             // input 활성화
-    addTagBtn.disabled = false;               // 추가 버튼 활성화
-    });
+    if(removeTagBtn){
+      removeTagBtn.addEventListener('click', function () {
+        // 추가된 태그를 제거하고 input 활성화
+        addedTagContainer.style.display = 'none'; // 태그 컨테이너 숨기기
+        newTagInput.value = '';                   // input 필드 초기화
+        newTagInput.disabled = false;             // input 활성화
+        addTagBtn.disabled = false;               // 추가 버튼 활성화
+        });
+    }
+    
 
 
     //리뷰 생성 버튼 변수화
     const reviewCreateBtn=document.querySelector("#reviewCreateBtn");
     //이벤트 감지되면 이벤트 처리 함수 실행
-    reviewCreateBtn.addEventListener("click",function(){
+    if(reviewCreateBtn){
+      reviewCreateBtn.addEventListener("click",function(){
 
-    // #member-id 요소에서 값 가져오기
-    const memberIdElement = document.querySelector("#member-id");
+        // #member-id 요소에서 값 가져오기
+        const memberIdElement = document.querySelector("#member-id");
+        
+        // member_id가 없을 경우 로그인 페이지로 이동
+        if (!memberIdElement || !memberIdElement.value) {
+        const currentUrl = window.location.href; // 현재 URL 가져오기
+        alert('로그인이 필요합니다.');
+        window.location.href = "/login?continue=" + encodeURIComponent(currentUrl); // 로그인 페이지로 이동, 현재 URL 포함
+        return; // 함수 종료
+        }
     
-    // member_id가 없을 경우 로그인 페이지로 이동
-    if (!memberIdElement || !memberIdElement.value) {
-    const currentUrl = window.location.href; // 현재 URL 가져오기
-    alert('로그인이 필요합니다.');
-    window.location.href = "/login?continue=" + encodeURIComponent(currentUrl); // 로그인 페이지로 이동, 현재 URL 포함
-    return; // 함수 종료
+    
+        //라디오 버튼에서 선택된 값을 가져오기 
+        const scoreElement=document.querySelector('input[name="score"]:checked');
+    
+        //새 리뷰 객체 생성
+        const review={
+        //새 리뷰의 멤버id,게시글id,점수,한줄평
+        member_id:memberIdElement.value,
+        article_id:document.querySelector("#article-id").value,
+        score:scoreElement ? scoreElement.value : null,
+        score_reason:document.querySelector("#score-reason").value,
+        //선택중인 tag값 가져오기
+        selectingTags:Array.from(document.querySelectorAll('input[name="selectingTags"]:checked'))
+                            .map(checkbox=>checkbox.value)
+        };
+    
+        //선택된 라디오 버튼이 없는 경우 경고 메시지를 출력하고 함수 종료
+        if(!scoreElement){
+        alert('평점을 선택해주세요.');
+        return;
+        }
+    
+    
+        //review객체를 확인하기 위해 콘솔에 출력(디버깅용, 추후 삭제하기)
+        console.log(review);
+        //review객체 서버에 post, 비동기 통신을 위한 fetch API
+        const url="/api/articles/"+review.article_id+"/create_r"
+        fetch(url,{
+        method:"POST",
+        headers:{
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(review)//review객체를 JSON 문자열로 변환해 전송
+        }) 
+        .then(response => {
+        //HTTP 응답코드에 따른 메시지 출력
+        const msg=(response.ok)?"리뷰 작성 완료 :)":"리뷰 작성 중 오류가 발생하였습니다.";
+        alert(msg);
+        //현재페이지 새로고침
+        window.location.reload();
+        })
+        .then(data => {
+    
+        document.querySelector("#reviewCreateBtn").disabled = true;
+        document.querySelector("#reviewCreateBtn").classList.add('hidden');
+    
+        const reviewSection = document.querySelector("#review-section");
+        reviewSection.classList.remove('hidden');
+    
+        const reviewsDiv = document.querySelector("#reviews");
+        reviewsDiv.innerHTML = `
+            <div class="review">
+                <p>Member ID: <span id="display_member_id">${review.member_id}</span></p>
+                <p>Article ID: <span id="display_article_id">${review.article_id}</span></p>
+                <p>Score: <span id="display_score">${review.score}</span></p>
+                <p>Reason: <span id="display_score_reason">${review.score_reason}</span></p>
+            </div>
+        `;
+    
+        })
+        .catch((error)=>{
+        console.error('Error:',error);
+        });
+    
+    
+        });
     }
-
-
-    //라디오 버튼에서 선택된 값을 가져오기 
-    const scoreElement=document.querySelector('input[name="score"]:checked');
-
-    //새 리뷰 객체 생성
-    const review={
-    //새 리뷰의 멤버id,게시글id,점수,한줄평
-    member_id:memberIdElement.value,
-    article_id:document.querySelector("#article-id").value,
-    score:scoreElement ? scoreElement.value : null,
-    score_reason:document.querySelector("#score-reason").value,
-    //선택중인 tag값 가져오기
-    selectingTags:Array.from(document.querySelectorAll('input[name="selectingTags"]:checked'))
-                        .map(checkbox=>checkbox.value)
-    };
-
-    //선택된 라디오 버튼이 없는 경우 경고 메시지를 출력하고 함수 종료
-    if(!scoreElement){
-    alert('평점을 선택해주세요.');
-    return;
-    }
-
-
-    //review객체를 확인하기 위해 콘솔에 출력(디버깅용, 추후 삭제하기)
-    console.log(review);
-    //review객체 서버에 post, 비동기 통신을 위한 fetch API
-    const url="/api/articles/"+review.article_id+"/create_r"
-    fetch(url,{
-    method:"POST",
-    headers:{
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify(review)//review객체를 JSON 문자열로 변환해 전송
-    }) 
-    .then(response => {
-    //HTTP 응답코드에 따른 메시지 출력
-    const msg=(response.ok)?"리뷰 작성 완료 :)":"리뷰 작성 중 오류가 발생하였습니다.";
-    alert(msg);
-    //현재페이지 새로고침
-    window.location.reload();
-    })
-    .then(data => {
-
-    document.querySelector("#reviewCreateBtn").disabled = true;
-    document.querySelector("#reviewCreateBtn").classList.add('hidden');
-
-    const reviewSection = document.querySelector("#review-section");
-    reviewSection.classList.remove('hidden');
-
-    const reviewsDiv = document.querySelector("#reviews");
-    reviewsDiv.innerHTML = `
-        <div class="review">
-            <p>Member ID: <span id="display_member_id">${review.member_id}</span></p>
-            <p>Article ID: <span id="display_article_id">${review.article_id}</span></p>
-            <p>Score: <span id="display_score">${review.score}</span></p>
-            <p>Reason: <span id="display_score_reason">${review.score_reason}</span></p>
-        </div>
-    `;
-
-    })
-    .catch((error)=>{
-    console.error('Error:',error);
-    });
-
-
-    });
+    
 <!--리뷰 수정-->
     //수정 모달 클릭 시 데이터 띄우기
         //모달 요소 선택
