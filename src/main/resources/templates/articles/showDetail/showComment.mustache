@@ -77,7 +77,7 @@
           commentDiv.setAttribute('id', `reply-${comment.id}`);
           if(comment.appendTime===comment.updateTime){
             commentDiv.innerHTML = `
-              <p>👉 <b>${comment.nickname}</b> ${comment.appendTime}</p>
+              <p><b>${comment.nickname}</b> ${comment.appendTime}</p>
               <p><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
               <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
               <button onclick="openEditModal(${comment.id})">수정</button>
@@ -85,7 +85,7 @@
               <div id="replies-${comment.id}" class="replies"></div>
           `;}else{
             commentDiv.innerHTML = `
-              <p>👉 <b>${comment.nickname}</b> ${comment.appendTime}(수정됨)</p>
+              <p><b>${comment.nickname}</b> ${comment.appendTime}(수정됨)</p>
               <p><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
               <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
               <button onclick="openEditModal(${comment.id})">수정</button>
@@ -273,7 +273,7 @@
                 // 답글 내용 작성
                 if(data.appendTime===data.updateTime){
                   newReplyDiv.innerHTML = `
-                  <p>👉 <b>${data.nickname}</b> ${data.appendTime}</p>
+                  <p><b>${data.nickname}</b> ${data.appendTime}</p>
                   <p><strong>@${data.parent_nickname}</strong> ${data.body}</p>
                   <button onclick="toggleReplyBox(${data.id}, '${data.nickname}')">답글 달기</button>
                   <button onclick="openEditModal(${data.id})">수정</button>
@@ -282,7 +282,7 @@
                   `;
                 }else{
                 newReplyDiv.innerHTML = `
-                  <p>👉 <b>${data.nickname}</b> ${data.appendTime}(수정됨)</p>
+                  <p><b>${data.nickname}</b> ${data.appendTime}(수정됨)</p>
                   <p><strong>@${data.parent_nickname}</strong> ${data.body}</p>
                   <button onclick="toggleReplyBox(${data.parent_id}, '${data.parent_nickname}')">답글 달기</button>
                   <button onclick="openEditModal(${data.id})">수정</button>
