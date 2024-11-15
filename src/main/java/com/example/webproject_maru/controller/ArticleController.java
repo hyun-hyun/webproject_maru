@@ -144,11 +144,6 @@ public class ArticleController {
         
         ArticleDetailDto articleDetailDto=ArticleDetailDto.createArticleDetailDto(articleEntity, usedTags, allTags,tagSelectionCounts,reviewDtos,myReview);
         //2. 모델에 데이터 등록  
-        //model.addAttribute("article", articleEntity);
-        //model.addAttribute("reviewDtos", reviewDtos);
-        //model.addAttribute("my_review", reviewForm);
-        //model.addAttribute("tagList", tags);
-        //model.addAttribute("tagSelectionCounts", tagSelectionCounts);
         model.addAttribute("article", articleDetailDto);
 
         //3. 뷰 페이지 반환

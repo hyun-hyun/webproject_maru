@@ -36,6 +36,7 @@ public interface ArticleRepository extends JpaRepository<Article,Long> {
     //검색
     @Query(value = "SELECT a FROM Article a LEFT JOIN FETCH a.subPics sp " +
             "WHERE (LOWER(a.title) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+            "LOWER(a.genre) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
             "LOWER(a.author) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
             "LOWER(a.ani_company) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
             "LOWER(sp.realVoiceChar) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
@@ -44,9 +45,10 @@ public interface ArticleRepository extends JpaRepository<Article,Long> {
             "LOWER(sp.korVoiceChar) LIKE LOWER(CONCAT('%', :query, '%'))) " +
             "ORDER BY CASE " +
             "WHEN LOWER(a.title) LIKE LOWER(CONCAT('%', :query, '%')) THEN 1 " +
-            "WHEN LOWER(a.author) LIKE LOWER(CONCAT('%', :query, '%')) THEN 2 " +
-            "WHEN LOWER(a.ani_company) LIKE LOWER(CONCAT('%', :query, '%')) THEN 3 " +
-            "ELSE 4 END ASC")
+            "WHEN LOWER(a.genre) LIKE LOWER(CONCAT('%', :query, '%')) THEN 2 " +
+            "WHEN LOWER(a.author) LIKE LOWER(CONCAT('%', :query, '%')) THEN 3 " +
+            "WHEN LOWER(a.ani_company) LIKE LOWER(CONCAT('%', :query, '%')) THEN 4 " +
+            "ELSE 5 END ASC")
     Page<Article> searchByQuery(@Param("query") String query, Pageable pageable);
 
    /* //articleId에 따른 tag
