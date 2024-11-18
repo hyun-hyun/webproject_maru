@@ -48,11 +48,11 @@ public class ArticleService {
     @Autowired
     private Map_a_tService map_a_tService;
     @Autowired
-    private Map_r_tService map_r_tService;
-    @Autowired
     private TagService tagService;
     @Autowired
     private ReviewService reviewService;
+    @Autowired
+    private CommentService commentService;
 
 
     @Value("${file.upload-dir}")
@@ -227,7 +227,7 @@ public class ArticleService {
 
     //게시글 삭제
     @Transactional
-    public void delete(ArticleForm form, String category, boolean existingReview){
+    public void delete(ArticleForm form, String category, boolean existingReview, boolean existingComment){
         //삭제대상 가져오기
         Article article=findByIdArticle(form.getId());
 
@@ -238,6 +238,10 @@ public class ArticleService {
             //리뷰삭제
             if(existingReview){
                 reviewService.deleteByArticleId(articleId);
+            }
+            //댓글삭제
+            if(existingComment){
+                commentService.deleteByArticleId(articleId);
             }
             //사진삭제
             try{

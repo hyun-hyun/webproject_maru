@@ -13,6 +13,7 @@ import com.example.webproject_maru.dto.CommentForm;
 import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.entity.Comment;
 import com.example.webproject_maru.entity.Member;
+import com.example.webproject_maru.repository.ArticleRepository;
 import com.example.webproject_maru.repository.CommentRepository;
 import com.example.webproject_maru.repository.MemberRepository;
 
@@ -24,7 +25,7 @@ public class CommentService {
     @Autowired
     private CommentRepository commentRepository;
     @Autowired
-    private ArticleService articleService;
+    private ArticleRepository articleRepository;
     @Autowired
     private MemberRepository memberRepository;
 
@@ -32,7 +33,7 @@ public class CommentService {
     @Transactional
     public CommentDto create(CommentForm commentForm) {
         //1. 게시글 조회 및 예외 발생
-        Article article=articleService.findById(commentForm.getArticle_id())
+        Article article=articleRepository.findById(commentForm.getArticle_id())
                 .orElseThrow(() -> new IllegalArgumentException("댓글 생성 실패!"+
                         "대상 게시글이 없습니다."));//부모게시글 없으면 에러 메시지 출력
         Member member=memberRepository.findById(commentForm.getMember_id())
@@ -56,7 +57,7 @@ public class CommentService {
     @Transactional
     public CommentDto createR(CommentForm commentForm){
         //1. 게시글 조회 및 예외 발생
-        Article article=articleService.findById(commentForm.getArticle_id())
+        Article article=articleRepository.findById(commentForm.getArticle_id())
                 .orElseThrow(() -> new IllegalArgumentException("답글 생성 실패!"+
                         "대상 게시글이 없습니다."));//부모게시글 없으면 에러 메시지 출력
         Member member=memberRepository.findById(commentForm.getMember_id())
@@ -111,5 +112,16 @@ public class CommentService {
     public List<CommentDto> getCommentsByArticle(Long articleId) {
         List<Comment> comments = commentRepository.findByArticle_id(articleId);
         return comments.stream().map(CommentDto::new).collect(Collectors.toList());
+    }
+
+    //댓글조회(존재여부만)
+    public boolean existsByArticleId(Long articleId){
+        return commentRepository.existsByArticleId(articleId);
+    }
+
+    //댓글삭제(articleId기준으로 한번에)
+    @Transactional
+    public void deleteByArticleId(Long articleId){
+        commentRepository.deleteByArticleId(articleId);
     }
 }

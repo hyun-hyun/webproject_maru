@@ -15,4 +15,10 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Modifying
     @Query("UPDATE Comment c SET c.body = :body WHERE c.id = :commentId")
     void updateCommentContent(@Param("commentId") Long commentId, @Param("body") String body);
+
+    //특정게시글의 댓글 존재여부 조회
+    @Query("SELECT COUNT(c) >0 FROM Comment c WHERE c.article.id = :articleId")
+    boolean existsByArticleId(@Param("articleId") Long articleId);
+    //articleId로 댓글 삭제
+    void deleteByArticleId(Long articleId);
 }
