@@ -1,24 +1,34 @@
 <!--댓글-->
 <h4>댓글</h4>
 <form id="commentForm">
+    <textarea class="col-auto form-control" type="text" id="body" placeholder="댓글을 입력하세요"></textarea>
+    <button type="button" class="btn btn-primary" id="commentCreateBtn">댓글 작성</button>
     <input type="hidden" name="article-id" value="{{article.id}}">
     {{#member_id}}
     <input type="hidden" id="member-id" value="{{.}}"><br>
     {{/member_id}}
-    <textarea class="col-auto form-control" type="text" id="body" placeholder="댓글을 입력하세요"></textarea>
-    <button type="button" class="btn btn-primary" id="commentCreateBtn">댓글 작성</button>
+    {{#nickname}}
+    <input type="hidden" id="nickname" value="{{.}}"><br>
+    {{/nickname}}
+    {{#write}}
+    <input type="hidden" id="write" value="{{.}}"><br>
+    {{/write}}
 </form>
 <br>
 <div id="comment-list">
     <!--댓글목록-->
 </div>
 <br>
-    
+
 
 <script>
     //댓글
     //member-id 요소에서 값 가져오기
       const memberIdElement = document.querySelector("#member-id");
+    //write 요소에서 값 가져오기
+      const writeElement = document.querySelector("#write");
+    //nickname 요소에서 값 가져오기
+      const nicknameElement = document.querySelector("#nickname");
     // 페이지 로드 시 댓글과 답글을 서버에서 가져와서 표시
     window.addEventListener('load', function() {
         const articleId = document.querySelector("input[name='article-id']").value; // 게시글 ID 가져오기
@@ -51,47 +61,117 @@
         
         // 댓글 내용
         if(comment.parent_id==null){
-        commentDiv.classList.add('comment');
-        commentDiv.setAttribute('id', `comment-${comment.id}`);
-  
-          if(comment.appendTime===comment.updateTime){
-          commentDiv.innerHTML = `
-              <p><b>${comment.nickname}</b> ${comment.appendTime}</p>
-              <p>${comment.body}</p>
-              <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
-              <button onclick="openEditModal(${comment.id})">수정</button>
-              <button onclick="deleteComment(${comment.id})">삭제</button>
-              <div id="replies-${comment.id}" class="replies"></div>
-          `;}else{
-            commentDiv.innerHTML = `
-              <p><b>${comment.nickname}</b> ${comment.appendTime}(수정됨)</p>
-              <p>${comment.body}</p>
-              <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
-              <button onclick="openEditModal(${comment.id})">수정</button>
-              <button onclick="deleteComment(${comment.id})">삭제</button>
-              <div id="replies-${comment.id}" class="replies"></div>
-          `;
+          commentDiv.classList.add('comment');
+          commentDiv.setAttribute('id', `comment-${comment.id}`);
+          if(nicknameElement&&nicknameElement.value===comment.nickname){
+            if(comment.appendTime===comment.updateTime){
+              commentDiv.innerHTML = `
+                  <p><b>${comment.nickname}</b> ${comment.appendTime}</p>
+                  <p>${comment.body}</p>
+                  <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
+                  <button onclick="openEditModal(${comment.id})">수정</button>
+                  <button onclick="deleteComment(${comment.id})">삭제</button>
+                  <div id="replies-${comment.id}" class="replies"></div>
+              `;}else{
+                commentDiv.innerHTML = `
+                  <p><b>${comment.nickname}</b> ${comment.appendTime}(수정됨)</p>
+                  <p>${comment.body}</p>
+                  <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
+                  <button onclick="openEditModal(${comment.id})">수정</button>
+                  <button onclick="deleteComment(${comment.id})">삭제</button>
+                  <div id="replies-${comment.id}" class="replies"></div>
+              `;
+              }
+          }else if(writeElement&&writeElement.value===1){
+            if(comment.appendTime===comment.updateTime){
+              commentDiv.innerHTML = `
+                  <p><b>${comment.nickname}</b> ${comment.appendTime}</p>
+                  <p>${comment.body}</p>
+                  <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
+                  <button onclick="deleteComment(${comment.id})">삭제</button>
+                  <div id="replies-${comment.id}" class="replies"></div>
+              `;}else{
+                commentDiv.innerHTML = `
+                  <p><b>${comment.nickname}</b> ${comment.appendTime}(수정됨)</p>
+                  <p>${comment.body}</p>
+                  <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
+                  <button onclick="deleteComment(${comment.id})">삭제</button>
+                  <div id="replies-${comment.id}" class="replies"></div>
+              `;
+              }
+          }else{
+            if(comment.appendTime===comment.updateTime){
+              commentDiv.innerHTML = `
+                  <p><b>${comment.nickname}</b> ${comment.appendTime}</p>
+                  <p>${comment.body}</p>
+                  <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
+                  <div id="replies-${comment.id}" class="replies"></div>
+              `;}else{
+                commentDiv.innerHTML = `
+                  <p><b>${comment.nickname}</b> ${comment.appendTime}(수정됨)</p>
+                  <p>${comment.body}</p>
+                  <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
+                  <div id="replies-${comment.id}" class="replies"></div>
+              `;
+              }
           }
-        }else{
+  
+          
+        }else{//답글내용
           commentDiv.classList.add('reply');
           commentDiv.setAttribute('id', `reply-${comment.id}`);
-          if(comment.appendTime===comment.updateTime){
-            commentDiv.innerHTML = `
-              <p><b>${comment.nickname}</b> ${comment.appendTime}</p>
+          if(nicknameElement&&nicknameElement.value===comment.nickname){
+            if(comment.appendTime===comment.updateTime){
+              commentDiv.innerHTML = ` 
+                  <p><b>${comment.nickname}</b> ${comment.appendTime}</p>
+                  <p><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
+                  <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
+                  <button onclick="openEditModal(${comment.id})">수정</button>
+                  <button onclick="deleteComment(${comment.id})">삭제</button>
+                  <div id="replies-${comment.id}" class="replies"></div>
+                  `;}else{
+                commentDiv.innerHTML = `
+                  <p><b>${comment.nickname}</b> ${comment.appendTime}(수정됨)</p>
               <p><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
-              <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
-              <button onclick="openEditModal(${comment.id})">수정</button>
-              <button onclick="deleteComment(${comment.id})">삭제</button>
-              <div id="replies-${comment.id}" class="replies"></div>
-          `;}else{
-            commentDiv.innerHTML = `
-              <p><b>${comment.nickname}</b> ${comment.appendTime}(수정됨)</p>
-              <p><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
-              <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
-              <button onclick="openEditModal(${comment.id})">수정</button>
-              <button onclick="deleteComment(${comment.id})">삭제</button>
-              <div id="replies-${comment.id}" class="replies"></div>
-          `;
+
+                  <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
+                  <button onclick="openEditModal(${comment.id})">수정</button>
+                  <button onclick="deleteComment(${comment.id})">삭제</button>
+                  <div id="replies-${comment.id}" class="replies"></div>
+                  `;
+              }
+          }else if(writeElement&&writeElement.value===1){
+            if(comment.appendTime===comment.updateTime){
+              commentDiv.innerHTML = `
+                  <p><b>${comment.nickname}</b> ${comment.appendTime}</p>
+                  <p><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
+                  <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
+                  <button onclick="deleteComment(${comment.id})">삭제</button>
+                  <div id="replies-${comment.id}" class="replies"></div>
+                  `;}else{
+                commentDiv.innerHTML = `
+                  <p><b>${comment.nickname}</b> ${comment.appendTime}(수정됨)</p>
+                  <p><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
+                  <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
+                  <button onclick="deleteComment(${comment.id})">삭제</button>
+                  <div id="replies-${comment.id}" class="replies"></div>
+                  `;
+                }
+          }else{
+            if(comment.appendTime===comment.updateTime){
+              commentDiv.innerHTML = `
+                  <p><b>${comment.nickname}</b> ${comment.appendTime}</p>
+                  <p><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
+                  <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
+                  <div id="replies-${comment.id}" class="replies"></div>
+              `;}else{
+                commentDiv.innerHTML = `
+                  <p><b>${comment.nickname}</b> ${comment.appendTime}(수정됨)</p>
+                  <p><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
+                  <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
+                  <div id="replies-${comment.id}" class="replies"></div>
+              `;
+              }
           }
         }
         
