@@ -20,6 +20,43 @@
 </div>
 <br>
 
+<!-- 댓글 수정 모달 -->
+<div class="modal fade" id="comment-edit-modal" tabindex="-1" aria-labelledby="commentEditLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="commentEditLabel">댓글 수정</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <textarea class="form-control" id="editCommentContent" placeholder="수정할 댓글을 입력하세요"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+        <button type="button" class="btn btn-primary" id="saveEditButton">수정 완료</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 댓글 삭제 확인 모달 -->
+<div class="modal fade" id="comment-delete-confirm-modal" tabindex="-1" aria-labelledby="commentDeleteConfirmLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="commentDeleteConfirmLabel">댓글 삭제</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        정말로 이 댓글을 삭제하시겠습니까?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">아니오</button>
+        <button type="button" class="btn btn-danger" id="confirm-comment-delete-btn">예</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
     //댓글
@@ -67,7 +104,7 @@
             if(comment.appendTime===comment.updateTime){
               commentDiv.innerHTML = `
                   <p><b>${comment.nickname}</b> ${comment.appendTime}</p>
-                  <p>${comment.body}</p>
+                  <p class="comment-body">${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
                   <button onclick="openEditModal(${comment.id})">수정</button>
                   <button onclick="deleteComment(${comment.id})">삭제</button>
@@ -75,7 +112,7 @@
               `;}else{
                 commentDiv.innerHTML = `
                   <p><b>${comment.nickname}</b> ${comment.appendTime}(수정됨)</p>
-                  <p>${comment.body}</p>
+                  <p class="comment-body">${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
                   <button onclick="openEditModal(${comment.id})">수정</button>
                   <button onclick="deleteComment(${comment.id})">삭제</button>
@@ -86,14 +123,14 @@
             if(comment.appendTime===comment.updateTime){
               commentDiv.innerHTML = `
                   <p><b>${comment.nickname}</b> ${comment.appendTime}</p>
-                  <p>${comment.body}</p>
+                  <p class="comment-body">${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
                   <button onclick="deleteComment(${comment.id})">삭제</button>
                   <div id="replies-${comment.id}" class="replies"></div>
               `;}else{
                 commentDiv.innerHTML = `
                   <p><b>${comment.nickname}</b> ${comment.appendTime}(수정됨)</p>
-                  <p>${comment.body}</p>
+                  <p class="comment-body">${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
                   <button onclick="deleteComment(${comment.id})">삭제</button>
                   <div id="replies-${comment.id}" class="replies"></div>
@@ -103,13 +140,13 @@
             if(comment.appendTime===comment.updateTime){
               commentDiv.innerHTML = `
                   <p><b>${comment.nickname}</b> ${comment.appendTime}</p>
-                  <p>${comment.body}</p>
+                  <p class="comment-body">${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
                   <div id="replies-${comment.id}" class="replies"></div>
               `;}else{
                 commentDiv.innerHTML = `
                   <p><b>${comment.nickname}</b> ${comment.appendTime}(수정됨)</p>
-                  <p>${comment.body}</p>
+                  <p class="comment-body">${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
                   <div id="replies-${comment.id}" class="replies"></div>
               `;
@@ -124,18 +161,18 @@
             if(comment.appendTime===comment.updateTime){
               commentDiv.innerHTML = ` 
                   <p><b>${comment.nickname}</b> ${comment.appendTime}</p>
-                  <p><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
+                  <p class="comment-body"><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
-                  <button onclick="openEditModal(${comment.id})">수정</button>
+                  <button onclick="openREditModal(${comment.id})">수정</button>
                   <button onclick="deleteComment(${comment.id})">삭제</button>
                   <div id="replies-${comment.id}" class="replies"></div>
                   `;}else{
                 commentDiv.innerHTML = `
                   <p><b>${comment.nickname}</b> ${comment.appendTime}(수정됨)</p>
-              <p><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
+                  <p class="comment-body"><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
 
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
-                  <button onclick="openEditModal(${comment.id})">수정</button>
+                  <button onclick="openREditModal(${comment.id})">수정</button>
                   <button onclick="deleteComment(${comment.id})">삭제</button>
                   <div id="replies-${comment.id}" class="replies"></div>
                   `;
@@ -144,14 +181,14 @@
             if(comment.appendTime===comment.updateTime){
               commentDiv.innerHTML = `
                   <p><b>${comment.nickname}</b> ${comment.appendTime}</p>
-                  <p><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
+                  <p class="comment-body"><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
                   <button onclick="deleteComment(${comment.id})">삭제</button>
                   <div id="replies-${comment.id}" class="replies"></div>
                   `;}else{
                 commentDiv.innerHTML = `
                   <p><b>${comment.nickname}</b> ${comment.appendTime}(수정됨)</p>
-                  <p><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
+                  <p class="comment-body"><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
                   <button onclick="deleteComment(${comment.id})">삭제</button>
                   <div id="replies-${comment.id}" class="replies"></div>
@@ -161,13 +198,13 @@
             if(comment.appendTime===comment.updateTime){
               commentDiv.innerHTML = `
                   <p><b>${comment.nickname}</b> ${comment.appendTime}</p>
-                  <p><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
+                  <p class="comment-body"><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
                   <div id="replies-${comment.id}" class="replies"></div>
               `;}else{
                 commentDiv.innerHTML = `
                   <p><b>${comment.nickname}</b> ${comment.appendTime}(수정됨)</p>
-                  <p><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
+                  <p class="comment-body"><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
                   <div id="replies-${comment.id}" class="replies"></div>
               `;
@@ -384,21 +421,49 @@
         });
           
       }
-    
-  
       // 댓글 수정 모달 열기
       function openEditModal(commentId) {
-          const modal = document.getElementById("editCommentModal");
-          modal.style.display = "block";
-          document.getElementById("editCommentContent").value = document.getElementById(`comment-content-${commentId}`).textContent;
+          const commentDiv = document.getElementById(`comment-${commentId}`);
+          const commentBody = commentDiv.querySelector('.comment-body').textContent;
+  
+          // 수정할 댓글의 내용을 모달에 표시
+          document.getElementById("editCommentContent").value = commentBody;
+  
+          // 수정 완료 버튼 클릭 시 댓글 수정
           document.getElementById("saveEditButton").onclick = function() {
               saveEditedComment(commentId);
           };
+  
+          // 모달 열기
+          const editModal = new bootstrap.Modal(document.getElementById("comment-edit-modal"));
+          editModal.show();
+      }
+      // 답글 수정 모달 열기
+      function openREditModal(commentId) {
+          const commentDiv = document.getElementById(`reply-${commentId}`);
+          const commentBodyElement = commentDiv.querySelector('.comment-body');
+          const commentBodyText = commentBodyElement.innerHTML.replace(/<strong>.*?<\/strong>\s*/, '')
+          // 수정할 댓글의 내용을 모달에 표시
+          document.getElementById("editCommentContent").value = commentBodyText;
+  
+          // 수정 완료 버튼 클릭 시 댓글 수정
+          document.getElementById("saveEditButton").onclick = function() {
+              saveEditedComment(commentId);
+          };
+  
+          // 모달 열기
+          const editModal = new bootstrap.Modal(document.getElementById("comment-edit-modal"));
+          editModal.show();
       }
   
       // 댓글 수정
       function saveEditedComment(commentId) {
-          const body = document.getElementById("editCommentContent").value;
+          const updatedBody = document.getElementById("editCommentContent").value.trim();
+  
+          if (!updatedBody) {
+              alert('댓글 내용을 입력해주세요.');
+              return;
+          }
   
           fetch(`/api/comments/edit/${commentId}`, {
               method: "PATCH",
@@ -406,17 +471,33 @@
                   "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                  body: body
+                  body: updatedBody
               }),
           })
-          .then(response =>  {
-            //HTTP 응답코드에 따른 메시지 출력
-            const msg=(response.ok)?"댓글 수정 완료! ":"댓글 수성 중 오류가 발생하였습니다.";
-            alert(msg);
-            //현재 페이지 새로고침
-            window.location.reload();
+          .then(response => {
+              if (response.ok) {
+                  alert('댓글 수정 완료!');
+                  location.reload(); // 페이지 새로고침하여 수정된 댓글 반영
+              } else {
+                  alert('댓글 수정 중 오류가 발생했습니다.');
+              }
           })
-          
+          .catch(error => {
+              console.error('댓글 수정 실패:', error);
+              alert('댓글 수정 중 오류가 발생했습니다.');
+          });
+      }
+  
+      // 댓글 삭제 모달 열기
+      function openDeleteConfirmModal(commentId) {
+          // 삭제 확인 버튼 클릭 시 실제 삭제 처리
+          document.getElementById("confirm-comment-delete-btn").onclick = function() {
+              deleteComment(commentId);
+          };
+  
+          // 삭제 확인 모달 열기
+          const deleteConfirmModal = new bootstrap.Modal(document.getElementById("comment-delete-confirm-modal"));
+          deleteConfirmModal.show();
       }
   
       // 댓글 삭제
@@ -424,26 +505,19 @@
           fetch(`/api/comments/delete/${commentId}`, {
               method: "DELETE",
           })
-          .then(response=>{
-            //댓글 삭제 실패 처리
-            if(!response.ok){
-              alert("댓글 삭제 실패..!");
-              return;
-            }else{
-              return response.json();
-            }
-            
-        })
-        .then(data => {
-      
-          // 응답이 성공적
-            if (data) {
-              const msg=`${data.nickname}님의 댓글을 삭제했습니다.`;
-            alert(msg);
-            //현재 페이지 새로고침
-            window.location.reload();
-          } 
-      });
+          .then(response => {
+              if (response.ok) {
+                  alert('댓글이 삭제되었습니다.');
+                  const commentDiv = document.getElementById(`comment-${commentId}`);
+                  commentDiv.remove(); // 댓글 삭제 후 화면에서 제거
+              } else {
+                  alert('댓글 삭제 실패.');
+              }
+          })
+          .catch(error => {
+              console.error('댓글 삭제 실패:', error);
+              alert('댓글 삭제 중 오류가 발생했습니다.');
+          });
       }
   
 </script>
