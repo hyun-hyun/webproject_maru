@@ -3,6 +3,7 @@ package com.example.webproject_maru.service;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,5 +124,11 @@ public class CommentService {
     @Transactional
     public void deleteByArticleId(Long articleId){
         commentRepository.deleteByArticleId(articleId);
+    }
+
+    //댓글조회
+    public CommentDto getCommentById(Long commentId) {
+        Optional<Comment> comment = commentRepository.findById(commentId);
+        return comment.map(CommentDto::new).orElse(null);
     }
 }

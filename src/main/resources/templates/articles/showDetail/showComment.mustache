@@ -107,7 +107,7 @@
                   <p class="comment-body">${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
                   <button onclick="openEditModal(${comment.id})">수정</button>
-                  <button onclick="deleteComment(${comment.id})">삭제</button>
+                  <button onclick="deleteCommentConfirmModal(${comment.id})">삭제</button>
                   <div id="replies-${comment.id}" class="replies"></div>
               `;}else{
                 commentDiv.innerHTML = `
@@ -115,7 +115,7 @@
                   <p class="comment-body">${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
                   <button onclick="openEditModal(${comment.id})">수정</button>
-                  <button onclick="deleteComment(${comment.id})">삭제</button>
+                  <button onclick="deleteCommentConfirmModal(${comment.id})">삭제</button>
                   <div id="replies-${comment.id}" class="replies"></div>
               `;
               }
@@ -125,14 +125,14 @@
                   <p><b>${comment.nickname}</b> ${comment.appendTime}</p>
                   <p class="comment-body">${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
-                  <button onclick="deleteComment(${comment.id})">삭제</button>
+                  <button onclick="deleteCommentConfirmModal(${comment.id})">삭제</button>
                   <div id="replies-${comment.id}" class="replies"></div>
               `;}else{
                 commentDiv.innerHTML = `
                   <p><b>${comment.nickname}</b> ${comment.appendTime}(수정됨)</p>
                   <p class="comment-body">${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
-                  <button onclick="deleteComment(${comment.id})">삭제</button>
+                  <button onclick="deleteCommentConfirmModal(${comment.id})">삭제</button>
                   <div id="replies-${comment.id}" class="replies"></div>
               `;
               }
@@ -164,7 +164,7 @@
                   <p class="comment-body"><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
                   <button onclick="openREditModal(${comment.id})">수정</button>
-                  <button onclick="deleteComment(${comment.id})">삭제</button>
+                  <button onclick="deleteReplyConfirmModal(${comment.id})">삭제</button>
                   <div id="replies-${comment.id}" class="replies"></div>
                   `;}else{
                 commentDiv.innerHTML = `
@@ -173,7 +173,7 @@
 
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
                   <button onclick="openREditModal(${comment.id})">수정</button>
-                  <button onclick="deleteComment(${comment.id})">삭제</button>
+                  <button onclick="deleteReplyConfirmModal(${comment.id})">삭제</button>
                   <div id="replies-${comment.id}" class="replies"></div>
                   `;
               }
@@ -183,14 +183,14 @@
                   <p><b>${comment.nickname}</b> ${comment.appendTime}</p>
                   <p class="comment-body"><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
-                  <button onclick="deleteComment(${comment.id})">삭제</button>
+                  <button onclick="deleteReplyConfirmModal(${comment.id})">삭제</button>
                   <div id="replies-${comment.id}" class="replies"></div>
                   `;}else{
                 commentDiv.innerHTML = `
                   <p><b>${comment.nickname}</b> ${comment.appendTime}(수정됨)</p>
                   <p class="comment-body"><strong>@${comment.parent_nickname}</strong> ${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
-                  <button onclick="deleteComment(${comment.id})">삭제</button>
+                  <button onclick="deleteReplyConfirmModal(${comment.id})">삭제</button>
                   <div id="replies-${comment.id}" class="replies"></div>
                   `;
                 }
@@ -287,7 +287,7 @@
                 <p>${data.body}</p>
                 <button onclick="toggleReplyBox(${data.id}, '${data.nickname}')">답글 달기</button>
                 <button onclick="openEditModal(${data.id})">수정</button>
-                <button onclick="deleteComment(${data.id})">삭제</button>
+                <button onclick="deleteCommentConfirmModal(${data.id})">삭제</button>
                 <div class="replies" id="replies-${data.id}"></div>
               `;
             }else{
@@ -296,7 +296,7 @@
                 <p>${data.body}</p>
                 <button onclick="toggleReplyBox(${data.id}, '${data.nickname}')">답글 달기</button>
                 <button onclick="openEditModal(${data.id})">수정</button>
-                <button onclick="deleteComment(${data.id})">삭제</button>
+                <button onclick="deleteCommentConfirmModal(${data.id})">삭제</button>
                 <div class="replies" id="replies-${data.id}"></div>
               `;
             }
@@ -394,7 +394,7 @@
                   <p><strong>@${data.parent_nickname}</strong> ${data.body}</p>
                   <button onclick="toggleReplyBox(${data.id}, '${data.nickname}')">답글 달기</button>
                   <button onclick="openEditModal(${data.id})">수정</button>
-                  <button onclick="deleteComment(${data.id})">삭제</button>
+                  <button onclick="deleteReplyConfirmModal(${data.id})">삭제</button>
                   <div id="replies-${data.id}" class="replies"></div>
                   `;
                 }else{
@@ -403,7 +403,7 @@
                   <p><strong>@${data.parent_nickname}</strong> ${data.body}</p>
                   <button onclick="toggleReplyBox(${data.parent_id}, '${data.parent_nickname}')">답글 달기</button>
                   <button onclick="openEditModal(${data.id})">수정</button>
-                  <button onclick="deleteComment(${data.id})">삭제</button>
+                  <button onclick="deleteReplyConfirmModal(${data.id})">삭제</button>
                   <div id="replies-${data.id}" class="replies"></div>
                   `;}
                 repliesContainer.appendChild(newReplyDiv);
@@ -489,7 +489,7 @@
       }
   
       // 댓글 삭제 모달 열기
-      function openDeleteConfirmModal(commentId) {
+      function deleteCommentConfirmModal(commentId) {
           // 삭제 확인 버튼 클릭 시 실제 삭제 처리
           document.getElementById("confirm-comment-delete-btn").onclick = function() {
               deleteComment(commentId);
@@ -499,9 +499,34 @@
           const deleteConfirmModal = new bootstrap.Modal(document.getElementById("comment-delete-confirm-modal"));
           deleteConfirmModal.show();
       }
+      // 답글 삭제 모달 열기
+      function deleteReplyConfirmModal(commentId) {
+          // 삭제 확인 버튼 클릭 시 실제 삭제 처리
+          document.getElementById("confirm-comment-delete-btn").onclick = function() {
+              deleteReply(commentId);
+          };
+  
+          // 삭제 확인 모달 열기
+          const deleteConfirmModal = new bootstrap.Modal(document.getElementById("comment-delete-confirm-modal"));
+          deleteConfirmModal.show();
+      }
   
       // 댓글 삭제
       function deleteComment(commentId) {
+        // 댓글 삭제 전, 해당 댓글에 답글이 있는지 체크
+        fetch(`/api/comments/${commentId}`, {
+            method: "GET",
+        })
+        .then(response => response.json())
+        .then(comment => {
+          // 답글이 있는 경우
+          if (comment.replies && comment.replies.length > 0) {
+              alert('이 댓글에는 답글이 있어 삭제할 수 없습니다.');
+              //확인모달 닫기
+              const deleteConfirmModal = bootstrap.Modal.getInstance(document.getElementById("comment-delete-confirm-modal"));
+              deleteConfirmModal.hide();
+              return; // 답글이 있을 경우 삭제 진행하지 않음
+          }
           fetch(`/api/comments/delete/${commentId}`, {
               method: "DELETE",
           })
@@ -510,6 +535,9 @@
                   alert('댓글이 삭제되었습니다.');
                   const commentDiv = document.getElementById(`comment-${commentId}`);
                   commentDiv.remove(); // 댓글 삭제 후 화면에서 제거
+                  //확인모달닫기
+                  const deleteConfirmModal = bootstrap.Modal.getInstance(document.getElementById("comment-delete-confirm-modal"));
+                  deleteConfirmModal.hide();
               } else {
                   alert('댓글 삭제 실패.');
               }
@@ -518,6 +546,52 @@
               console.error('댓글 삭제 실패:', error);
               alert('댓글 삭제 중 오류가 발생했습니다.');
           });
+        })
+        .catch(error => {
+            console.error('댓글 조회 실패:', error);
+            alert('댓글 정보를 가져오는 중 오류가 발생했습니다.');
+        });
+      }
+      // 답글 삭제
+      function deleteReply(commentId) {
+        // 댓글 삭제 전, 해당 댓글에 답글이 있는지 체크
+        fetch(`/api/comments/${commentId}`, {
+            method: "GET",
+        })
+        .then(response => response.json())
+        .then(comment => {
+          // 답글이 있는 경우
+          if (comment.replies && comment.replies.length > 0) {
+              alert('이 댓글에는 답글이 있어 삭제할 수 없습니다.');
+              //확인모달 닫기
+              const deleteConfirmModal = bootstrap.Modal.getInstance(document.getElementById("comment-delete-confirm-modal"));
+              deleteConfirmModal.hide();
+              return; // 답글이 있을 경우 삭제 진행하지 않음
+          }
+          fetch(`/api/comments/delete/${commentId}`, {
+              method: "DELETE",
+          })
+          .then(response => {
+              if (response.ok) {
+                  alert('답글이 삭제되었습니다.');
+                  const commentDiv = document.getElementById(`replies-${commentId}`);
+                  commentDiv.remove(); // 댓글 삭제 후 화면에서 제거
+                  //확인모달 닫기
+                  const deleteConfirmModal = bootstrap.Modal.getInstance(document.getElementById("comment-delete-confirm-modal"));
+                  deleteConfirmModal.hide();
+              } else {
+                  alert('답글 삭제 실패.');
+              }
+          })
+          .catch(error => {
+              console.error('답글 삭제 실패:', error);
+              alert('답글 삭제 중 오류가 발생했습니다.');
+          });
+        })
+        .catch(error => {
+            console.error('댓글 조회 실패:', error);
+            alert('댓글 정보를 가져오는 중 오류가 발생했습니다.');
+        });
       }
   
 </script>

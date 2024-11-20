@@ -66,4 +66,10 @@ public class CommentApiController {
         List<CommentDto> comments = commentService.getCommentsByArticle(articleId);
         return ResponseEntity.status(HttpStatus.OK).body(comments);
     }
+    // 댓글 조회
+    @GetMapping("/{commentId}")
+    public ResponseEntity<CommentDto> getCommentsById(@PathVariable Long commentId) {
+        CommentDto comment = commentService.getCommentById(commentId);
+        return ResponseEntity.status(HttpStatus.OK).body(comment);
+    }
 }
