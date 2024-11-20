@@ -19,7 +19,9 @@ import com.example.webproject_maru.repository.CommentRepository;
 import com.example.webproject_maru.repository.MemberRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class CommentService {
 
@@ -82,18 +84,21 @@ public class CommentService {
 
     // 댓글 수정
     @Transactional
-    public CommentForm update(Long commentId, CommentForm commentDto) {
+    public CommentDto update(Long commentId, CommentForm commentForm) {
+        log.info("update들어옴 id: "+commentId);
         //댓글 조회 및 예외발생
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(()->new IllegalArgumentException("댓글 수정 실패!"+"대상 댓글이 없습니다."));
+        log.info("객체가져옴");
         //객체수정
-        comment.patch(commentDto);
+        comment.patch(commentForm);
+        log.info("수정완료");
         //updateTime 갱신
         LocalDateTime SeoulNow=LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         comment.setUpdateTime(SeoulNow);
         //DB갱신
         Comment updated=commentRepository.save(comment);
-        return CommentForm.createCommentForm(updated);
+        return CommentDto.createCommentDto(updated);
     }
 
     // 댓글 삭제

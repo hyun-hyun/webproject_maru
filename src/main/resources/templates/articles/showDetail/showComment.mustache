@@ -464,14 +464,18 @@
               alert('댓글 내용을 입력해주세요.');
               return;
           }
-  
+
           fetch(`/api/comments/edit/${commentId}`, {
               method: "PATCH",
               headers: {
                   "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                  body: updatedBody
+                id:commentId,
+                member_id:memberIdElement.value,
+                article_id: null,
+                body: updatedBody,
+                parent_id: null
               }),
           })
           .then(response => {
@@ -485,6 +489,9 @@
           .catch(error => {
               console.error('댓글 수정 실패:', error);
               alert('댓글 수정 중 오류가 발생했습니다.');
+              //모달 닫기
+              const editModal = bootstrap.Modal.getInstance(document.getElementById("comment-edit-modal"));
+              editModal.hide();
           });
       }
   

@@ -48,8 +48,8 @@ public class CommentApiController {
 
     // 댓글 수정
     @PatchMapping("/edit/{commentId}")
-    public ResponseEntity<CommentForm> editComment(@PathVariable Long commentId, @RequestBody CommentForm commentForm) {
-        CommentForm updatedComment = commentService.update(commentId, commentForm);
+    public ResponseEntity<CommentDto> editComment(@PathVariable Long commentId, @RequestBody CommentForm commentForm) {
+        CommentDto updatedComment = commentService.update(commentId, commentForm);
         return ResponseEntity.status(HttpStatus.OK).body(updatedComment);
     }
 
