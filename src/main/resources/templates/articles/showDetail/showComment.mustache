@@ -1,17 +1,19 @@
 <!--댓글-->
 <h4>댓글</h4>
+<br>
+
 <form id="commentForm">
     <textarea class="col-auto form-control" type="text" id="body" placeholder="댓글을 입력하세요"></textarea>
     <button type="button" class="btn btn-primary" id="commentCreateBtn">댓글 작성</button>
     <input type="hidden" name="article-id" value="{{article.id}}">
     {{#member_id}}
-    <input type="hidden" id="member-id" value="{{.}}"><br>
+    <input type="hidden" id="member-id" value="{{.}}">
     {{/member_id}}
     {{#nickname}}
-    <input type="hidden" id="nickname" value="{{.}}"><br>
+    <input type="hidden" id="nickname" value="{{.}}">
     {{/nickname}}
     {{#write}}
-    <input type="hidden" id="write" value="{{.}}"><br>
+    <input type="hidden" id="write" value="{{.}}">
     {{/write}}
 </form>
 <br>

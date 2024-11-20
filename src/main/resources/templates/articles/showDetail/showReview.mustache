@@ -1,7 +1,7 @@
 
 <!--전체 리뷰-->
-<h5>전체리뷰</h5>
-<hr>
+<h4>리뷰</h4>
+<br>
 전체 평점 : {{avg_score}}/5.0 리뷰 수 : {{c_score}}<br><br>
 <span class="review-toggle">전체리뷰 보기</span>
 <div class="review-content">
@@ -11,11 +11,11 @@
       <div>
         <p>{{member_nickname}}</p>
 
-          <input type="radio" name="rate-{{id}}" value="5" id="rate5-{{id}}" disabled><label class="radio-label" for="rate5-{{id}}">♣</label>
-          <input type="radio" name="rate-{{id}}" value="4" id="rate4-{{id}}" disabled><label class="radio-label" for="rate4-{{id}}">♣</label>
-          <input type="radio" name="rate-{{id}}" value="3" id="rate3-{{id}}" disabled><label class="radio-label" for="rate3-{{id}}">♣</label>
-          <input type="radio" name="rate-{{id}}" value="2" id="rate2-{{id}}" disabled><label class="radio-label" for="rate2-{{id}}">♣</label>
-          <input type="radio" name="rate-{{id}}" value="1" id="rate1-{{id}}" disabled><label class="radio-label" for="rate1-{{id}}">♣</label>
+          <input type="radio" name="rate-{{id}}" value="5" id="rate5-{{id}}" disabled><label class="radio-label" for="rate5-{{id}}">★</label>
+          <input type="radio" name="rate-{{id}}" value="4" id="rate4-{{id}}" disabled><label class="radio-label" for="rate4-{{id}}">★</label>
+          <input type="radio" name="rate-{{id}}" value="3" id="rate3-{{id}}" disabled><label class="radio-label" for="rate3-{{id}}">★</label>
+          <input type="radio" name="rate-{{id}}" value="2" id="rate2-{{id}}" disabled><label class="radio-label" for="rate2-{{id}}">★</label>
+          <input type="radio" name="rate-{{id}}" value="1" id="rate1-{{id}}" disabled><label class="radio-label" for="rate1-{{id}}">★</label>
         </div>
         <div>
           <p>{{score_reason}}</p><br>
@@ -78,21 +78,19 @@
 
 {{^myReview}}
 <!--로그인ㅇ&리뷰x-->
-  <!--<link href="/resources/templates/layouts/css.mustache" rel="stylesheet"/>-->
-  <!--<form class="mb-3" name="starform" action="/articles/{{id}}/create_r" id="scoreForm" method="post">-->
-     <form class="mb-3" name="starform" id="scoreForm">
+     <form class="mb-3 review-container" name="starform" id="scoreForm">
       {{#member_id}}
-      <input type="hidden" id="member-id" value="{{.}}"><br>
+      <input type="hidden" id="member-id" value="{{.}}">
       {{/member_id}}
-      <input type="hidden" id="article-id" value="{{id}}"><br>
+      <input type="hidden" id="article-id" value="{{id}}">
       <h4>리뷰작성하기</h4>
-      <span class="text-bold">작품에 평점을 표시해주세요</span><br>
+      <p class="text-muted">작품에 평점을 표시해주세요</p>
       <fieldset>
-        <input type="radio" name="score" value="5" id="rate1"><label class="radio-label" for="rate1">♣</label>
-        <input type="radio" name="score" value="4" id="rate2"><label class="radio-label" for="rate2">♣</label>
-        <input type="radio" name="score" value="3" id="rate3"><label class="radio-label" for="rate3">♣</label>
-        <input type="radio" name="score" value="2" id="rate4"><label class="radio-label" for="rate4">♣</label>
-        <input type="radio" name="score" value="1" id="rate5"><label class="radio-label" for="rate5">♣</label>
+        <input type="radio" name="score" value="5" id="rate1"><label class="radio-label" for="rate1">★</label>
+        <input type="radio" name="score" value="4" id="rate2"><label class="radio-label" for="rate2">★</label>
+        <input type="radio" name="score" value="3" id="rate3"><label class="radio-label" for="rate3">★</label>
+        <input type="radio" name="score" value="2" id="rate4"><label class="radio-label" for="rate4">★</label>
+        <input type="radio" name="score" value="1" id="rate5"><label class="radio-label" for="rate5">★</label>
       </fieldset>
       <!-- 기존 태그 선택 -->
       <div id="existing-tags">
@@ -114,11 +112,12 @@
       </div>
       <div style="display: flex; align-items: center;">
         <input type="text" id="newTagInput" placeholder="새 키워드 추가" class="form-control" maxlength="20" style="width: 200px; margin-right: 8px;">
-        <button type="button" id="addTagBtn" class="btn btn-secondary">추가</button><br>
-        <span>*키워드 추가는 처음 리뷰 작성시만 가능합니다.(선택해제는 수정에서도 가능합니다.)</span>
+        <button type="button" id="addTagBtn" class="btn btn-secondary">추가</button>
       </div>
-      
-    <br>
+
+        <p class="text-muted small mb-4">
+          * 키워드 추가는 처음 리뷰 작성시만 가능합니다. (선택해제는 수정에서도 가능합니다.)
+        </p>
         
     <div>
       <textarea class="col-auto form-control" type="text" id="score-reason"
@@ -153,15 +152,15 @@
                 <span class="text-bold">작품에 평점을 표시해주세요</span><br>
                 <fieldset>
                   <input type="radio" name="score" value="5" id="rate1"><label class="radio-label"
-                    for="rate1">♣</label>
+                    for="rate1">★</label>
                   <input type="radio" name="score" value="4" id="rate2"><label class="radio-label"
-                    for="rate2">♣</label>
+                    for="rate2">★</label>
                   <input type="radio" name="score" value="3" id="rate3"><label class="radio-label"
-                    for="rate3">♣</label>
+                    for="rate3">★</label>
                   <input type="radio" name="score" value="2" id="rate4"><label class="radio-label"
-                    for="rate4">♣</label>
+                    for="rate4">★</label>
                   <input type="radio" name="score" value="1" id="rate5"><label class="radio-label"
-                    for="rate5">♣</label>
+                    for="rate5">★</label>
                 </fieldset>
                 {{#member_id}}
                 <input type="hidden" id="member-id" value="{{.}}">
@@ -506,6 +505,15 @@
   .col-md-6 {
     word-wrap: break-word;
   }
+  .review-container {
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    margin: 20px 0;
+  }
+
   .review {
    /*border: 1px solid #ccc;  테두리 선 스타일 */
     text-align: left;
