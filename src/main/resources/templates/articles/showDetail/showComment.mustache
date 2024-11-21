@@ -105,6 +105,7 @@
           if(nicknameElement&&nicknameElement.value===comment.nickname){
             if(comment.appendTime===comment.updateTime){
               commentDiv.innerHTML = `
+                  <hr>
                   <p><b>${comment.nickname}</b> ${comment.appendTime}</p>
                   <p class="comment-body">${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
@@ -113,6 +114,7 @@
                   <div id="replies-${comment.id}" class="replies"></div>
               `;}else{
                 commentDiv.innerHTML = `
+                <hr>
                   <p><b>${comment.nickname}</b> ${comment.appendTime}(수정됨)</p>
                   <p class="comment-body">${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
@@ -124,6 +126,7 @@
           }else if(writeElement&&writeElement.value===1){
             if(comment.appendTime===comment.updateTime){
               commentDiv.innerHTML = `
+                <hr>
                   <p><b>${comment.nickname}</b> ${comment.appendTime}</p>
                   <p class="comment-body">${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
@@ -131,6 +134,7 @@
                   <div id="replies-${comment.id}" class="replies"></div>
               `;}else{
                 commentDiv.innerHTML = `
+                <hr>
                   <p><b>${comment.nickname}</b> ${comment.appendTime}(수정됨)</p>
                   <p class="comment-body">${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
@@ -141,12 +145,14 @@
           }else{
             if(comment.appendTime===comment.updateTime){
               commentDiv.innerHTML = `
+                <hr>
                   <p><b>${comment.nickname}</b> ${comment.appendTime}</p>
                   <p class="comment-body">${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
                   <div id="replies-${comment.id}" class="replies"></div>
               `;}else{
                 commentDiv.innerHTML = `
+                <hr>
                   <p><b>${comment.nickname}</b> ${comment.appendTime}(수정됨)</p>
                   <p class="comment-body">${comment.body}</p>
                   <button onclick="toggleReplyBox(${comment.id}, '${comment.nickname}')">답글 달기</button>
@@ -285,6 +291,7 @@
               if(data.appendTime===data.updateTime){
    
               newCommentDiv.innerHTML = `
+                <hr>
                 <p><b>${data.nickname}</b> ${data.appendTime}</p>
                 <p>${data.body}</p>
                 <button onclick="toggleReplyBox(${data.id}, '${data.nickname}')">답글 달기</button>
@@ -294,6 +301,7 @@
               `;
             }else{
               newCommentDiv.innerHTML = `
+                <hr>
                 <p><b>${data.nickname}</b> ${data.appendTime}(수정됨)</p>
                 <p>${data.body}</p>
                 <button onclick="toggleReplyBox(${data.id}, '${data.nickname}')">답글 달기</button>
@@ -329,7 +337,7 @@
           // 답글 입력창 및 버튼 생성
           replyBox.innerHTML = `
             <textarea placeholder="@${nickname} 님에게 답글을 남기세요..." rows="3" class="reply-input"></textarea>
-            <button onclick="submitReply(${commentId})">답글 달기</button>
+            <button onclick="submitReply(${commentId})">답글 작성</button>
           `;
       
           repliesContainer.appendChild(replyBox);
@@ -397,7 +405,7 @@
                   <button onclick="toggleReplyBox(${data.id}, '${data.nickname}')">답글 달기</button>
                   <button onclick="openEditModal(${data.id})">수정</button>
                   <button onclick="deleteReplyConfirmModal(${data.id})">삭제</button>
-                  <div id="replies-${data.id}" class="replies"></div>
+                  <div id="replies-${data.id}" class="reply"></div>
                   `;
                 }else{
                 newReplyDiv.innerHTML = `
@@ -406,7 +414,7 @@
                   <button onclick="toggleReplyBox(${data.parent_id}, '${data.parent_nickname}')">답글 달기</button>
                   <button onclick="openEditModal(${data.id})">수정</button>
                   <button onclick="deleteReplyConfirmModal(${data.id})">삭제</button>
-                  <div id="replies-${data.id}" class="replies"></div>
+                  <div id="replies-${data.id}" class="reply"></div>
                   `;}
                 repliesContainer.appendChild(newReplyDiv);
     
@@ -583,7 +591,7 @@
           .then(response => {
               if (response.ok) {
                   alert('답글이 삭제되었습니다.');
-                  const commentDiv = document.getElementById(`replies-${commentId}`);
+                  const commentDiv = document.getElementById(`reply-${commentId}`);
                   commentDiv.remove(); // 댓글 삭제 후 화면에서 제거
                   //확인모달 닫기
                   const deleteConfirmModal = bootstrap.Modal.getInstance(document.getElementById("comment-delete-confirm-modal"));
@@ -610,7 +618,7 @@
   }
   
   .reply {
-    margin-left: 20px;  /* 최대 한번만 들여쓰기, 20px */
+    /*margin-left: 20px;   최대 한번만 들여쓰기, 20px */
     border-left: 2px solid #ccc;  /* 왼쪽에 선을 추가하여 구분 */
     padding-left: 10px; /* 선과 텍스트 간격 */
     margin-top: 10px;
@@ -620,7 +628,7 @@
     /* 답글 박스 */
     .reply-box {
     margin-top: 10px;
-    padding: 15px;
+    /*padding: 15px;*/
     background-color: #f9f9f9;
     border: 1px solid #e0e0e0;
     border-radius: 5px;
