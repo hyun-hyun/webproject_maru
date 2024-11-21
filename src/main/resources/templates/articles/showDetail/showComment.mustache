@@ -396,25 +396,26 @@
                 const repliesContainer = document.getElementById("replies-" + parentCommentId);
                 const newReplyDiv = document.createElement("div");
                 newReplyDiv.classList.add("reply");
+                newReplyDiv.setAttribute('id',`reply-${data.id}`);
     
                 // 답글 내용 작성
                 if(data.appendTime===data.updateTime){
                   newReplyDiv.innerHTML = `
                   <p><b>${data.nickname}</b> ${data.appendTime}</p>
-                  <p><strong>@${data.parent_nickname}</strong> ${data.body}</p>
+                  <p class="comment-body"><strong>@${data.parent_nickname}</strong> ${data.body}</p>
                   <button onclick="toggleReplyBox(${data.id}, '${data.nickname}')">답글 달기</button>
-                  <button onclick="openEditModal(${data.id})">수정</button>
+                  <button onclick="openREditModal(${data.id})">수정</button>
                   <button onclick="deleteReplyConfirmModal(${data.id})">삭제</button>
-                  <div id="replies-${data.id}" class="reply"></div>
+                  <div id="reply-${data.id}" class="reply"></div>
                   `;
                 }else{
                 newReplyDiv.innerHTML = `
                   <p><b>${data.nickname}</b> ${data.appendTime}(수정됨)</p>
-                  <p><strong>@${data.parent_nickname}</strong> ${data.body}</p>
+                  <p class="comment-body"><strong>@${data.parent_nickname}</strong> ${data.body}</p>
                   <button onclick="toggleReplyBox(${data.parent_id}, '${data.parent_nickname}')">답글 달기</button>
-                  <button onclick="openEditModal(${data.id})">수정</button>
+                  <button onclick="openREditModal(${data.id})">수정</button>
                   <button onclick="deleteReplyConfirmModal(${data.id})">삭제</button>
-                  <div id="replies-${data.id}" class="reply"></div>
+                  <div id="reply-${data.id}" class="reply"></div>
                   `;}
                 repliesContainer.appendChild(newReplyDiv);
     
