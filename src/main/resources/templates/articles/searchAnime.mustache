@@ -1,7 +1,7 @@
 {{>layouts/header}}
 <div class="container">
     <br>
-    <h2>작품 목록</h2>
+    <h2>{{#searchQuery}}'{{searchQuery}}' 검색 결과{{/searchQuery}}{{^searchQuery}}검색 결과{{/searchQuery}}</h2>
     <br>
     <hr>
     <div class="article-list" id="article-list">
@@ -22,12 +22,12 @@
     let hasMoreData = true; // 더 이상 데이터가 있는지 체크
     
     // 검색 결과를 로드하는 함수
-    function loadArticles(page) {
+    function loadArticles(page, query = '') {
         if (loading || !hasMoreData) return; // 이미 데이터를 로딩 중이거나 더 이상 데이터가 없으면 요청을 하지 않음
         loading = true;
         document.getElementById('loading').style.display = 'block'; // 로딩 인디케이터 표시
   
-        const url =`/api/articles/list?page=${page}`;
+        const url = `/api/articles/list?page=${page}&search=${query}`;
     
         fetch(url)
             .then(response => response.json())

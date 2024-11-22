@@ -233,6 +233,28 @@ public class ArticleController {
         return "articles/listAnime";
     }
 
+    //게시글 검색
+    @GetMapping("/articles/anime/search")
+    public String search(@AuthenticationPrincipal CustomUserDetails userDetails,@RequestParam(value = "search", required = false) String searchQuery, Model model){
+        //미로그인시 에러처리
+        String nickname;
+        Long member_id=null;
+        if(userDetails!=null){
+            nickname = userDetails.member.getNickname();
+            member_id = userDetails.member.getId();
+            model.addAttribute("nickname", nickname);
+            model.addAttribute("member_id", member_id);
+        }else{
+            //로그인 안된경우
+            nickname="방문자";
+        }
+
+        model.addAttribute("searchQuery", searchQuery);
+
+        //3. 뷰 페이지 설정
+        return "articles/searchAnime";
+    }
+
     
 
     //게시글 3개월간 top 50
