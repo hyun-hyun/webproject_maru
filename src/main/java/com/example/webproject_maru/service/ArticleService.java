@@ -118,6 +118,10 @@ public class ArticleService {
     public Page<Article> findArticlesDesc(Pageable pageable){
         return articleRepository.findAllByOrderByIdDesc(pageable);
     }
+    //작품 정렬(페이징)
+    public Page<Article> findArticles(Pageable pageable){
+        return articleRepository.findAll(pageable);
+    }
 
 
     //작품등록 최신순 정렬(15개 페이징)

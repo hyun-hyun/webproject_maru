@@ -14,7 +14,7 @@ public class ArticleRecommendDto {
     private Long id;
     private String title;
     private String genre;
-    private LocalDate broad_date;
+    private LocalDate broaddate;
     private String ani_company;
     private String author;
     private String main_pic;
@@ -29,7 +29,7 @@ public class ArticleRecommendDto {
             article.getId(),
             article.getTitle(),
             article.getGenre(),
-            article.getBroad_date(),
+            article.getBroaddate(),
             article.getAni_company(),
             article.getAuthor(),
             article.getMain_pic(),

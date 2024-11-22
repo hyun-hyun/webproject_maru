@@ -79,11 +79,11 @@ public class ReviewService {
         review.setUpdateTime(SeoulNow);
         Review created=reviewRepository.save(review);
         //리뷰 개수 갱신(article 값)
-        Long t_c_score=article.getC_score();
-        article.setC_score(t_c_score+1);
+        Long t_cscore=article.getCscore();
+        article.setCscore(t_cscore+1);
         //리뷰 평균 갱신(article 값)
-        Double t_avg_score=reviewRepository.getScoreAverage(dto.getArticle_id());
-        article.setAvg_score(t_avg_score !=null ? (double)Math.round(t_avg_score*10.0)/10.0 : 0.0);
+        Double t_avgscore=reviewRepository.getScoreAverage(dto.getArticle_id());
+        article.setAvgscore(t_avgscore !=null ? (double)Math.round(t_avgscore*10.0)/10.0 : 0.0);
         articleRepository.save(article);
         ReviewForm resultR=ReviewForm.createReviewForm(created);
         log.info("리뷰저장");
@@ -138,8 +138,8 @@ public class ReviewService {
         LocalDateTime SeoulNow=LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         target.setUpdateTime(SeoulNow);
         //리뷰 평균 갱신(article 값)
-        Double t_avg_score=reviewRepository.getScoreAverage(dto.getArticle_id());
-        article.setAvg_score(t_avg_score !=null ? (double)Math.round(t_avg_score*10.0)/10.0 : 0.0);
+        Double t_avgscore=reviewRepository.getScoreAverage(dto.getArticle_id());
+        article.setAvgscore(t_avgscore !=null ? (double)Math.round(t_avgscore*10.0)/10.0 : 0.0);
         articleRepository.save(article);
         //3. DB로 갱신
         Review updated=reviewRepository.save(target);
@@ -158,15 +158,15 @@ public class ReviewService {
         //연관된 Map_r_t삭제
         map_r_tService.deleteByReviewId(id);
         reviewRepository.delete(target);
-        //2-2. article t_c_score랑 t_avg_score 갱신
+        //2-2. article t_cscore랑 t_avgscore 갱신
         Article article=articleRepository.findById(articleId)
                 .orElseThrow(() -> new IllegalArgumentException("리뷰 삭제 실패!"+
                         "대상 게시글이 없습니다."));//부모게시글 없으면 에러 메시지 출력
-        Long t_c_score=article.getC_score();
-        article.setC_score(t_c_score-1);
+        Long t_cscore=article.getCscore();
+        article.setCscore(t_cscore-1);
         //리뷰 평균 갱신(article 값)
-        Double t_avg_score=reviewRepository.getScoreAverage(articleId);
-        article.setAvg_score(t_avg_score !=null ? (double)Math.round(t_avg_score*10.0)/10.0 : 0.0);
+        Double t_avgscore=reviewRepository.getScoreAverage(articleId);
+        article.setAvgscore(t_avgscore !=null ? (double)Math.round(t_avgscore*10.0)/10.0 : 0.0);
         articleRepository.save(article);
 
         //사용자 추가 태그 다른사용자가 미사용시 map_a_t와 tag에서 삭제

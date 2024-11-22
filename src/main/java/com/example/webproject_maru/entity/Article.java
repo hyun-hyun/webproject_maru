@@ -44,7 +44,7 @@ public class Article {
     @Column
     private String genre;
     @Column
-    private LocalDate broad_date;
+    private LocalDate broaddate;
     @Column
     private String ani_company;
     @Column
@@ -58,9 +58,9 @@ public class Article {
     @Column
     private String score_reason;//ai로 요약적기
     @Column
-    private Double avg_score=0.0;
+    private Double avgscore=0.0;
     @Column
-    private Long c_score=0L;
+    private Long cscore=0L;
 
     //tag
     @OneToMany(mappedBy = "article")
@@ -141,12 +141,12 @@ public class Article {
     private LocalDateTime updateTime;
     
 
-    public Article (Long id, String category, String title, String genre, LocalDate broad_date,String ani_company, String author, String story, Member member){
+    public Article (Long id, String category, String title, String genre, LocalDate broaddate,String ani_company, String author, String story, Member member){
         this.id=id;
         this.category=category;
         this.title=title;
         this.genre=genre;
-        this.broad_date=broad_date;
+        this.broaddate=broaddate;
         this.ani_company=ani_company;
         this.author=author;
         this.story=story;
@@ -165,8 +165,8 @@ public class Article {
             this.category=form.getCategory();
         if(form.getGenre()!=null)
             this.genre=form.getGenre();
-        if(form.getBroad_date()!=null)
-            this.broad_date=form.getBroad_date();
+        if(form.getBroaddate()!=null)
+            this.broaddate=form.getBroaddate();
         if(form.getAni_company()!=null)
             this.ani_company=form.getAni_company();
         if(form.getAuthor()!=null)

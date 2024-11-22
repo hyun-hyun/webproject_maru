@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -50,9 +51,12 @@ public class ArticleApiController {
     public ResponseEntity<List<ArticleListDto>> getArticles(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "search", required = false) String searchQuery) {
+            @RequestParam(value = "search", required = false) String searchQuery,
+            @RequestParam(value = "sort", defaultValue = "id") String sort,
+            @RequestParam(value = "direction", defaultValue = "desc") String direction) {
 
-        Pageable pageable = PageRequest.of(page, 30);
+        Sort sortOption = Sort.by(Sort.Direction.fromString(direction), sort);
+        Pageable pageable = PageRequest.of(page, 30,sortOption);
         Page<Article> articleEntityPage;
 
         if (searchQuery != null && !searchQuery.isEmpty()) {
@@ -60,7 +64,8 @@ public class ArticleApiController {
             articleEntityPage = articleService.searchArticles(searchQuery, pageable);
         } else {
             // 검색어가 없는 경우 최신순으로 가져옴
-            articleEntityPage = articleService.findArticlesDesc(pageable);
+            articleEntityPage = articleService.findArticles(pageable);
+            //articleEntityPage = articleService.findArticlesDesc(pageable);
         }
 
         // 각 Article의 태그 리스트를 추가하여 DTO로 변환

@@ -23,7 +23,7 @@ public class ArticleForm {
     private String category;
     private String title;
     private String genre;
-    private LocalDate broad_date;
+    private LocalDate broaddate;
     private String ani_company;
     private String author;
     private Long memberId;
@@ -38,10 +38,10 @@ public class ArticleForm {
     private String story;
 
     public Article toEntity(Member member) {
-        // return new Article(id, category, title, genre, broad_date, null, story, null, null, null, null, null, null, null, null, null, null);
+        // return new Article(id, category, title, genre, broaddate, null, story, null, null, null, null, null, null, null, null, null, null);
 
 
-        return new Article(id, category, title, genre, broad_date, ani_company, author, story, member);
+        return new Article(id, category, title, genre, broaddate, ani_company, author, story, member);
         // return new Article(id, category, title, genre, story);
 
     } 
@@ -52,15 +52,15 @@ public class ArticleForm {
         }
         return new ArticleForm(
             article.getId(), article.getCategory(), article.getTitle(), article.getGenre(), 
-            article.getBroad_date(), article.getAni_company(), article.getAuthor(), article.getMember().getId(), article.getMain_pic(), article.getStory());
+            article.getBroaddate(), article.getAni_company(), article.getAuthor(), article.getMember().getId(), article.getMain_pic(), article.getStory());
     }
 
-    public ArticleForm(Long id, String category, String title, String genre, LocalDate broad_date, String ani_company, String author, Long memberId, String main_pic, String story){
+    public ArticleForm(Long id, String category, String title, String genre, LocalDate broaddate, String ani_company, String author, Long memberId, String main_pic, String story){
         this.id=id;
         this.category=category;
         this.title=title;
         this.genre=genre;
-        this.broad_date=broad_date;
+        this.broaddate=broaddate;
         this.ani_company=ani_company;
         this.author=author;
         this.memberId=memberId;
