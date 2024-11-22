@@ -2,18 +2,29 @@
 <div class="container">
 <br>
 <h2>마이페이지</h2>
-<br>
-{{nickname}}님 환영합니다.<br><br>
+<br><br>
 
-<h4>리뷰시 선택한 키워드 분석</h4>
-<!--키워드분석(워드클라우드)-->
-<div id="container"></div>
-
+<div class="page-content">
+    <!-- 키워드 분석 영역 -->
+    <div class="keyword-analysis">
+    <h4>리뷰시 선택한 키워드 분석</h4><br>
+    <!--키워드분석(워드클라우드)-->
+    <div id="container"></div>
+    </div>
+    <!-- 회원정보 영역 -->
+    <div class="user-info">
+      <h4>회원정보</h4><br>
+      <strong>{{nickname}}</strong>님<br>
+      <strong>리뷰 수:</strong> 00개<br><br>
+      <a href="/user/mypage/edit" class="btn btn-sm btn-primary">회원정보 수정</a>
+    </div>
+</div>
+<hr>
 <h4>내가 찜한 작품</h4>
-
-
+<br>
+<hr>
 <div class="recent-reviews">
-    <h4>최근 리뷰한 작품</h4>  <a href="/user/mypage/myreview" class="btn btn-sm btn-info">전체 리뷰보기</a>
+    <h4>최근 리뷰한 작품  <a href="/user/mypage/myreview" class="btn btn-sm btn-info">전체 리뷰보기</a></h4>
     <div class="article-list" id="article-list">
         <!-- Fetch된 데이터 -->
     </div>
@@ -22,7 +33,7 @@
         <p>데이터를 불러오는 중...</p>
     </div>
 </div>
-
+<hr>
 <h4>추천 작품</h4>
 <div id="recommendations"></div>
 
@@ -218,6 +229,27 @@
 </script>
 
 <style>
+    /*회원정보수정*/
+    .page-content {
+        display: flex;
+        flex: 1;
+    }
+      
+    .keyword-analysis {
+        flex: 2;  /* 키워드 분석 영역을 더 넓게 */
+    }
+      
+    .user-info {
+        flex: 1;  /* 회원정보 영역 */
+        padding: 20px;
+        background: linear-gradient(145deg, #edf2fa, #e6ecf5);  /* 부드러운 그라디언트 배경 */
+        border-radius: 10px;  /* 모서리 둥글기 */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* 부드러운 그림자 */
+        text-align: center;  /* 중앙 정렬 */
+        transition: transform 0.3s ease, box-shadow 0.3s ease;  /* 마우스 오버 시 부드러운 효과 */
+    }
+    
+
     /*내가 쓴 리뷰*/
    .recent-reviews {
         margin-top: 20px;
