@@ -91,4 +91,22 @@ public class MemberService {
         // SecurityContext에 새로운 Authentication 객체 설정
         SecurityContextHolder.getContext().setAuthentication(newAuthentication);
     }
+
+    public void deleteMemberAccount(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
+        
+        // 나머지 정보 삭제 (예: 비밀번호, 이메일, 기타 개인정보 등)
+        member.setPswd(null);
+        member.setEmail(null);
+        member.setGender(null);
+        //member.setAppendDate(null);
+        member.setUpdateDate(null);
+        member.setLoginDate(null);
+        //member.setRole(null);
+
+        // 필요시 더 많은 개인정보 삭제
+        
+        // 회원 정보 업데이트 (삭제된 정보 반영)
+        memberRepository.save(member);
+    }
 }
