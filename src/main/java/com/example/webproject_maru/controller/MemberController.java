@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +29,8 @@ import com.example.webproject_maru.service.JoinService;
 import com.example.webproject_maru.service.LoginService;
 import com.example.webproject_maru.service.MemberService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
@@ -79,9 +82,13 @@ public class MemberController {
 
     
     @GetMapping("/login")
-    public String goLogin(@RequestParam(name = "error", required = false)String error, Model model){
+    public String goLogin(@RequestParam(name = "error", required = false)String error, Model model,
+                    @RequestParam(name = "successMessage", required = false) String successMessage){
         if (error != null) {
             model.addAttribute("loginError", true);
+        }
+        if (successMessage != null) {
+            model.addAttribute("successMessage", successMessage);  // 비밀번호 변경 성공 메시지 표시
         }
         // else{
         //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -116,7 +123,8 @@ public class MemberController {
     }
 
     @PostMapping("/pswdEditProc")
-    public String passwordEditProcess(@AuthenticationPrincipal CustomUserDetails userDetails, PasswordEditForm passwordEditForm, Model model){
+    public String passwordEditProcess(@AuthenticationPrincipal CustomUserDetails userDetails, PasswordEditForm passwordEditForm, Model model
+                                    ,HttpServletRequest request, HttpServletResponse response){
         Long memberId = userDetails.member.getId();
         String gender=memberService.findGenderById(memberId);
 
@@ -125,7 +133,16 @@ public class MemberController {
 
         try {
             memberService.passwordEditProcess(memberId, passwordEditForm);
-            return "redirect:/user/mypage";  // 성공하면 마이페이지로 리다이렉트
+
+            //비밀번호 변경 성공시 로그아웃 처리
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null) {
+                // 로그아웃 처리
+                new SecurityContextLogoutHandler().logout(request, response, authentication);
+            }
+
+            // 리다이렉트: 비밀번호 수정 후 / 페이지로 이동
+            return "redirect:/login?successMessage=passwordUpdated";  // 성공 후 메시지 전달
         } catch (IllegalArgumentException e) {
             model.addAttribute("p_error", e.getMessage());  // 에러 메시지를 모델에 추가
             return "user/myedit";  // 에러 발생시 수정 페이지로 다시 돌아가기

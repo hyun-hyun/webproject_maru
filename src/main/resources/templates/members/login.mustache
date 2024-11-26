@@ -1,6 +1,11 @@
 {{>layouts/header}}
 <div class="container">
-
+  {{#successMessage}}
+  <br>
+  <div class="alert alert-success">
+    비밀번호 변경에 성공하였습니다. 다시 로그인해주세요. ~(^-^~)
+  </div>
+  {{/successMessage}}
     <form class="px-4 py-3" id="loginForm" action="/loginProc" method="post">
    <!-- <form class="px-4 py-3" th:action="@{/loginProc}" method="post">-->
       <div class="mb-3">
@@ -28,6 +33,7 @@
       <button type="submit" class="btn btn-primary">로그인</button>
     </form>
     <a class="dropdown-item" href="/join">처음 방문하셨나요? 회원가입</a>
+    
 </div>
 <script>
   document.addEventListener("DOMContentLoaded", function() {
@@ -40,4 +46,5 @@
       }
   });
 </script>
+
   {{>layouts/footer}}
