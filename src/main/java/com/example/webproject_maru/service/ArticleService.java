@@ -180,7 +180,7 @@ public class ArticleService {
                         "대상 게시글이 없습니다."));//해당게시글 없으면 에러 메시지 출력
         Member member=memberRepository.findById(form.getMemberId())
                 .orElseThrow(() -> new IllegalArgumentException("게시글 수정 실패!"+
-                        "작성자 memberId가 없습니다."));//해당게시글 없으면 에러 메시지 출력
+                        "작성자 memberId가 없습니다."));//해당멤버 없으면 에러 메시지 출력
         //기존태그 리스트
         List<String> beforeTags=getTagsByArticleId(form.getId());
         //2. Article 수정

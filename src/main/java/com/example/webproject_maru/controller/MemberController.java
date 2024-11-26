@@ -20,10 +20,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.webproject_maru.dto.CustomUserDetails;
 import com.example.webproject_maru.dto.LoginForm;
+import com.example.webproject_maru.dto.MemberEditForm;
 import com.example.webproject_maru.dto.MemberForm;
+import com.example.webproject_maru.dto.PasswordEditForm;
 import com.example.webproject_maru.repository.MemberRepository;
 import com.example.webproject_maru.service.JoinService;
 import com.example.webproject_maru.service.LoginService;
+import com.example.webproject_maru.service.MemberService;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +42,7 @@ public class MemberController {
     //private LoginService loginService;
 
     @Autowired
-    private LoginService loginService;
+    private MemberService memberService;
 
     @GetMapping ("/join")
     public String goJoin(){
@@ -47,7 +50,7 @@ public class MemberController {
     }
 
     @PostMapping("/joinProc")
-    public String joinProcess(MemberForm memberForm, Model model) {
+    public String joinProcess(MemberForm memberForm) {
         log.info(memberForm.getNickname());
 
         // 클라이언트에서 이미 중복 검사를 수행함. 서버에서 2차검증
@@ -87,6 +90,47 @@ public class MemberController {
         // }
         
         return "members/login";
+    }
+
+    @PostMapping("/editProc")
+    public String editProcess(@AuthenticationPrincipal CustomUserDetails userDetails, MemberEditForm memberEditForm, Model model){
+        Long memberId = userDetails.member.getId();
+        String gender=memberService.findGenderById(memberId);
+
+        model.addAttribute("member_id", memberId);
+        model.addAttribute("gender", gender);
+
+        Boolean nicknameError;
+        if(memberEditForm.getNickname()!=null||!memberEditForm.getNickname().equals("")){
+            nicknameError = joinService.getIsNick(memberEditForm.getNickname());
+        }else nicknameError = false;
+
+        try {
+            // 중복이 없으면 회원 수정 진행
+            memberService.editProcess(memberId, memberEditForm);
+            return "redirect:/user/mypage";  // 수정이 성공하면 마이페이지로 리다이렉트
+        } catch (Exception e) {
+            model.addAttribute("error", "회원 정보 수정에 실패했습니다: " + e.getMessage());  // 일반적인 에러 메시지
+            return "user/myedit";  // 수정 실패 시 수정 페이지로 돌아감
+        }
+    }
+
+    @PostMapping("/pswdEditProc")
+    public String passwordEditProcess(@AuthenticationPrincipal CustomUserDetails userDetails, PasswordEditForm passwordEditForm, Model model){
+        Long memberId = userDetails.member.getId();
+        String gender=memberService.findGenderById(memberId);
+
+        model.addAttribute("member_id", memberId);
+        model.addAttribute("gender", gender);
+
+        try {
+            memberService.passwordEditProcess(memberId, passwordEditForm);
+            return "redirect:/user/mypage";  // 성공하면 마이페이지로 리다이렉트
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("p_error", e.getMessage());  // 에러 메시지를 모델에 추가
+            return "user/myedit";  // 에러 발생시 수정 페이지로 다시 돌아가기
+        }
+
     }
 /* loginProcessingUrl과 2에서 작성한 action 태그 값만 같으면 스프링 시큐리티가 알아서 처리
     @PostMapping("/loginProc")

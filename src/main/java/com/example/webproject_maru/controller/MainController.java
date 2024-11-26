@@ -20,14 +20,15 @@ import com.example.webproject_maru.service.ArticleService;
 import com.example.webproject_maru.service.LoginService;
 import com.example.webproject_maru.service.Map_a_tService;
 import com.example.webproject_maru.service.Map_r_tService;
+import com.example.webproject_maru.service.MemberService;
 
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 public class MainController {
     @Autowired
-    private ArticleService articleService;
-    @Autowired
-    private Map_r_tService map_r_tService;
+    private MemberService memberService;
 
     @GetMapping("/")
     public String goMain(Model model) {
@@ -57,33 +58,7 @@ public class MainController {
         }
 
        // String nickname=LoginService.getNickname(email);
-/* 
-       //1개월간 점수 높은 작품(점수순)
-       //1. 10개 데이터 가져오기 list<entity>
-       List<Article> highArticleEntityList=articleService.getRecentHighScoreArticles(15);
-       // 각 Article의 태그 리스트 가져오기
-       for (Article article : highArticleEntityList) {
-           Long articleId = article.getId();
-           List<String> usedTags = map_r_tService.getOnlyTagsByArticleId(articleId);  // List<String>으로 태그를 가져옴
-           article.setUsedTags(usedTags);  // Article 엔티티에 태그 리스트를 추가
-       }
-       //2. 모델에 데이터 등록
-       model.addAttribute("highArticleList", highArticleEntityList);
 
-
-        //등록한 게시물 내림차순(최신등록작품)
-        //1. 모든 데이터 가져오기 list<entity>
-        List<Article> articleEntityList=articleService.findLimitArticlesDesc(15);
-        // 각 Article의 태그 리스트 가져오기
-        for (Article article : articleEntityList) {
-            Long articleId = article.getId();
-            List<String> usedTags = map_r_tService.getOnlyTagsByArticleId(articleId);  // List<String>으로 태그를 가져옴
-            article.setUsedTags(usedTags);  // Article 엔티티에 태그 리스트를 추가
-        }
-        //2. 모델에 데이터 등록
-        model.addAttribute("articleList", articleEntityList);
-
-*/
         return "main";
     }
 
@@ -91,10 +66,38 @@ public class MainController {
     public String myPage(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         String nickname = userDetails.member.getNickname();
         Long member_id = userDetails.member.getId();
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        String gender=memberService.findGenderById(member_id);
+        String genderDescription;
+        switch(gender){
+            case "여":genderDescription="여성";
+                break;
+            case "남":genderDescription="남성";
+                break;
+            default: genderDescription="비공개";
+                break;
+
+        }
+        //사용자별 리뷰개수 카운트
 
         model.addAttribute("nickname", nickname);
         model.addAttribute("member_id", member_id);
+        model.addAttribute("email", email);
+        model.addAttribute("genderD", genderDescription);
+        //사용자별 리뷰개수 카운트 모델등록
+
         return "user/mypage";
+    }
+    @GetMapping("/user/mypage/edit")
+    public String myEdit(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        String nickname = userDetails.member.getNickname();
+        Long member_id = userDetails.member.getId();
+        String gender=memberService.findGenderById(member_id);
+
+        model.addAttribute("nickname", nickname);
+        model.addAttribute("member_id", member_id);
+        model.addAttribute("gender", gender);
+        return "user/myedit";
     }
     
     @GetMapping("/user/mypage/myreview")

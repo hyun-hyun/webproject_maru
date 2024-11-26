@@ -1,0 +1,217 @@
+{{>layouts/header}}
+<div class="container">
+<br>
+<h2><div style="text-align:center">내 정보 수정</div></h2>
+<h4>👉 개인정보 수정</h4>
+    <form class="px-4 py-3" id="editForm" action="/editProc" method="post">
+        <input type="hidden" name="id" value="{{member_id}}">
+        <input type="hidden" id="gender" value="{{gender}}">
+        <div class="mb-3">
+            <label class="form-label"><b>닉네임</b></label>
+            <div class="input-group">
+                <input type="text" class="form-control" name="nickname" id="nickname" placeholder="닉네임">
+                <button type="button" class="btn btn-outline-secondary" id="nicknameCheck">중복확인</button>
+            </div>
+        </div>
+        <div id="nicknameMessage" class="alert" style="display:none;"></div>
+
+        <div class="mb-3">
+            <label class="form-label"><b>성별</b></label>
+            <div class="gender-container">
+              <input type="radio" name="gender" id="male" value="남" required>
+              <label class="gender-label" for="male">남성</label>
+              
+              <input type="radio" name="gender" id="female" value="여" required>
+              <label class="gender-label" for="female">여성</label>
+              
+              <input type="radio" name="gender" id="private" value="무" required>
+              <label class="gender-label" for="private">비공개</label>
+            </div>
+          </div>
+
+           <button type="submit" id="submitEdit" class="btn btn-primary">수정완료</button>
+    </form>
+    {{#error}}
+    <script>
+        alert("{{.}}");  <!-- 서버에서 받은 에러 메시지를 alert로 표시 -->
+    </script>
+    {{/error}}
+<hr>
+<h4>👉 비밀번호 수정</h4>
+    <form class="px-4 py-3" id="pswdEditForm" action="/pswdEditProc" method="post">
+        <input type="hidden" name="id" value="{{member_id}}">
+        <div class="mb-3">
+            <label class="form-label"><b>기존 비밀번호</b></label>
+            <input type="password" class="form-control" name="pswd" id="password" placeholder="비밀번호" required>
+
+            <label class="form-label"><b>새 비밀번호</b></label>
+            <input type="password" class="form-control" name="n_pswd" id="new_password" placeholder="비밀번호" required>
+            <div class="alert alert-danger" id="passwordLengthError" style="display:none;">비밀번호는 최소 5자 이상 입력해주세요.</div>
+            <div class="alert alert-danger" id="passwordCharacterError" style="display:none;">영어와 숫자를 섞어서 비밀번호를 만들어주세요.</div>
+            
+            <input type="password" class="form-control" id="confirmPassword" placeholder="비밀번호 확인" required>
+            <div class="alert alert-danger" id="confirmPasswordError" style="display:none;">비밀번호가 일치하지 않습니다.</div>
+            <div class="alert alert-success" id="confirmPasswordSuccess" style="display:none;">비밀번호가 일치합니다.</div>
+        </div>
+        <button type="submit" id="submitPswdEdit" class="btn btn-primary">수정완료</button>
+
+    </form>
+    {{#p_error}}
+    <script type="text/javascript">
+        alert("{{.}}");  <!-- 서버에서 받은 에러 메시지를 alert로 표시 -->
+    </script>
+    {{/p_error}}
+<hr>
+👉 회원 탈퇴😢(현재 미지원)
+</div>
+{{>layouts/footer}}
+
+<script>
+    // 닉네임 중복 확인
+    const nicknameInput = document.getElementById('nickname');
+    const nicknameCheckButton = document.getElementById('nicknameCheck');
+
+    nicknameInput.addEventListener('input', function() {
+        const firstChar = this.value.charAt(0);
+        const isValid = this.value && /^[a-zA-Z0-9가-힣]/.test(firstChar); // 첫 글자가 빈칸, 특수문자, 한국어가 아닌지 체크
+        nicknameCheckButton.disabled = !isValid; // 조건에 따라 비활성화
+    });
+
+    nicknameCheckButton.disabled = true; // 초기에는 비활성화
+    let nicknameCheckCount = 0; // 닉네임 중복확인 요청 카운트
+
+    document.getElementById('nicknameCheck').addEventListener('click', function() {
+        if (nicknameCheckCount >= 20) {
+            alert("닉네임 중복 확인 요청은 20번을 초과할 수 없습니다.");
+            return; // 요청하지 않음
+        }
+
+        const nickname = document.getElementById('nickname').value;
+        // AJAX 요청으로 닉네임 중복 확인
+        fetch(`/api/checkNickname?nickname=${nickname}`)
+            .then(response => response.json())
+            .then(data => {
+                const messageDiv = document.getElementById('nicknameMessage');
+                if (data.exists) {
+                    messageDiv.className = 'alert alert-danger';
+                    messageDiv.textContent = '이미 등록된 닉네임입니다. 다른 닉네임으로 시도하세요.';
+                } else {
+                    messageDiv.className = 'alert alert-success';
+                    messageDiv.textContent = '사용 가능한 닉네임입니다.';
+                }
+                messageDiv.style.display = 'block';
+                nicknameCheckCount++; // 요청 카운트 증가
+            })
+            .catch(error => console.error('Error:', error));
+    });
+    //성별 선택되어있게
+    window.onload = function() {
+        // hidden 필드에서 gender 값을 가져옵니다.
+        var gender = document.getElementById('gender').value;
+
+        // gender 값에 맞는 라디오 버튼을 선택합니다.
+        if (gender === '남') {
+            document.getElementById('male').checked = true;
+        } else if (gender === '여') {
+            document.getElementById('female').checked = true;
+        } else if (gender === '무') {
+            document.getElementById('private').checked = true;
+        }
+    };
+
+    //첫번째 수정완료 클릭시
+    document.getElementById('submitEdit').addEventListener('click', function(event) {
+        const nickname = document.getElementById('nickname').value;
+        const nicknameMessage = document.getElementById('nicknameMessage');
+    
+        if(nickname.trim() !== "" && !nicknameMessage.classList.contains('alert-success')) {
+            event.preventDefault(); // 요청을 막음
+            alert("닉네임 중복확인을 해주세요."); // 사용자에게 안내
+        }
+    });
+
+    // 비밀번호 유효성 검사
+    document.getElementById('new_password').addEventListener('input', function() {
+        const password = this.value;
+        const lengthError = document.getElementById('passwordLengthError');
+        const characterError = document.getElementById('passwordCharacterError');
+
+        lengthError.style.display = password.length < 5 ? 'block' : 'none';
+        characterError.style.display = !(/\d/.test(password) && /[a-zA-Z]/.test(password)) ? 'block' : 'none';
+    });
+
+    // 비밀번호 확인 검사
+    document.getElementById('confirmPassword').addEventListener('input', function() {
+        const confirmPassword = this.value;
+        const password = document.getElementById('new_password').value;
+        const confirmPasswordError = document.getElementById('confirmPasswordError');
+        const confirmPasswordSuccess = document.getElementById('confirmPasswordSuccess');
+
+        if (confirmPassword !== password) {
+            confirmPasswordError.style.display = 'block';
+            confirmPasswordSuccess.style.display = 'none';
+        } else {
+            confirmPasswordError.style.display = 'none';
+            confirmPasswordSuccess.style.display = 'block';
+        }
+    });
+
+    //두번째 수정완료 클릭시
+    document.getElementById('submitPswdEdit').addEventListener('click', function(event) {
+      const password = document.getElementById('new_password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const passwordLengthError = document.getElementById('passwordLengthError');
+      const passwordCharacterError = document.getElementById('passwordCharacterError');
+      const confirmPasswordError = document.getElementById('confirmPasswordError');
+      const confirmPasswordSuccess = document.getElementById('confirmPasswordSuccess');
+  
+      // 비밀번호 길이와 문자 유효성 검사
+      const isPasswordValid = password.length >= 5 && /\d/.test(password) && /[a-zA-Z]/.test(password);
+      const isConfirmPasswordValid = password === confirmPassword;
+
+      // 필수 항목 검사
+      if (
+          !isPasswordValid ||
+          !isConfirmPasswordValid
+      ) {
+          event.preventDefault(); // 요청을 막음
+          alert("비밀번호를 확인해주세요"); // 사용자에게 안내
+          if (!isPasswordValid) {
+              passwordLengthError.style.display = 'block';
+              passwordCharacterError.style.display = 'block';
+          }
+          if (!isConfirmPasswordValid) {
+              confirmPasswordError.style.display = 'block';
+              confirmPasswordSuccess.style.display = 'none';
+          }
+      }
+    });
+</script>
+
+//성별
+<style>
+    .gender-container {
+      display: flex; /* Flexbox 사용 */
+      justify-content: flex-start; /* 좌측 정렬 */
+      gap: 2; /* 간격 작게 */
+      margin-bottom: 15px; /* 아래쪽 여백 */
+    }
+  
+    .gender-label {
+      border: 1px solid #ccc; /* 테두리 */
+      border-radius: 5px; /* 둥근 모서리 */
+      width: 100px; /* 너비 설정 */
+      text-align: center; /* 텍스트 가운데 정렬 */
+      padding: 5px; /* 안쪽 여백 */
+      cursor: pointer; /* 커서 변경 */
+    }
+  
+    input[type="radio"] {
+      display: none; /* 라디오 버튼 숨기기 */
+    }
+  
+    input[type="radio"]:checked + .gender-label {
+      background-color: #007bff; /* 선택된 경우 배경 색상 변경 */
+      color: white; /* 선택된 경우 글자 색상 변경 */
+    }
+  </style>

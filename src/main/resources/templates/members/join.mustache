@@ -226,20 +226,42 @@
       }).catch(error=>console.error('Error:',error));
     });
 
+    // 가입하기 버튼 클릭 시 비밀번호와 필수 항목 검증
     document.getElementById('submitButton').addEventListener('click', function(event) {
       const nicknameMessage = document.getElementById('nicknameMessage');
       const emailMessage = document.getElementById('emailMessage');
       const authMessage = document.getElementById('authOrNot');
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const passwordLengthError = document.getElementById('passwordLengthError');
+      const passwordCharacterError = document.getElementById('passwordCharacterError');
+      const confirmPasswordError = document.getElementById('confirmPasswordError');
+      const confirmPasswordSuccess = document.getElementById('confirmPasswordSuccess');
   
+      // 비밀번호 길이와 문자 유효성 검사
+      const isPasswordValid = password.length >= 5 && /\d/.test(password) && /[a-zA-Z]/.test(password);
+      const isConfirmPasswordValid = password === confirmPassword;
+
+      // 필수 항목 검사
       if (
           !nicknameMessage.classList.contains('alert-success') ||
           !emailMessage.classList.contains('alert-success') ||
-          authMessage.textContent !== "인증되었습니다."
+          authMessage.textContent !== "인증되었습니다." ||
+          !isPasswordValid ||
+          !isConfirmPasswordValid
       ) {
           event.preventDefault(); // 요청을 막음
-          alert("중복확인, 이메일 인증절차를 완료해주세요."); // 사용자에게 안내
+          alert("모든 필수 항목을 확인해주세요.\n- 닉네임 중복확인\n- 이메일 인증\n- 비밀번호 유효성 검사"); // 사용자에게 안내
+          if (!isPasswordValid) {
+              passwordLengthError.style.display = 'block';
+              passwordCharacterError.style.display = 'block';
+          }
+          if (!isConfirmPasswordValid) {
+              confirmPasswordError.style.display = 'block';
+              confirmPasswordSuccess.style.display = 'none';
+          }
       }
-  });
+    });
 
     //인증 5분 타이머
     function startTimer() {
@@ -289,6 +311,7 @@
             confirmPasswordSuccess.style.display = 'block';
         }
     });
+
 </script>
 
 //성별
