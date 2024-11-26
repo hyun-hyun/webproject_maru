@@ -25,6 +25,8 @@ import com.example.webproject_maru.entity.Member;
 import com.example.webproject_maru.service.JoinService;
 import com.example.webproject_maru.service.MemberService;
 
+import jakarta.transaction.Transactional;
+
 //import jakarta.mail.MessagingException;
 
 @RestController
@@ -59,6 +61,28 @@ public class MemberApiController {
         return ResponseEntity.ok(response);
     }
 
+    //비번찾기(임시비밀번호)
+    @Transactional
+    @PostMapping("/update-temporary-password")
+    public ResponseEntity<String> updateTemporaryPassword(@RequestParam String email, @RequestParam String temporaryPassword) {
+        // 이메일로 회원을 조회
+        Member member = memberService.findByEmail(email); // 회원 정보 조회
+
+        if (member == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("회원 정보를 찾을 수 없습니다.");
+        }
+
+        // 임시 비밀번호 암호화
+        String encodedPassword = bCryptPasswordEncoder.encode(temporaryPassword);  // 임시 비밀번호 암호화
+
+        // 회원의 비밀번호를 임시 비밀번호로 업데이트
+        member.setPswd(encodedPassword);  // 비밀번호 설정
+        memberService.updateMemberPassword(member);  // 비밀번호 업데이트 서비스 호출
+
+        return ResponseEntity.ok("임시 비밀번호로 변경되었습니다.");
+    }
+
+    //계정삭제
     @PostMapping("/user/deleteAccount")
     public ResponseEntity<Map<String, Object>> deleteAccount(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody Map<String, String> request) {
         String password = request.get("password");
@@ -130,5 +154,45 @@ public class MemberApiController {
         }
         return code.toString();
     }
+
+    // 임시 비밀번호 생성 및 반환
+    @PostMapping("/send-temporary-password")
+    public ResponseEntity<Object> sendTemporaryPassword(@RequestParam String email) throws MessagingException {
+        String temporaryPassword = generateTemporaryPassword(); // 10자리 임시 비밀번호 생성
+        try {
+            // 이메일로 임시 비밀번호는 보내지 않음
+            // emailService.sendTemporaryPasswordEmail(email, temporaryPassword); 
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("임시 비밀번호 전송 실패");
+        }
+        return ResponseEntity.ok().body(new TemporaryPasswordResponse(temporaryPassword)); // 임시 비밀번호 반환
+    }
+
+    // 임시 비밀번호 생성 로직
+    private String generateTemporaryPassword() {
+        StringBuilder password = new StringBuilder(TEMPORARY_PASSWORD_LENGTH);
+        for (int i = 0; i < TEMPORARY_PASSWORD_LENGTH; i++) {
+            int index = random.nextInt(CHARACTERS.length());
+            password.append(CHARACTERS.charAt(index));
+        }
+        return password.toString();
+    }
+    // 임시 비밀번호 응답 객체
+    public static class TemporaryPasswordResponse {
+        private String temporaryPassword;
+
+        public TemporaryPasswordResponse(String temporaryPassword) {
+            this.temporaryPassword = temporaryPassword;
+        }
+
+        public String getTemporaryPassword() {
+            return temporaryPassword;
+        }
+
+        public void setTemporaryPassword(String temporaryPassword) {
+            this.temporaryPassword = temporaryPassword;
+        }
+    }
+
     */
 }

@@ -1,0 +1,132 @@
+{{>layouts/header}}
+<div class="container">
+<br>
+<h2><div style="text-align:center">비밀번호 찾기</div></h2>
+
+<form class="px-4 py-3">
+
+    <div class="mb-3">
+        <label class="form-label"><b>이메일</b></label><br>
+        <p>*가입 시 ID로 활용되고 안내사항이 있을 경우 이 메일주소로 안내됩니다.*</p>
+        <div class="input-group">
+            <input type="email" class="form-control" name="email" id="email" placeholder="이메일" required>
+            <button type="button" id="emailVerify" class="btn btn-success" disabled>인증</button>
+        </div>
+    </div>
+    <div id="emailMessage" class="alert" style="display:none;"></div>
+
+    <div id="authContainer" style="display: none;">
+        <input type="text" id="authCode" name="authCode" placeholder="인증코드" maxlength="6">
+        <button type="button" id="confirmAuth" class="btn btn-success">확인</button>
+        <span id="authOrNot"></span>
+        <span id="timer">05:00</span>
+    </div>
+</form>
+<div id="temporaryPasswordContainer" style="display: none;">
+    <h3>임시 비밀번호</h3>
+    <p>인증이 완료되었습니다. 아래의 임시 비밀번호를 사용하여 로그인하세요.</p>
+    <p id="temporaryPassword" class="text-success" style="font-size: 1.5em;"></p>
+    <p><a href="/login" class="a">로그인 하러가기</a></p>
+  </div>
+</div>
+
+{{>layouts/footer}}
+<script>
+    const emailInput = document.getElementById('email');
+    const emailVerifyButton = document.getElementById('emailVerify');
+    const authContainer = document.getElementById('authContainer');
+    const authMessage = document.getElementById('authOrNot');
+    const timerDisplay = document.getElementById('timer');
+    const temporaryPasswordContainer = document.getElementById('temporaryPasswordContainer');
+    const temporaryPasswordElement = document.getElementById('temporaryPassword');
+    let timer;
+
+    // 이메일 입력값에 따라 인증 버튼 활성화/비활성화
+    emailInput.addEventListener('input', function() {
+        emailVerifyButton.disabled = !this.value;
+    });
+
+    // 인증 버튼 클릭 시 처리
+    document.getElementById('emailVerify').addEventListener('click', function() {
+        const email = emailInput.value;
+
+        // 인증코드 전송
+        alert("입력하신 이메일로 인증코드를 보냈습니다.");
+
+        fetch('/api/send-verification', {
+            method: 'POST',
+            body: new URLSearchParams({email: email}),
+        }).then(() => {
+            authContainer.style.display = 'block';
+            startTimer(); // 타이머 시작
+        });
+    });
+
+    // 인증 코드 확인 버튼 클릭 시 처리
+    document.getElementById('confirmAuth').addEventListener('click', function() {
+        const authCode = document.getElementById('authCode').value;
+        const email = emailInput.value;
+
+        fetch('/api/verify-code', {
+            method: 'POST',
+            body: new URLSearchParams({email: email, code: authCode}),
+        }).then(response => response.json()).then(data => {
+            if (data) {
+                clearInterval(timer); // 타이머 멈추기
+                authMessage.textContent = '인증되었습니다.';
+                document.getElementById('confirmAuth').disabled = true; // 버튼 비활성화
+
+                // 임시 비밀번호 생성 및 화면에 표시
+                const temporaryPassword = generateTemporaryPassword();
+                temporaryPasswordElement.textContent = temporaryPassword;
+                temporaryPasswordContainer.style.display = 'block';
+
+                // 비밀번호 업데이트 요청
+                updateTemporaryPassword(email, temporaryPassword);
+            } else {
+                authMessage.textContent = '인증코드가 일치하지 않습니다.';
+            }
+        }).catch(error => console.error('Error:', error));
+    });
+
+    // 5분 타이머
+    function startTimer() {
+        let timeLeft = 300; // 5분
+        timer = setInterval(() => {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            timeLeft--;
+
+            if (timeLeft < 0) {
+                clearInterval(timer);
+                document.getElementById('confirmAuth').disabled = true;
+                document.getElementById('confirmAuth').classList.remove('btn-success');
+                document.getElementById('confirmAuth').classList.add('btn-secondary');
+                document.getElementById('confirmAuth').textContent = '인증시간 만료';
+            }
+        }, 1000);
+    }
+
+    // 임시 비밀번호 생성 함수
+    function generateTemporaryPassword() {
+        const CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        const CODE_LENGTH = 10;
+        let temporaryPassword = '';
+        for (let i = 0; i < CODE_LENGTH; i++) {
+            const randomIndex = Math.floor(Math.random() * CHARACTERS.length);
+            temporaryPassword += CHARACTERS[randomIndex];
+        }
+        return temporaryPassword;
+    }
+
+    // 비밀번호 업데이트 함수
+    function updateTemporaryPassword(email, temporaryPassword) {
+        fetch('/api/update-temporary-password', {
+            method: 'POST',
+            body: new URLSearchParams({ email: email, temporaryPassword: temporaryPassword })
+        }).then(response => response.json()).then(data => {
+            alert(data);
+        }).catch(error => console.error('Error:', error));
+    }
+</script>

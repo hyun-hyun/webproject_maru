@@ -52,6 +52,11 @@ public class MemberController {
         return "members/join";
     }
 
+    @GetMapping("/findpassword")
+    public String goFind(){
+        return "members/find";
+    }
+
     @PostMapping("/joinProc")
     public String joinProcess(MemberForm memberForm) {
         log.info(memberForm.getNickname());

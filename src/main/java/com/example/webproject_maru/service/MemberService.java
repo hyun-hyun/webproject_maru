@@ -63,6 +63,10 @@ public class MemberService {
         return member;
     }
 
+    public void updateMemberPassword(Member member) {
+        memberRepository.save(member);
+    }
+
     public String findGenderById(Long id) {
         Member member=memberRepository.findById(id)
         .orElseThrow(() -> new IllegalArgumentException("gender찾기실패!"+
@@ -108,5 +112,10 @@ public class MemberService {
         
         // 회원 정보 업데이트 (삭제된 정보 반영)
         memberRepository.save(member);
+    }
+
+    // 이메일로 회원을 찾는 메서드
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email);
     }
 }
