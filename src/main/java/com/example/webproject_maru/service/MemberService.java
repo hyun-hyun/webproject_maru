@@ -4,9 +4,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.webproject_maru.dto.CustomUserDetails;
 import com.example.webproject_maru.dto.MemberEditForm;
 import com.example.webproject_maru.dto.PasswordEditForm;
 import com.example.webproject_maru.entity.Member;
@@ -34,6 +38,7 @@ public class MemberService {
 
         if(memberEditForm.getNickname()!="" && memberEditForm.getNickname()!=null){
             data.setNickname(memberEditForm.getNickname());
+            updateNicknameInSession(memberEditForm.getNickname());
         }
         data.setGender(memberEditForm.getGender());
         log.info("데이ㅓ 셋!!!!!!");
@@ -65,4 +70,25 @@ public class MemberService {
         return member.getGender();
     }
     
+    public void updateNicknameInSession(String newNickname) {
+        // 현재 인증된 사용자 정보를 가져옴
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 기존 Authentication 객체에서 CustomUserDetails 가져오기
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        // 닉네임을 변경한 새로운 Member 객체 생성
+        Member updatedMember = customUserDetails.member;
+        updatedMember.setNickname(newNickname);
+
+        // 새로운 CustomUserDetails 객체 생성
+        CustomUserDetails updatedUserDetails = new CustomUserDetails(updatedMember);
+
+        // 새로운 Authentication 객체 생성
+        Authentication newAuthentication = new UsernamePasswordAuthenticationToken(
+                updatedUserDetails, authentication.getCredentials(), updatedUserDetails.getAuthorities());
+
+        // SecurityContext에 새로운 Authentication 객체 설정
+        SecurityContextHolder.getContext().setAuthentication(newAuthentication);
+    }
 }
