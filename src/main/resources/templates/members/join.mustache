@@ -175,7 +175,11 @@
 
         const email = document.getElementById('email').value;
         // AJAX 요청으로 이메일 중복 확인
-        fetch(`/api/checkEmail?email=${email}`)
+        fetch('/api/checkEmail', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email })  // 이메일을 body에 포함
+        })
             .then(response => response.json())
             .then(data => {
                 const messageDiv = document.getElementById('emailMessage');

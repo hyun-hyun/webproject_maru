@@ -53,8 +53,9 @@ public class MemberApiController {
     }
 
     // 이메일 중복 확인
-    @GetMapping("/checkEmail")
-    public ResponseEntity<Map<String, Boolean>> checkEmail(@RequestParam String email) {
+    @PostMapping("/checkEmail")
+    public ResponseEntity<Map<String, Boolean>> checkEmail(@RequestBody Map<String, String> requestBody) {
+        String email = requestBody.get("email");  // JSON에서 email 값을 추출
         boolean exists = joinService.getIsEmail(email);
         Map<String, Boolean> response = new HashMap<>();
         response.put("exists", exists);
