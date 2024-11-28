@@ -17,12 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.webproject_maru.dto.ArticleForm;
+import com.example.webproject_maru.dto.ArticleLoveDto;
 import com.example.webproject_maru.dto.ArticleRecommendDto;
 import com.example.webproject_maru.dto.ArticleReviewDto;
 import com.example.webproject_maru.dto.CustomUserDetails;
 import com.example.webproject_maru.dto.TagCountDto;
 import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.service.ArticleService;
+import com.example.webproject_maru.service.LoveService;
 import com.example.webproject_maru.service.Map_r_tService;
 import com.example.webproject_maru.service.RecommendationService;
 import com.example.webproject_maru.service.ReviewService;
@@ -43,6 +45,8 @@ public class MyPageApiController {
     private ArticleService articleService;
     @Autowired
     private ReviewService reviewService;
+    @Autowired
+    private LoveService loveService;
 
 
     @GetMapping("/wordcloud/{memberId}")
@@ -56,6 +60,72 @@ public class MyPageApiController {
 
         List<TagCountDto> tags = map_r_tService.countTagSelectionsByMemberId(memberId);
         return ResponseEntity.ok(tags);
+    }
+
+    //일부
+    @GetMapping("/myloveOnly/{memberId}")
+    public ResponseEntity<List<ArticleLoveDto>> getMyLoveOnlyArticles(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long memberId){
+        Long member_id = userDetails.member.getId();
+        // memberId와 로그인된 member_id가 다를 경우 예외 처리
+        if (!memberId.equals(member_id)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "유효하지 않은 접근입니다.");
+        }
+
+        //찜한 게시글id
+        List<Long> lovedArticleIds=loveService.findArticleIdByMemberId(memberId);
+        log.info("찜한 게시글 개수: "+lovedArticleIds.size());
+        int end=Math.min(5,lovedArticleIds.size());
+        log.info("찜한 게시글 end: "+end);
+        lovedArticleIds=lovedArticleIds.subList(0, end);
+
+        List<ArticleLoveDto>articleLoveDtos=new ArrayList<>();
+        for(Long articleId:lovedArticleIds){
+            log.info("찜한 게시글: "+articleId);
+            ArticleLoveDto articleLoveDto=ArticleLoveDto.createArticleLoveDto(articleService.findById(articleId).orElse(null));
+            if(articleLoveDto!=null){
+                articleLoveDtos.add(articleLoveDto);
+            }
+        }
+
+        return ResponseEntity.ok(articleLoveDtos);
+
+    }
+
+    //전체
+    @GetMapping("/mylove/{memberId}")
+    public ResponseEntity<List<ArticleLoveDto>> getMyLoveArticles(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long memberId, @RequestParam("page") int page){
+        Long member_id = userDetails.member.getId();
+        // memberId와 로그인된 member_id가 다를 경우 예외 처리
+        if (!memberId.equals(member_id)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "유효하지 않은 접근입니다.");
+        }
+
+        //찜한 게시글id
+        List<Long> lovedArticleIds=loveService.findArticleIdByMemberId(memberId);
+
+        // 페이징 처리: 요청된 페이지 번호에 맞는 게시글 반환
+        int size=20;
+        int fromIndex = page * size;
+        int toIndex = Math.min(fromIndex + size, lovedArticleIds.size());
+
+        // 범위를 벗어나지 않도록 처리
+        if (fromIndex >= lovedArticleIds.size()) {
+            return ResponseEntity.ok(new ArrayList<>()); // 페이지가 범위를 초과할 경우 빈 리스트 반환
+        }
+
+        // 해당 페이지의 게시글 ID 서브리스트 생성
+        List<Long> pagedArticleIds = lovedArticleIds.subList(fromIndex, toIndex);
+
+        List<ArticleLoveDto>articleLoveDtos=new ArrayList<>();
+        for(Long articleId:pagedArticleIds){
+            ArticleLoveDto articleLoveDto=ArticleLoveDto.createArticleLoveDto(articleService.findById(articleId).orElse(null));
+            if(articleLoveDto!=null){
+                articleLoveDtos.add(articleLoveDto);
+            }
+        }
+
+        return ResponseEntity.ok(articleLoveDtos);
+
     }
 
     //일부

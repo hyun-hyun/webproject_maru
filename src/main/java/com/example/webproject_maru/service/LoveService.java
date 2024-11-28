@@ -1,5 +1,6 @@
 package com.example.webproject_maru.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,11 @@ public class LoveService {
             loveRepository.save(love);
             return true; // 찜 추가됨
         }
+    }
+
+    //마이페이지용 회원별 리뷰한 게시글id
+    public List<Long> findArticleIdByMemberId(Long memberId) {
+        return loveRepository.findByMemberId(memberId);
     }
 
 }

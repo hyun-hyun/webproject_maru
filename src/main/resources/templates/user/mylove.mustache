@@ -1,0 +1,170 @@
+{{>layouts/header}}
+<div class="container">
+<br>
+<h2>마이페이지</h2>
+<br><br>
+
+<div class="recent-loves">
+    <h4>찜한 작품</h4>
+    <div class="article-list" id="article-love-list">
+        <!-- Fetch된 데이터 -->
+    </div>
+    <div id="loading" class="loading-container" style="display: none;">
+        <div class="spinner"></div>
+        <p>데이터를 불러오는 중...</p>
+    </div>
+</div>
+
+
+<script>
+    const memberId = {{member_id}}; 
+
+    let currentPage = 0; // 현재 페이지 (0부터 시작)
+    let loading = false; // 데이터를 로딩 중인지 여부
+    let hasMoreData = true; // 더 이상 데이터가 있는지 체크
+
+    //최근 리뷰한 작품
+    function loadLovedArticles(page){
+        if (loading || !hasMoreData) return; // 이미 데이터를 로딩 중이거나 더 이상 데이터가 없으면 요청을 하지 않음
+        loading = true; // 로딩 시작
+        document.getElementById('loading').style.display = 'block'; // 로딩 인디케이터 표시
+
+        //api호출
+        fetch(`/api/mypage/mylove/${memberId}?page=${page}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('유효하지 않은 응답입니다.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const articleList = document.getElementById('article-love-list');
+                if(data.length==0){
+                    hasMoreData = false;  // 더 이상 불러올 데이터가 없으면 hasMoreData를 false로 설정
+                    document.getElementById('loading').style.display = 'none'; // 로딩 숨김
+                    return;
+                }
+
+                data.forEach(article => {
+                    // 새로운 div 생성
+                    const articleItem = document.createElement('div');
+                    articleItem.className = 'article-item';
+
+                    // HTML 구성
+                    articleItem.innerHTML = `
+                    <a href="/articles/anime/${article.articleId}" class="a">
+                        <img src="/images/pic/anime/${article.main_pic}" alt="메인사진" class="main-pic">
+                        <div class="title"><b>[${article.genre}]${article.title}</b></div>
+                        <div class="love-story">${article.story}</div>
+                    </a>
+                    `;
+
+                    // article-item을 article-list에 추가
+                    articleList.appendChild(articleItem);
+                });
+
+                //로딩상태 false로 변경
+                loading=false;
+            })
+            .catch(error => {
+                console.error('Error fetching the data:', error);
+                loading = false;
+            })
+            .finally(() => {
+                document.getElementById('loading').style.display = 'none'; // 로딩 숨김
+            });
+    }
+    
+    // 무한 스크롤 이벤트 처리
+    window.addEventListener('scroll', function() {
+        const scrollPosition = window.innerHeight + window.scrollY;
+        const documentHeight = document.documentElement.scrollHeight;
+    
+        // 페이지 하단에 도달하면 다음 페이지 로드
+        if (scrollPosition >= documentHeight - 500 && hasMoreData && !loading) {
+            currentPage++;
+            loadLovedArticles(currentPage); // 새로운 페이지의 게시글을 로드
+        }
+    });
+    
+    // 페이지 로드 시 첫 번째 페이지의 게시글을 불러오기
+    document.addEventListener('DOMContentLoaded', function() {
+        loadLovedArticles(currentPage); // 첫 번째 페이지 로드
+    });
+
+</script>
+
+<style>
+    /*내가 쓴 리뷰*/
+    .recent-loves {
+        margin-top: 20px;
+    }
+    
+    .article-love-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;  /* 왼쪽 정렬 */
+    }
+    
+    .article-item {
+        width: calc(20% - 10px); /* 5개 단위로 가로 배치, 간격을 고려 */
+        margin-bottom: 20px; /* 세로 간격 */
+        position: relative; /* 자식 요소의 절대 위치를 기준으로 설정 */
+        padding: 15px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .article-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* 모바일 화면에서 한 줄에 3개씩 보이도록 설정 */
+    @media (max-width: 768px) {
+        .article-item {
+            width: calc(33.33% - 10px);  /*3개가 한 줄에 표시되도록 설정 (여백 고려) */
+            /*width: calc(50% - 10px);  모바일에서는 2개씩 표시 */
+        }
+    }
+    .main-pic {
+        width: 100%; /* 전체 폭을 차지 */
+        /*aspect-ratio: 7 / 5;  7:5 비율 */
+        object-fit: cover; /* 비율 유지하며 이미지 잘림 방지 */
+    }
+    
+    .title {
+        display: inline-block; /* 내용을 감싸는 만큼만 너비 설정 */
+        background-color: white; /* 흰색 배경 */
+        color: black; /* 검정색 글자 */
+        text-align: center; /* 중앙 정렬 */
+        max-width: 100%; /* 최대 너비 설정 */
+        white-space: nowrap; /* 줄 바꿈 방지 */
+        overflow: hidden; /* 넘치는 텍스트 숨기기 */
+        text-overflow: ellipsis; /* ... 표시 */
+        text-align: center; /* 중앙 정렬 */
+    }
+
+    .love-story {
+        background-color: white; /* 흰색 배경 */
+        color: black; /* 검정색 글자 */
+        padding: 5px;
+        overflow: hidden; /* 내용이 넘칠 경우 숨김 */
+        text-overflow: ellipsis; /* ... 표시 */
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2; /* 2줄로 제한 */
+    }
+    
+    /* 하이퍼링크의 밑줄 제거 */
+    .article-item a {
+        text-decoration: none; /* 기본 밑줄 제거 */
+        color: inherit; /* 부모의 글자 색상 상속 */
+    }
+
+
+</style>
+{{>layouts/footer}}

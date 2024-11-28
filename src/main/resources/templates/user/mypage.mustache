@@ -22,7 +22,16 @@
     </div>
 </div>
 <hr>
-<h4>내가 찜한 작품</h4>
+<div class="recent-loves">
+    <h4>최근 찜한 작품  <a href="/user/mypage/mylove" class="btn btn-sm btn-info">전체보기</a></h4>
+    <div class="article-list" id="article-love-list">
+        <!-- Fetch된 데이터 -->
+    </div>
+    <div id="loading" class="loading-container" style="display: none;">
+        <div class="spinner"></div>
+        <p>데이터를 불러오는 중...</p>
+    </div>
+</div>
 <br>
 <hr>
 <div class="recent-reviews">
@@ -60,6 +69,47 @@
             });
         });
 
+    //찜한작품
+    fetch(`/api/mypage/myloveOnly/${memberId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('네트워크 응답을 확인해주세요.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const articleList = document.getElementById('article-love-list');
+
+            // 데이터가 없으면 이 부분에서 바로 종료
+            if (data.length === 0) {
+                articleList.innerHTML = "<p>찜한 작품이 없습니다.</p>";
+                return;
+            }
+
+            data.forEach(article => {
+                // 새로운 div 생성
+                const articleItem = document.createElement('div');
+                articleItem.className = 'article-item';
+
+                // HTML 구성
+                articleItem.innerHTML = `
+                    <a href="/articles/anime/${article.articleId}" class="a">
+                        <img src="/images/pic/anime/${article.main_pic}" alt="메인사진" class="main-pic">
+                        <div class="title"><b>[${article.genre}]${article.title}</b></div>
+                        <div class="love-story">${article.story}</div>
+                    </a>
+                `;
+
+                // article-item을 article-list에 추가
+                articleList.appendChild(articleItem);
+            });
+
+        })
+        .catch(error => {
+            console.error('Error fetching the data:', error);
+        });
+    
+
     //최근 리뷰한 작품
     fetch(`/api/mypage/myreviewOnly/${memberId}`)
         .then(response => {
@@ -70,6 +120,11 @@
         })
         .then(data => {
             const articleList = document.getElementById('article-list');
+            // 데이터가 없으면 이 부분에서 바로 종료
+            if (data.length === 0) {
+                articleList.innerHTML = "<p>리뷰한 작품이 없습니다.</p>";
+                return;
+            }
             // 처음 5개 항목만 선택
             const limitedReviews = data.slice(0, 5);
 
@@ -249,6 +304,27 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* 부드러운 그림자 */
         text-align: center;  /* 중앙 정렬 */
         transition: transform 0.3s ease, box-shadow 0.3s ease;  /* 마우스 오버 시 부드러운 효과 */
+    }
+    
+    /*찜한작품*/
+    /*내가 쓴 리뷰*/
+   .recent-loves {
+        margin-top: 20px;
+    }
+    .article-love-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;  /* 왼쪽 정렬 */
+    }
+    .love-story {
+        background-color: white; /* 흰색 배경 */
+        color: black; /* 검정색 글자 */
+        padding: 5px;
+        overflow: hidden; /* 내용이 넘칠 경우 숨김 */
+        text-overflow: ellipsis; /* ... 표시 */
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2; /* 2줄로 제한 */
     }
     
 
