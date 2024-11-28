@@ -22,6 +22,11 @@ public class SpringSecurityConfig {
         requestCache.setMatchingRequestParameterName("continue");//continue로 사용하는게 스프링시큐리티 5에서 추가됨. 캐시효율성관련
 
         http
+                .headers(headers->
+                    headers.contentSecurityPolicy(csp->
+                            csp.policyDirectives("script-src 'self' 'unsafe-inline' https://cdn.anychart.com https://cdn.jsdelivr.net;")
+                            )
+                        )
                 .authorizeHttpRequests((auth) -> auth
                         //.requestMatchers("/", "/**").permitAll()
 
