@@ -1,7 +1,10 @@
 package com.example.webproject_maru.api;
 
+import java.nio.file.attribute.UserPrincipal;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -18,11 +21,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -32,6 +37,7 @@ import com.example.webproject_maru.dto.CustomUserDetails;
 import com.example.webproject_maru.entity.Article;
 import com.example.webproject_maru.service.ArticleService;
 import com.example.webproject_maru.service.CommentService;
+import com.example.webproject_maru.service.LoveService;
 import com.example.webproject_maru.service.Map_r_tService;
 import com.example.webproject_maru.service.ReviewService;
 
@@ -45,6 +51,8 @@ public class ArticleApiController {
     private ReviewService reviewService;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private LoveService loveService;
 
     // 게시글 목록 조회 (검색어가 있는 경우 검색 결과 반환)
     @GetMapping("/api/articles/list")
@@ -136,4 +144,17 @@ public class ArticleApiController {
         return ResponseEntity.badRequest().body(Map.of("error", "삭제할 수 없습니다."));
     }
 
+    //게시글 찜
+    @PostMapping("/user/{articleId}/love")
+    @ResponseBody
+    public Map<String, Object> toggleLove(@PathVariable Long articleId,@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Long memberId = userDetails.getId();
+        boolean isLoved = loveService.toggleLove(memberId, articleId);
+
+        // JSON 형식으로 응답 반환
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("isLoved", isLoved);
+        return response;
+    }
 }

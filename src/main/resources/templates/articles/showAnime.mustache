@@ -8,6 +8,17 @@
 
 <div class="row g-2">
   <div class="col-md-6">
+    <!--찜버튼 위치-->
+    {{#member_id}}
+    <div>
+      <button 
+        id="love-btn-{{id}}" 
+        class="love-button {{#isLoved}}active{{/isLoved}}" 
+        onclick="toggleLove({{id}})">
+        ♥봐야지♥
+      </button>
+    </div>
+    {{/member_id}}
     <label class="form-label"><h1> {{title}}</h1></label><br>
     <label class="form-label">장르 </label> <b>{{genre}}</b><br>
     <label class="form-label">방영 </label> <b>{{broaddate}}</b><br>
@@ -36,9 +47,9 @@
 
 <br>
 
-<!--종합추천점수-->
+<!--종합추천점수
 <label class="form-label">종합추천점수</label>
-<button type="button" onclick="alert('사이즈지정해서 평가결과 뜨게하기')"class="btn btn-primary">자세히보기</button>
+<button type="button" onclick="alert('사이즈지정해서 평가결과 뜨게하기')"class="btn btn-primary">자세히보기</button>-->
 <br>
 <br>
 <label class="form-label">등장인물</label>
@@ -78,6 +89,32 @@
 
 
 <script>
+  //찜버튼 클릭
+  function toggleLove(articleId) {
+    const button = document.getElementById(`love-btn-${articleId}`);
+    const isLoved = button.classList.contains('btn-danger');
+
+    fetch(`/user/${articleId}/love`, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+          // 버튼 상태 토글
+          button.classList.toggle('active');
+
+      } else {
+          alert(data.message || "오류가 발생했습니다.");
+      }
+  })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("오류가 발생했습니다. 다시 시도해주세요.");
+    });
+}
 
     {
       //게시글삭제버튼
@@ -87,18 +124,19 @@
 
             fetch(url, {
                 method: 'POST'
-            }).then(response => {
-              return response.json().then(data => {
-                console.log(response);
-                   if (!response.ok) {
-                      alert(data.error);
-                      window.location.reload();
-                  } else {
-                      alert(data.message); // 삭제 완료 메시지
-                      window.location.href = `/articles/anime`; // 목록 페이지로 이동
-                  }
-              });
-          })
+            })
+            .then(response => response.json())
+            .then(isLoved => {
+                const loveButton = document.getElementById('loveButton');
+                const loveButtonText = document.getElementById('loveButtonText');
+                if (isLoved) {
+                    loveButton.classList.add('btn-danger');
+                    loveButton.classList.remove('btn-outline-danger');
+                } else {
+                    loveButton.classList.add('btn-outline-danger');
+                    loveButton.classList.remove('btn-danger');
+                }
+            })
           .catch(error => {
               alert("오류가 발생했습니다: " + error);
           });
@@ -106,6 +144,44 @@
     }
     }
 </script>
+<style>
+  //찜버튼
+  /* 버튼 기본 스타일 */
+.love-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ff6b6b; /* 트렌디한 빨간색 */
+    background: #fff;
+    border: 2px solid #ff6b6b;
+    border-radius: 30px; /* 동글게 */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
+/* 버튼 호버 스타일 */
+.love-button:hover {
+    background: #ff6b6b;
+    color: #fff;
+    box-shadow: 0 6px 12px rgba(255, 107, 107, 0.5);
+}
+
+/* 버튼 활성화 스타일 */
+.love-button.active {
+    background: #ff6b6b;
+    color: #fff;
+    box-shadow: 0 6px 12px rgba(255, 107, 107, 0.5);
+}
+
+/* 클릭 시 버튼 애니메이션 */
+.love-button:active {
+    transform: scale(0.95); /* 살짝 작아짐 */
+}
+</style>
 
 {{>layouts/footer}}

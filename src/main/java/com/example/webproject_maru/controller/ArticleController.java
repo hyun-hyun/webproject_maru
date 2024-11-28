@@ -39,6 +39,7 @@ import com.example.webproject_maru.entity.SubPic;
 import com.example.webproject_maru.entity.Tag;
 import com.example.webproject_maru.service.ArticleService;
 import com.example.webproject_maru.service.CommentService;
+import com.example.webproject_maru.service.LoveService;
 import com.example.webproject_maru.service.Map_r_tService;
 import com.example.webproject_maru.service.ReviewService;
 
@@ -55,7 +56,8 @@ public class ArticleController {
     private ReviewService reviewService;
     @Autowired
     private Map_r_tService map_r_tService;
-    
+    @Autowired
+    private LoveService loveService;
 
     //게시글 생성
     @GetMapping("/write/article/anime")
@@ -131,6 +133,13 @@ public class ArticleController {
 
         //1. id조회해서 데이터(entity, Optional<Article>) 가져오기
         Article articleEntity=articleService.findByIdArticle(id);
+
+        // 찜 여부 확인
+        boolean isLoved = false;
+        if(member_id != null){
+            isLoved=loveService.isLoved(member_id, id);
+            model.addAttribute("isLoved", isLoved);
+        }
 
         //전체 리뷰 가져오기
         List<ReviewDto> reviewDtos=reviewService.reviews(id);
