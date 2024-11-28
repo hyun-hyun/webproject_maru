@@ -209,6 +209,9 @@ public class ReviewService {
     public List<Long> getAllReviewIdByMemberId(Long memberId) {
         return reviewRepository.getAllReviewIdByMemberId(memberId);
     }
+    public Long countReviewByMemberId(Long memberId) {
+        return reviewRepository.countReviewByMemberId(memberId);
+    }
 
 /*
     //articleId에 따른 tag 선택된거 조회

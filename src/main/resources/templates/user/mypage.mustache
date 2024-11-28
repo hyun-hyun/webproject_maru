@@ -17,7 +17,7 @@
       <strong>{{nickname}}</strong>님<br>
       {{email}}<br>
       <strong>성별: </strong>{{genderD}}<br>
-      <strong>리뷰 수:</strong> 00개<br><br>
+      <strong>리뷰 수:</strong> {{c_review}}개<br><br>
       <a href="/user/mypage/edit" class="btn btn-sm btn-primary">회원정보 수정</a>
     </div>
 </div>
@@ -89,7 +89,7 @@
             data.forEach(article => {
                 // 새로운 div 생성
                 const articleItem = document.createElement('div');
-                articleItem.className = 'article-item';
+                articleItem.className = 'article-love-item';
 
                 // HTML 구성
                 articleItem.innerHTML = `
@@ -125,10 +125,8 @@
                 articleList.innerHTML = "<p>리뷰한 작품이 없습니다.</p>";
                 return;
             }
-            // 처음 5개 항목만 선택
-            const limitedReviews = data.slice(0, 5);
 
-            limitedReviews.forEach(articleReview => {
+            data.forEach(articleReview => {
                 // 새로운 div 생성
                 const articleItem = document.createElement('div');
                 articleItem.className = 'article-item';
@@ -325,6 +323,17 @@
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2; /* 2줄로 제한 */
+    }
+    .article-love-item {
+        width: calc(20% - 10px); /* 5개 단위로 가로 배치, 간격을 고려 */
+        margin-bottom: 20px; /* 세로 간격 */
+        position: relative; /* 자식 요소의 절대 위치를 기준으로 설정 */
+        padding: 15px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        cursor: pointer;
     }
     
 

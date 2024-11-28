@@ -21,6 +21,7 @@ import com.example.webproject_maru.service.LoginService;
 import com.example.webproject_maru.service.Map_a_tService;
 import com.example.webproject_maru.service.Map_r_tService;
 import com.example.webproject_maru.service.MemberService;
+import com.example.webproject_maru.service.ReviewService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,6 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 public class MainController {
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private ReviewService reviewService;
 
     @GetMapping("/")
     public String goMain(Model model) {
@@ -81,13 +84,13 @@ public class MainController {
                 break;
 
         }
-        //사용자별 리뷰개수 카운트
+        Long c_review = reviewService.countReviewByMemberId(member_id);
 
         model.addAttribute("nickname", nickname);
         model.addAttribute("member_id", member_id);
         model.addAttribute("email", email);
         model.addAttribute("genderD", genderDescription);
-        //사용자별 리뷰개수 카운트 모델등록
+        model.addAttribute("c_review", c_review);
 
         return "user/mypage";
     }
