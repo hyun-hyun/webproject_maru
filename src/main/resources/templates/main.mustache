@@ -22,6 +22,12 @@
   {{/admin}}
 {{#nickname}}
 <!--추천 5개-->
+<div class="recommended-reviews">
+    <div class="article-list" id="recommendations-list">
+        <!-- 추천 게시물 데이터 여기에 -->
+    </div>
+</div>
+
 <hr>
 {{/nickname}}
   <div class="row">
@@ -48,6 +54,45 @@
 {{>layouts/footer}}
 
 <script>
+//추천5개(로그인시)
+{{#member_id}}
+const memberId = {{.}};  // 로그인된 사용자 ID (Mustache로 전달)
+fetch(`/api/mypage/recommended-articlesOnly/${memberId}`)
+        .then(response => response.json())
+        .then(articles => {
+            const recommendationsContainer = document.getElementById("recommendations-list");
+
+            // 5개의 추천 게시물을 HTML로 변환하여 추가
+            articles.forEach(article => {
+                const articleDiv = document.createElement("div");
+                articleDiv.className = "article-item";
+
+                let tagsHtml = '';
+                if (article.usedTags && Array.isArray(article.usedTags)) {
+                    article.usedTags.forEach(tag => {
+                        tagsHtml += `<span class="btn btn-outline-info m-1 tag">${tag}</span>`;
+                    });
+                }
+
+                articleDiv.innerHTML = `
+                    <a href="/articles/anime/${article.id}" class="a">
+                        <div class="score"></div> <!-- 별을 표시할 부분 -->
+                        <img src="/images/pic/anime/${article.main_pic}" alt="메인사진" class="main-pic">
+                        <div class="article-info">
+                            <b class="title">[${article.genre}] ${article.title}</b>
+                            <div class="tags">${tagsHtml}</div>
+                        </div>
+                    </a>
+                `;
+                recommendationsContainer.appendChild(articleDiv);
+
+            });
+        })
+        .catch(error => {
+            console.error('추천 게시물을 불러오는 데 문제가 생겼습니다:', error);
+        });
+{{/member_id}}
+
 // 데이터 로딩 함수: TOP 15 작품 가져오기
 function loadTopArticles() {
   fetch('/api/main/top')
@@ -126,3 +171,57 @@ document.addEventListener('DOMContentLoaded', function() {
   loadRecentArticles(); // 최근 작품 로드
 });
 </script>
+<style>
+    //추천게시글
+    .recommended-reviews {
+        margin-top: 30px;
+    }
+
+    .article-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;  /* 왼쪽 정렬 */
+    }
+
+    .article-item {
+        width: calc(20% - 10px); /* 5개 단위로 가로 배치 */
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .article-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .main-pic {
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .score-reason {
+        background-color: white;
+        color: black;
+        padding: 5px;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
+
+    .score {
+        text-align: center;
+    }
+
+    /* 모바일 화면에서 한 줄에 3개씩 보이도록 설정 */
+    @media (max-width: 768px) {
+        .article-item {
+            width: calc(33.33% - 10px); /* 3개가 한 줄에 표시되도록 설정 */
+        }
+    }
+</style>

@@ -46,7 +46,10 @@ public class MainController {
         if(!email.equals("anonymousUser")){
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
             String nickname = userDetails.getNickname();
+            Long member_id=userDetails.getId();
             model.addAttribute("nickname", nickname);
+            model.addAttribute("member_id", member_id);
+
 
             if(role.equals("ROLE_ADMIN") || role.equals("ROLE_MANAGER")){
                 model.addAttribute("write", 1);

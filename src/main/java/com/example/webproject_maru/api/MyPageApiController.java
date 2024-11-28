@@ -69,6 +69,8 @@ public class MyPageApiController {
 
         //리뷰한 리뷰id
         List<Long> reviewedReviewIds=reviewService.getAllReviewIdByMemberId(memberId);
+        int end=Math.min(5,reviewedReviewIds.size());
+        reviewedReviewIds=reviewedReviewIds.subList(0, end);
 
         List<ArticleReviewDto>articleReviewDtos=new ArrayList<>();
         for(Long reviewId:reviewedReviewIds){
@@ -119,7 +121,35 @@ public class MyPageApiController {
         return ResponseEntity.ok(articleReviewDtos);
 
     }
+    //추천 일부
+    @GetMapping("/recommended-articlesOnly/{memberId}")
+    public ResponseEntity<List<ArticleRecommendDto>> getOnlyRecommendedArticles(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long memberId){
+        Long member_id = userDetails.member.getId();
+        // memberId와 로그인된 member_id가 다를 경우 예외 처리
+        if (!memberId.equals(member_id)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "유효하지 않은 접근입니다.");
+        }
 
+        // 추천 게시글 ID 목록 가져오기
+        List<Long> recommendedArticleIds = recommendationService.recommendArticleIds(memberId);
+        int end=Math.min(5,recommendedArticleIds.size());
+        recommendedArticleIds=recommendedArticleIds.subList(0, end);
+
+        // Article로 변환
+        List<ArticleRecommendDto> articleRecommendDtos = new ArrayList<>();
+        for (Long articleId : recommendedArticleIds) {
+            List<String> usedTags = map_r_tService.getOnlyTagsByArticleId(articleId); // 태그
+            ArticleRecommendDto articleRecommendDto = ArticleRecommendDto.createArticleRecommendDto(
+                    articleService.findByIdArticle(articleId), usedTags);
+            if (articleRecommendDto != null) {
+                articleRecommendDtos.add(articleRecommendDto);
+            }
+        }
+
+        return ResponseEntity.ok(articleRecommendDtos);
+
+    }
+    //추천 전체
     @GetMapping("/recommended-articles/{memberId}")
     public ResponseEntity<List<ArticleRecommendDto>> getRecommendedArticles(
             @AuthenticationPrincipal CustomUserDetails userDetails, 
