@@ -7,27 +7,33 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-//import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.example.webproject_maru.dto.CustomUserDetails;
 import com.example.webproject_maru.entity.Member;
-//import com.example.webproject_maru.service.EmailService;
+import com.example.webproject_maru.service.EmailService;
 import com.example.webproject_maru.service.JoinService;
 import com.example.webproject_maru.service.MemberService;
 
 import jakarta.transaction.Transactional;
 
-//import jakarta.mail.MessagingException;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api")
@@ -38,10 +44,10 @@ public class MemberApiController {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private MemberService memberService;
-    //@Autowired
-    //private EmailService emailService;
-    //@Autowired
-    //private StringRedisTemplate redisTemplate;
+    @Autowired
+    private EmailService emailService;
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     // 닉네임 중복 확인
     @GetMapping("/checkNickname")
@@ -100,9 +106,16 @@ public class MemberApiController {
         try {
             // 비밀번호가 일치하면 회원 탈퇴 처리
             memberService.deleteMemberAccount(member.getId());  // 나머지 정보 삭제 (ID와 nickname 제외)
-            
+     
             // 세션 종료
             SecurityContextHolder.clearContext();
+
+            // 세션 무효화 처리(로그아웃처리)
+            HttpServletRequest serveletRequest = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+            HttpSession session = serveletRequest.getSession(false);
+            if (session != null) {
+                session.invalidate(); // 세션 무효화
+            }
 
             // 탈퇴 성공 응답
             Map<String, Object> response = new HashMap<>();
@@ -114,7 +127,7 @@ public class MemberApiController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-/* 
+ 
     //이메일 인증
     //private final Map<String, String> verificationCodes = new HashMap<>();
 
@@ -171,6 +184,7 @@ public class MemberApiController {
 
     // 임시 비밀번호 생성 로직
     private String generateTemporaryPassword() {
+        final int TEMPORARY_PASSWORD_LENGTH = 10;
         StringBuilder password = new StringBuilder(TEMPORARY_PASSWORD_LENGTH);
         for (int i = 0; i < TEMPORARY_PASSWORD_LENGTH; i++) {
             int index = random.nextInt(CHARACTERS.length());
@@ -195,5 +209,5 @@ public class MemberApiController {
         }
     }
 
-    */
+    
 }

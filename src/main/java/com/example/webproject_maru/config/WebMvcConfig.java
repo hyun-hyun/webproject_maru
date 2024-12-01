@@ -13,9 +13,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
                 //------배포시 수정부분------
                 //로컬테스트 주소
-                .addResourceLocations("file:src/main/resources/static/");
+                //.addResourceLocations("file:src/main/resources/static/");
                 //배포 기준 주소
-                //.addResourceLocations("file:/usr/local/tomcat/webapps/");
+                .addResourceLocations("file:/usr/local/tomcat/webapps/");
 
         // registry.addResourceHandler("/**")
         //         .addResourceLocations("file:src/main/resources/templates/");
