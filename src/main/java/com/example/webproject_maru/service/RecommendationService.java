@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -100,6 +101,8 @@ public class RecommendationService {
                 tagScores.put(tagId, 10 - i); // 예: 10, 9, 8, ...
             }
         }
+        //추가: 사용자가 리뷰한 작품ID 가져오기
+        List<Long> reviewedArticleIds = reviewService.getReviewedArticleIdsByMemberId(memberId);
 
         // 3단계: 각 게시글별 리뷰에서 선택된 태그의 종류와 개수 찾기
         Map<Long, Long> articleScores = new HashMap<>(); // 게시글 ID와 총 점수를 저장
@@ -108,9 +111,13 @@ public class RecommendationService {
             List<Long> articleIds = map_a_tService.findArticleIdsByTagId(tag.getT_id());
 
             for (Long articleId : articleIds) {
-                long tagCount = map_r_tService.countTagByArticleIdAndTagId(tag.getT_id(), articleId); // 해당 게시글의 태그 개수
+                if (reviewedArticleIds.contains(articleId)) {
+                    continue; // 사용자가 이미 리뷰한 작품은 추천에서 제외
+                }
+
+                long tagCount = map_r_tService.countTagByArticleIdAndTagId(tag.getT_id(), articleId);//해당 게시글의 태그 개수
                 int score = tagScores.get(tag.getT_id());
-                
+
                 articleScores.merge(articleId, tagCount * score, Long::sum);
             }
         }
@@ -120,13 +127,11 @@ public class RecommendationService {
         sortedArticles.sort((a, b) -> Long.compare(b.getValue(), a.getValue())); // 내림차순 정렬
 
         //5단계: Article ID 반환
-        List<Long> recommendedArticleIds = new ArrayList<>();
-        for (int i = 0; i < sortedArticles.size(); i++) {
-        //for (int i = 0; i < Math.min(8, sortedArticles.size()); i++) {
-            recommendedArticleIds.add(sortedArticles.get(i).getKey());
-        log.info("추천하는 첫번째 작품 id: {}",sortedArticles.get(i).getKey());
+        List<Long> recommendedArticleIds = sortedArticles.stream()
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
 
-        }
+        log.info("추천 작품 ID: {}", recommendedArticleIds);
 
         return recommendedArticleIds;
     }

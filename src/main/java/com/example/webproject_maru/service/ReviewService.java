@@ -213,6 +213,11 @@ public class ReviewService {
         return reviewRepository.countReviewByMemberId(memberId);
     }
 
+    //추가: 사용자가 리뷰한 작품ID 가져오기
+    public List<Long> getReviewedArticleIdsByMemberId(Long memberId) {
+        return reviewRepository.findReviewedArticleIdsByMemberId(memberId);
+    }
+
 /*
     //articleId에 따른 tag 선택된거 조회
     public List<Map_r_t> getReviewTagsByArticleId(Long articleId){

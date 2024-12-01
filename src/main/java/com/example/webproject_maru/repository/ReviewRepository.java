@@ -46,6 +46,10 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
     @Query("SELECT count(r.id) FROM Review r WHERE r.member.id=:memberId")
     Long countReviewByMemberId(@Param("memberId") Long memberId);
     
+    //추가: 사용자가 리뷰한 작품ID 가져오기
+    @Query("SELECT r.article.id FROM Review r WHERE r.member.id = :memberId")
+    List<Long> findReviewedArticleIdsByMemberId(@Param("memberId") Long memberId);
+    
     /*@Query("SELECT r.selectedTags FROM Review r WHERE r.article.id =:articleId")
     List<Map_r_t> findTagsByArticleId(@Param("articleId") Long articleId);
 
