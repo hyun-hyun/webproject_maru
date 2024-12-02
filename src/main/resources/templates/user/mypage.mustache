@@ -24,7 +24,7 @@
 <hr>
 <div class="recent-loves">
     <h4>🔖최근 찜한 작품  <a href="/user/mypage/mylove" class="btn btn-sm btn-info">전체보기</a></h4>
-    <div class="article-list" id="article-love-list">
+    <div class="article-love-list" id="article-love-list">
         <!-- Fetch된 데이터 -->
     </div>
     <div id="loading" class="loading-container" style="display: none;">
@@ -305,7 +305,6 @@
     }
     
     /*찜한작품*/
-    /*내가 쓴 리뷰*/
    .recent-loves {
         margin-top: 20px;
     }
@@ -393,6 +392,9 @@
         .article-item {
             width: calc(33.33% - 10px); /* 3개가 한 줄에 표시되도록 설정 (여백 고려) */
             /*width: calc(50% - 10px);  모바일에서는 2개씩 표시 */
+        }
+        .article-love-item {
+            width: calc(33.33% - 10px); /* 3개가 한 줄에 표시되도록 설정 (여백 고려) */
         }
     }
 

@@ -2,11 +2,11 @@
 <div class="container">
 <br>
 <h2>마이페이지</h2>
-<br><br>
+<br>
 
 <div class="recent-loves">
-    <h4>찜한 작품🔖</h4>
-    <div class="article-list" id="article-love-list">
+    <h4>찜한 작품🔖</h4><br>
+    <div class="article-love-list" id="article-love-list">
         <!-- Fetch된 데이터 -->
     </div>
     <div id="loading" class="loading-container" style="display: none;">
@@ -59,7 +59,7 @@
                     </a>
                     `;
 
-                    // article-item을 article-list에 추가
+                    // article-item을 article-love-list에 추가
                     articleList.appendChild(articleItem);
                 });
 
@@ -95,7 +95,7 @@
 </script>
 
 <style>
-    /*내가 쓴 리뷰*/
+    /*찜목록*/
     .recent-loves {
         margin-top: 20px;
     }

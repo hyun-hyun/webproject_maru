@@ -30,7 +30,7 @@ public interface ArticleRepository extends JpaRepository<Article,Long> {
     @Query("SELECT a FROM Article a ORDER BY a.id DESC")
     Page<Article> findLimitByOrderByIdDesc(Pageable pageable);
 
-    @Query("SELECT a FROM Article a JOIN a.reviews r WHERE r.appendTime >= :threeMonthsAgo GROUP BY a.id ORDER BY AVG(r.score) DESC")
+    @Query("SELECT a FROM Article a JOIN a.reviews r WHERE r.appendTime >= :threeMonthsAgo GROUP BY a.id ORDER BY AVG(r.score) DESC, a.cscore DESC")
     Page<Article> findRecentHighScoreArticles(@Param("threeMonthsAgo") LocalDateTime threeMonthsAgo, Pageable pageable);
 
     //검색
