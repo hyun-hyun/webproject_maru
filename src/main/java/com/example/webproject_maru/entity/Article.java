@@ -66,7 +66,7 @@ public class Article {
     @OneToMany(mappedBy = "article")
     private List<Map_a_t> tags;
 
-    @Column
+    @Column(length = 300)
     private String story;
 
     @OneToMany(mappedBy="article", cascade=CascadeType.ALL)
