@@ -34,21 +34,25 @@ public interface ArticleRepository extends JpaRepository<Article,Long> {
     Page<Article> findRecentHighScoreArticles(@Param("threeMonthsAgo") LocalDateTime threeMonthsAgo, Pageable pageable);
 
     //검색
-    @Query(value = "SELECT a FROM Article a LEFT JOIN FETCH a.subPics sp " +
-            "WHERE (LOWER(a.title) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
-            "LOWER(a.genre) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
-            "LOWER(a.author) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
-            "LOWER(a.ani_company) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
-            "LOWER(sp.realVoiceChar) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
-            "LOWER(sp.realChar) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
-            "LOWER(sp.korChar) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
-            "LOWER(sp.korVoiceChar) LIKE LOWER(CONCAT('%', :query, '%'))) " +
-            "ORDER BY CASE " +
-            "WHEN LOWER(a.title) LIKE LOWER(CONCAT('%', :query, '%')) THEN 1 " +
-            "WHEN LOWER(a.genre) LIKE LOWER(CONCAT('%', :query, '%')) THEN 2 " +
-            "WHEN LOWER(a.author) LIKE LOWER(CONCAT('%', :query, '%')) THEN 3 " +
-            "WHEN LOWER(a.ani_company) LIKE LOWER(CONCAT('%', :query, '%')) THEN 4 " +
-            "ELSE 5 END ASC")
+    @Query(value = "SELECT DISTINCT a FROM Article a " +
+        "LEFT JOIN FETCH a.subPics sp " +
+        "LEFT JOIN a.map_a_ts mat " +  // map_a_ts 관계를 직접 참조
+        "LEFT JOIN mat.tag t " + 
+        "WHERE (LOWER(a.title) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+        "LOWER(a.genre) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+        "LOWER(a.author) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+        "LOWER(a.ani_company) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+        "LOWER(sp.realVoiceChar) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+        "LOWER(sp.realChar) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+        "LOWER(sp.korChar) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+        "LOWER(sp.korVoiceChar) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+        "LOWER(t.tag) LIKE LOWER(CONCAT('%', :query, '%'))) " +
+        "ORDER BY CASE " +
+        "WHEN LOWER(a.title) LIKE LOWER(CONCAT('%', :query, '%')) THEN 1 " +
+        "WHEN LOWER(a.genre) LIKE LOWER(CONCAT('%', :query, '%')) THEN 2 " +
+        "WHEN LOWER(a.author) LIKE LOWER(CONCAT('%', :query, '%')) THEN 3 " +
+        "WHEN LOWER(a.ani_company) LIKE LOWER(CONCAT('%', :query, '%')) THEN 4 " +
+        "ELSE 5 END ASC")
     Page<Article> searchByQuery(@Param("query") String query, Pageable pageable);
 
    /* //articleId에 따른 tag

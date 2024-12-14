@@ -75,6 +75,9 @@ public class Article {
     @ElementCollection
     @CollectionTable(name = "sub_pics", joinColumns = @JoinColumn(name = "article_id"))
     private List<SubPic> subPics = new ArrayList<>();
+
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Map_a_t> map_a_ts = new ArrayList<>();
 /* 
     @Embedded
     @AttributeOverrides({
