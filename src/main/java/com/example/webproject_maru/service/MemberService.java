@@ -52,6 +52,8 @@ public class MemberService {
 
         Member member=validatePassword(id, passwordEditForm.getPswd());
         member.setPswd(bCryptPasswordEncoder.encode(passwordEditForm.getN_pswd()));
+        LocalDateTime SeoulNow = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        member.setUpdateDate(SeoulNow);
         memberRepository.save(member);
     }
 
