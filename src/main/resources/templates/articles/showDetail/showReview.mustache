@@ -6,10 +6,10 @@
 <span class="review-toggle">전체리뷰 보기</span>
 <div class="review-content">
 {{#reviewDtos}}
-<div id="scoreForm" class="review">
+<div class="review">
     <fieldset disabled>
-      <div>
-        <p>{{member_nickname}}</p>
+      <div id="scoreForm">
+        <p><b>{{member_nickname}}</b></p>
 
           <input type="radio" name="rate-{{id}}" value="5" id="rate5-{{id}}" disabled><label class="radio-label" for="rate5-{{id}}">★</label>
           <input type="radio" name="rate-{{id}}" value="4" id="rate4-{{id}}" disabled><label class="radio-label" for="rate4-{{id}}">★</label>
@@ -94,7 +94,7 @@
       </fieldset>
       <!-- 기존 태그 선택 -->
       <div id="existing-tags">
-      <span>작품의 <strong>키워드</strong>를 선택해주세요</span><br>
+      <span>작품이 마음에 드는 이유를 <strong>키워드</strong>로 선택해주세요</span><br>
         {{#allTags}}
         <label class="checkbox-label">
           <input type="checkbox" name="selectingTags" value="{{.}}">

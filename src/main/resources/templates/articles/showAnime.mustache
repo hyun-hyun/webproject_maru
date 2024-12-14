@@ -1,6 +1,7 @@
 {{>layouts/header}}
 
 <div class="container">
+<br>
 <h4>📖</h4>
 <br>
 
@@ -20,10 +21,13 @@
     </div>
     {{/member_id}}
     <label class="form-label"><h1> {{title}}</h1></label><br>
-    <label class="form-label">장르 </label> <b>{{genre}}</b><br>
+    <label class="form-label">장르 </label>
+    <a class="a" href="/articles/anime/search?search={{genre}}" class="searchable" style="cursor: pointer;"><b>{{genre}}</b></a><br>
     <label class="form-label">방영 </label> <b>{{broaddate}}</b><br>
-    <label class="form-label">제작 </label> <b>{{ani_company}}</b><br>
-    <label class="form-label">원작 </label> <b>{{author}}</b><br>
+    <label class="form-label">제작 </label> 
+    <a class="a" href="/articles/anime/search?search={{ani_company}}" class="searchable" style="cursor: pointer;"><b>{{ani_company}}</b></a><br>
+    <label class="form-label">원작 </label>
+    <a class="a" href="/articles/anime/search?search={{author}}" class="searchable" style="cursor: pointer;"><b>{{author}}</b></a><br>
     <label class="form-label"><b>줄거리</b></label><br>
     {{story}}
     <br>
@@ -59,9 +63,9 @@
   <div class="image-item">
     <img src="../../images/pic/anime/{{pic}}" class="addImage_m" alt="등장인물">
     {{realChar}}<br>
-    <div class="gray-text">{{realVoiceChar}}</div>
+    <a class="a" href="/articles/anime/search?search={{realVoiceChar}}" class="searchable" style="cursor: pointer;"><div class="gray-text">{{realVoiceChar}}</div></a><br>
     {{korChar}}<br>
-    <div class="gray-text">{{korVoiceChar}}</div>
+    <a class="a" href="/articles/anime/search?search={{korVoiceChar}}" class="searchable" style="cursor: pointer;"><div class="gray-text">{{korVoiceChar}}</div></a><br>
   </div>
   {{/subPics}}
 
