@@ -190,96 +190,106 @@
         });
     }
 
-    // 추천 게시글 가져오기
     let currentPage = 0; // 현재 페이지 (0부터 시작)
     let loading = false; // 데이터를 로딩 중인지 여부
     let hasMoreData = true; // 더 이상 데이터가 있는지 체크
 
-    // 추천 게시글을 로드하는 함수
-    function loadRecommendedArticles(page) {
-        if (loading || !hasMoreData){
-            //console.log('현재 로딩 중이거나 더 이상 데이터가 없습니다.');
+    // 추천 게시글을 로드하는 함수 (async/await 적용)
+    async function loadRecommendedArticles(page) {
+        if (loading || !hasMoreData) {
             return; // 이미 데이터를 로딩 중이거나 더 이상 데이터가 없으면 요청을 하지 않음
         }
+
         loading = true; // 로딩 시작
-        //console.log(`페이지 ${page} 로딩 중...`);
         document.getElementById('loading').style.display = 'block'; // 로딩 인디케이터 표시
 
-        // 추천 게시글 API 호출
-        fetch(`/api/mypage/recommended-articles/${memberId}?page=${page}`)
-            .then(response => response.json())
-            .then(articles => {
-                const recommendationsContainer = document.getElementById("recommendations");
-                if (articles.length === 0) {
-                    //console.log('더 이상 불러올 데이터가 없습니다.');
-                    hasMoreData = false;  // 더 이상 불러올 데이터가 없으면 hasMoreData를 false로 설정
-                    document.getElementById('loading').style.display = 'none'; // 로딩 숨김
-                    return;
+        try {
+            // 추천 게시글 API 호출
+            const response = await fetch(`/api/mypage/recommended-articles/${memberId}?page=${page}`);
+            const articles = await response.json();
+
+            const recommendationsContainer = document.getElementById("recommendations");
+            if (articles.length === 0) {
+                hasMoreData = false;  // 더 이상 불러올 데이터가 없으면 hasMoreData를 false로 설정
+                document.getElementById('loading').style.display = 'none'; // 로딩 숨김
+                return;
+            }
+
+            // 각 게시글을 HTML로 변환하여 추천 리스트에 추가
+            articles.forEach(article => {
+                const articleDiv = document.createElement("div");
+                articleDiv.className = "article";
+
+                // usedTags 배열을 <span> 태그로 변환
+                let tagsHtml = '';
+                if (article.usedTags && Array.isArray(article.usedTags)) {
+                    article.usedTags.forEach(tag => {
+                        tagsHtml += `<span class="btn btn-outline-info m-1 tag">${tag}</span>`;
+                    });
                 }
 
-                // 각 게시글을 HTML로 변환하여 추천 리스트에 추가
-                articles.forEach(article => {
-                    const articleDiv = document.createElement("div");
-                    articleDiv.className = "article";
-
-                    // usedTags 배열을 <span> 태그로 변환
-                    let tagsHtml = '';
-                    if (article.usedTags && Array.isArray(article.usedTags)) {
-                        article.usedTags.forEach(tag => {
-                            tagsHtml += `<span class="btn btn-outline-info m-1 tag">${tag}</span>`;
-                        });
-                    }
-
-                    articleDiv.innerHTML = `
-                        <div class="article-content">
-                            <img src="/images/pic/anime/${article.main_pic}" width="150" alt="작품표지" class="article-image">
-                            <div class="article-info">
-                                <b class="title">[${article.genre}] ${article.title}</b>
-                                <div class="tags">${tagsHtml}</div>
-                                <div class="meta-info">
-                                    ${article.broaddate} | ${article.author} | ${article.ani_company}
-                                </div>
-                                <span class="story">${article.story}</span>
+                articleDiv.innerHTML = `
+                    <div class="article-content">
+                        <img src="/images/pic/anime/${article.main_pic}" width="150" alt="작품표지" class="article-image">
+                        <div class="article-info">
+                            <b class="title">[${article.genre}] ${article.title}</b>
+                            <div class="tags">${tagsHtml}</div>
+                            <div class="meta-info">
+                                ${article.broaddate} | ${article.author} | ${article.ani_company}
                             </div>
+                            <span class="story">${article.story}</span>
                         </div>
-                    `;
-                    recommendationsContainer.appendChild(articleDiv);
+                    </div>
+                `;
+                recommendationsContainer.appendChild(articleDiv);
 
-                    // 클릭 이벤트 추가
-                    articleDiv.querySelector('.article-content').addEventListener('click', () => {
-                        window.location.href = `/articles/anime/${article.id}`;
-                    });
+                // 클릭 이벤트 추가
+                articleDiv.querySelector('.article-content').addEventListener('click', () => {
+                    sessionStorage.setItem('scrollPosition', window.scrollY); // 스크롤 위치 저장
+                    window.location.href = `/articles/anime/${article.id}`;
                 });
-
-                // 로딩 상태를 false로 변경
-                loading = false;
-                //console.log(`페이지 ${page} 데이터 로드 완료`);
-            })
-            .catch(error => {
-                console.error('추천게시글 불러오는데 문제가 생겼습니다: ', error);
-                loading = false;
-            })
-            .finally(() => {
-                document.getElementById('loading').style.display = 'none'; // 로딩 숨김
             });
+
+        } catch (error) {
+            console.error('추천게시글 불러오는데 문제가 생겼습니다: ', error);
+        } finally {
+            loading = false;
+            document.getElementById('loading').style.display = 'none'; // 로딩 숨김
+        }
     }
 
     // 무한 스크롤 이벤트 처리
-    window.addEventListener('scroll', function() {
+    window.addEventListener('scroll', function () {
         const scrollPosition = window.innerHeight + window.scrollY;
         const documentHeight = document.documentElement.scrollHeight;
-    
+
         // 페이지 하단에 도달하면 다음 페이지 로드
         if (scrollPosition >= documentHeight - 500 && hasMoreData && !loading) {
             currentPage++;
-            //console.log(`스크롤로 페이지 ${currentPage} 로드`);
             loadRecommendedArticles(currentPage); // 새로운 페이지의 게시글을 로드
         }
     });
-    
+
+    // 스크롤 위치 복구 함수
+    function restoreScrollPosition() {
+        const scrollPosition = sessionStorage.getItem('scrollPosition');
+        if (scrollPosition && !isNaN(scrollPosition)) {
+            window.scrollTo(0, parseInt(scrollPosition, 10)); // 저장된 스크롤 위치로 이동
+            sessionStorage.removeItem('scrollPosition'); // 복구 후 스크롤 위치 삭제
+        }
+    }
+
     // 페이지 로드 시 첫 번째 페이지의 게시글을 불러오기
-    document.addEventListener('DOMContentLoaded', function() {
-        loadRecommendedArticles(currentPage); // 첫 번째 페이지 로드
+    document.addEventListener('DOMContentLoaded', async function () {
+        for(let i=0;i<=currentPage;i++){
+            await loadRecommendedArticles(currentPage);
+        }
+        restoreScrollPosition(); // 페이지 로드 후 스크롤 위치 복구
+    });
+
+    // 뒤로가기 시 스크롤 복구 (popstate 이벤트)
+    window.addEventListener('popstate', function () {
+        restoreScrollPosition(); // 뒤로가기 시 스크롤 위치 복구
     });
 </script>
 

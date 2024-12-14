@@ -12,59 +12,77 @@
 
 <script>
     // 페이지 로딩 시 3개월간 top50 게시글을 불러오는 함수
-    function loadTopArticles() {
-        fetch('/api/articles/top')
-            .then(response => response.json())
-            .then(articles => {
-                const articleListContainer = document.getElementById('article-list');
+    async function loadTopArticles() {
+        try {
+            const response = await fetch('/api/articles/top');
+            const articles = await response.json();
 
-                // API에서 반환된 각 게시글 데이터를 렌더링
-                articles.forEach(article => {
-                    const articleRow = document.createElement('tr');
-                    articleRow.className = 'article-row';
-                    articleRow.setAttribute('data-article-id', article.id);
+            const articleListContainer = document.getElementById('article-list');
 
-                    // 태그들 렌더링
-                    let tagsHtml = '';
-                    if (article.usedTags && Array.isArray(article.usedTags)) {
-                        article.usedTags.forEach(tag => {
-                            tagsHtml += `<span class="btn btn-outline-info m-1 tag">${tag}</span>`;
-                        });
-                    }
+            // API에서 반환된 각 게시글 데이터를 렌더링
+            articles.forEach(article => {
+                const articleRow = document.createElement('tr');
+                articleRow.className = 'article-row';
+                articleRow.setAttribute('data-article-id', article.id);
 
-                    // 게시글 내용 구성
-                    articleRow.innerHTML = `
-                    <div class="article-content">
-                      <img src="/images/pic/anime/${article.main_pic}" width="150" alt="작품표지" class="article-image">
-                      <div class="article-info">
-                          평점 ${article.avgscore}점 / ${article.cscore} 리뷰<br>
-                          <b class="title">[${article.genre}] ${article.title}</b>
-                          <div class="tags">${tagsHtml}</div>
-                          <div class="meta-info">
-                              ${article.broaddate} | ${article.author} | ${article.ani_company}
-                          </div>
-                          <span class="story">${article.story}</span>
-                      </div>
-                  </div>
-                    `;
-
-                    // 추가된 row를 화면에 추가
-                    articleListContainer.appendChild(articleRow);
-
-                    // 클릭 시 상세 페이지로 이동
-                    articleRow.addEventListener('click', function() {
-                        window.location.href = `/articles/anime/${article.id}`;
+                // 태그들 렌더링
+                let tagsHtml = '';
+                if (article.usedTags && Array.isArray(article.usedTags)) {
+                    article.usedTags.forEach(tag => {
+                        tagsHtml += `<span class="btn btn-outline-info m-1 tag">${tag}</span>`;
                     });
+                }
+
+                // 게시글 내용 구성
+                articleRow.innerHTML = `
+                    <div class="article-content">
+                        <img src="/images/pic/anime/${article.main_pic}" width="150" alt="작품표지" class="article-image">
+                        <div class="article-info">
+                            평점 ${article.avgscore}점 / ${article.cscore} 리뷰<br>
+                            <b class="title">[${article.genre}] ${article.title}</b>
+                            <div class="tags">${tagsHtml}</div>
+                            <div class="meta-info">
+                                ${article.broaddate} | ${article.author} | ${article.ani_company}
+                            </div>
+                            <span class="story">${article.story}</span>
+                        </div>
+                    </div>
+                `;
+
+                // 추가된 row를 화면에 추가
+                articleListContainer.appendChild(articleRow);
+
+                // 클릭 시 상세 페이지로 이동
+                articleRow.addEventListener('click', function () {
+                    sessionStorage.setItem('scrollPosition', window.scrollY); // 스크롤 위치 저장
+                    window.location.href = `/articles/anime/${article.id}`;
                 });
-            })
-            .catch(error => {
-                console.error('Error fetching articles:', error);
             });
+        } catch (error) {
+            console.error('Error fetching articles:', error);
+        }
     }
 
-    // 페이지 로드 시 3개월 간 TOP50 게시글을 불러옴
-    document.addEventListener('DOMContentLoaded', function() {
-        loadTopArticles();
+    // 스크롤 위치 복구 함수
+    function restoreScrollPosition() {
+        let scrollPosition = sessionStorage.getItem('scrollPosition');
+        scrollPosition = parseInt(scrollPosition, 10);
+
+        if (!isNaN(scrollPosition)) {
+            window.scrollTo(0, scrollPosition); // 스크롤 위치 복구
+            sessionStorage.removeItem('scrollPosition'); // 복구 후 스크롤 위치 삭제
+        }
+    }
+
+    // 페이지 로드 후 스크롤 위치 복구
+    document.addEventListener('DOMContentLoaded', async function () {
+        await loadTopArticles(); // 게시글 로드
+        restoreScrollPosition(); // 페이지 로딩 후 스크롤 위치 복구
+    });
+
+    // 뒤로가기 시 스크롤 복구 (popstate 이벤트)
+    window.addEventListener('popstate', function () {
+        restoreScrollPosition(); // 뒤로가기 시 스크롤 위치 복구
     });
 </script>
 

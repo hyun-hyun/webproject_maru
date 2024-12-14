@@ -69,102 +69,116 @@
     }
 
     // 작품 로드
-    function loadArticles(page, sort = 'id', direction = 'desc') {
+    // 작품 로드 (비동기 작업 완료 후 스크롤 복구)
+    async function loadArticles(page, sort = 'id', direction = 'desc') {
         if (loading || !hasMoreData) return;
         loading = true;
         document.getElementById('loading').style.display = 'block';
 
         const url = `/api/articles/list?page=${page}&sort=${sort}&direction=${direction}`;
-        fetch(url)
-            .then(response => response.json())
-            .then(articles => {
-                const articleListContainer = document.getElementById('article-list');
-                if (articles.length === 0) {
-                    hasMoreData = false;
-                    document.getElementById('loading').style.display = 'none';
-                    return;
+        try {
+            const response = await fetch(url);
+            const articles = await response.json();
+            const articleListContainer = document.getElementById('article-list');
+            
+            if (articles.length === 0) {
+                hasMoreData = false;
+                document.getElementById('loading').style.display = 'none';
+                return;
+            }
+
+            // 아티클을 로드한 후 표시
+            articles.forEach(article => {
+                const articleRow = document.createElement('div');
+                articleRow.className = 'article-row';
+                articleRow.setAttribute('data-article-id', article.id);
+
+                let tagsHtml = '';
+                if (article.usedTags && Array.isArray(article.usedTags)) {
+                    tagsHtml = article.usedTags
+                        .map(tag => `<span class="btn btn-outline-info m-1 tag">${tag}</span>`)
+                        .join('');
                 }
 
-                articles.forEach(article => {
-                    const articleRow = document.createElement('div');
-                    articleRow.className = 'article-row';
-                    articleRow.setAttribute('data-article-id', article.id);
-
-                    let tagsHtml = '';
-                    if (article.usedTags && Array.isArray(article.usedTags)) {
-                        tagsHtml = article.usedTags
-                            .map(tag => `<span class="btn btn-outline-info m-1 tag">${tag}</span>`)
-                            .join('');
-                    }
-
-                    articleRow.innerHTML = `
-                        <div class="article-content">
-                            <img src="/images/pic/anime/${article.main_pic}" width="150" alt="작품표지" class="article-image">
-                            <div class="article-info">
-                                평점 ${article.avgscore}점 / 리뷰 ${article.cscore}개<br>
-                                <b class="title">[${article.genre}] ${article.title}</b>
-                                <div class="tags">${tagsHtml}</div>
-                                <div class="meta-info">
-                                    ${article.broaddate} | ${article.author} | ${article.ani_company}
-                                </div>
-                                <span class="story">${article.story}</span>
+                articleRow.innerHTML = `
+                    <div class="article-content">
+                        <img src="/images/pic/anime/${article.main_pic}" width="150" alt="작품표지" class="article-image">
+                        <div class="article-info">
+                            평점 ${article.avgscore}점 / 리뷰 ${article.cscore}개<br>
+                            <b class="title">[${article.genre}] ${article.title}</b>
+                            <div class="tags">${tagsHtml}</div>
+                            <div class="meta-info">
+                                ${article.broaddate} | ${article.author} | ${article.ani_company}
                             </div>
+                            <span class="story">${article.story}</span>
                         </div>
-                    `;
-                    articleListContainer.appendChild(articleRow);
+                    </div>
+                `;
+                articleListContainer.appendChild(articleRow);
 
-                    // 상세 페이지 이동 시 상태 저장
-                    articleRow.addEventListener('click', function () {
-                        // 현재 상태 저장
-                        sessionStorage.setItem('scrollPosition', window.scrollY);
-                        updateURLState();
-                        window.location.href = `/articles/anime/${article.id}`;
-                    });
+                // 상세 페이지 이동 시 상태 저장
+                articleRow.addEventListener('click', function () {
+                    sessionStorage.setItem('scrollPosition', window.scrollY);
+                    updateURLState();
+                    window.location.href = `/articles/anime/${article.id}`;
                 });
-
-                loading = false;
-                document.getElementById('loading').style.display = 'none';
-            })
-            .catch(error => {
-                console.error('Error fetching articles:', error);
-                loading = false;
-                document.getElementById('loading').style.display = 'none';
             });
+
+            loading = false;
+            document.getElementById('loading').style.display = 'none';
+
+            // 모든 아티클 로딩 완료 후 스크롤 복구
+            restoreScrollPosition();
+        } catch (error) {
+            console.error('Error fetching articles:', error);
+            loading = false;
+            document.getElementById('loading').style.display = 'none';
+        }
     }
 
     // 스크롤 위치 복구
     function restoreScrollPosition() {
-        const scrollPosition = sessionStorage.getItem('scrollPosition');
-        if (scrollPosition && !isNaN(scrollPosition)) {
-            window.scrollTo(0, parseInt(scrollPosition, 10));
-            sessionStorage.removeItem('scrollPosition'); // 복구 후 제거
+        let scrollPosition = sessionStorage.getItem('scrollPosition');
+        scrollPosition = parseInt(scrollPosition, 10);
+
+        if (!isNaN(scrollPosition)) {
+            window.scrollTo(0, scrollPosition);
+            console.log('스크롤 이동 완료');
+        } else {
+            console.log('유효하지 않은 스크롤 위치');
         }
+
+        sessionStorage.removeItem('scrollPosition'); // 복구 후 제거
     }
 
-    // 무한 스크롤
-    window.addEventListener('scroll', function () {
-        const scrollPosition = window.innerHeight + window.scrollY;
-        const documentHeight = document.documentElement.scrollHeight;
+        // 무한 스크롤
+        window.addEventListener('scroll', function () {
+            const scrollPosition = window.innerHeight + window.scrollY;
+            const documentHeight = document.documentElement.scrollHeight;
 
-        if (scrollPosition >= documentHeight - 500 && hasMoreData && !loading) {
-            currentPage++;
-            loadArticles(currentPage, currentSort, direction);
-            updateURLState();
-        }
-    });
-
-    // 페이지 로드 시 상태 복구
-    document.addEventListener('DOMContentLoaded', function () {
-        for (let i = 0; i <= currentPage; i++) {  
-            loadArticles(i, currentSort, direction); // 저장된 상태로 목록 로드
-        }
-        console.log(currentPage);
-
-        // 모든 리소스가 로드된 후 스크롤 위치 복구
-        window.addEventListener('load', function() {
-            restoreScrollPosition(); // 스크롤 위치 복구
+            if (scrollPosition >= documentHeight - 500 && hasMoreData && !loading) {
+                currentPage++;
+                loadArticles(currentPage, currentSort, direction);
+                updateURLState();
+            }
         });
-    });
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            // 모든 페이지의 아티클을 비동기적으로 로드
+            for (let i = 0; i <= currentPage; i++) {
+                await loadArticles(i, currentSort, direction); // 저장된 상태로 목록 로드
+            }
+            console.log(currentPage);
+            updateSortIcons(); // 정렬 아이콘 업데이트
+        
+            // 모든 리소스가 로드된 후 스크롤 위치 복구
+            window.addEventListener('load', function() {
+                restoreScrollPosition(); // 스크롤 위치 복구
+            });
+        });
+        window.addEventListener('popstate', function () {
+            restoreScrollPosition(); // 뒤로가기 시 스크롤 복구
+        });
 </script>
 
 
