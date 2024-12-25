@@ -100,16 +100,17 @@ public class ArticleService {
         ArrayList<Article> articleEntityList=articleRepository.findAll();
         return articleEntityList;
     }
-    
+    /* 
     public Article findByIdArticle(Long id){
         Article articleEntity=articleRepository.findById(id).orElse(null);
         return articleEntity;
     }
+    */
     public Optional<Article> findById(Long id){
         return articleRepository.findById(id);
     }
 
-
+/* 
     //작품등록 최신순 정렬
     public ArrayList<Article> findArticlesDesc(){
         ArrayList<Article> articleEntityList=articleRepository.findAllByOrderByIdDesc();
@@ -119,6 +120,7 @@ public class ArticleService {
     public Page<Article> findArticlesDesc(Pageable pageable){
         return articleRepository.findAllByOrderByIdDesc(pageable);
     }
+*/
     //작품 정렬(페이징)
     public Page<Article> findArticles(Pageable pageable){
         return articleRepository.findAll(pageable);
@@ -234,7 +236,8 @@ public class ArticleService {
     @Transactional
     public void delete(ArticleForm form, String category, boolean existingReview, boolean existingComment){
         //삭제대상 가져오기
-        Article article=findByIdArticle(form.getId());
+        Article article=findById(form.getId()).orElseThrow(() -> new IllegalArgumentException("게시글 삭제 실패!"+
+        "대상 게시글이 없습니다."));;
 
         if(article!=null){
             Long articleId=article.getId();

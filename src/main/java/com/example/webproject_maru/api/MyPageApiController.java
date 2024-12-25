@@ -210,7 +210,7 @@ public class MyPageApiController {
         for (Long articleId : recommendedArticleIds) {
             List<String> usedTags = map_r_tService.getOnlyTagsByArticleId(articleId); // 태그
             ArticleRecommendDto articleRecommendDto = ArticleRecommendDto.createArticleRecommendDto(
-                    articleService.findByIdArticle(articleId), usedTags);
+                    articleService.findById(articleId).orElse(null), usedTags);
             if (articleRecommendDto != null) {
                 articleRecommendDtos.add(articleRecommendDto);
             }
@@ -253,7 +253,7 @@ public class MyPageApiController {
         for (Long articleId : pagedArticleIds) {
             List<String> usedTags = map_r_tService.getOnlyTagsByArticleId(articleId); // 태그
             ArticleRecommendDto articleRecommendDto = ArticleRecommendDto.createArticleRecommendDto(
-                    articleService.findByIdArticle(articleId), usedTags);
+                    articleService.findById(articleId).orElse(null), usedTags);
             if (articleRecommendDto != null) {
                 articleRecommendDtos.add(articleRecommendDto);
             }

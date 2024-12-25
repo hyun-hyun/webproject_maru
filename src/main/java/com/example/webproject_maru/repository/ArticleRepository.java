@@ -21,10 +21,10 @@ public interface ArticleRepository extends JpaRepository<Article,Long> {
     ArrayList<Article> findAll();//Iterabel -> ArrayList수정
 
     // ID 내림차순으로 모든 Article 가져오기
-    ArrayList<Article> findAllByOrderByIdDesc();
+    //ArrayList<Article> findAllByOrderByIdDesc();
 
     // ID 내림차순으로 모든 Article 가져오기(페이징)
-    Page<Article> findAllByOrderByIdDesc(Pageable pageable);
+    //Page<Article> findAllByOrderByIdDesc(Pageable pageable);
 
     // ID 내림차순으로 15개 Article 가져오기
     @Query("SELECT a FROM Article a ORDER BY a.id DESC")

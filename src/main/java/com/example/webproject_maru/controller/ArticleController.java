@@ -132,7 +132,7 @@ public class ArticleController {
         }
 
         //1. id조회해서 데이터(entity, Optional<Article>) 가져오기
-        Article articleEntity=articleService.findByIdArticle(id);
+        Article articleEntity=articleService.findById(id).orElse(null);
 
         // 찜 여부 확인
         boolean isLoved = false;
@@ -177,7 +177,7 @@ public class ArticleController {
         //등록된 tag 가져오기
         List<String> allTags = articleService.getTagsByArticleId(id);
 
-        Article articleEntity=articleService.findByIdArticle(id);
+        Article articleEntity=articleService.findById(id).orElse(null);
         ArticleDetailDto articleDetailDto=ArticleDetailDto.createArticleDetailDto(articleEntity, usedTags, allTags);
 
         //Article articleEntity=articleService.getArticleWithTags(id);
