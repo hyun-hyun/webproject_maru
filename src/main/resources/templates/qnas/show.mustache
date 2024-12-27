@@ -1,0 +1,230 @@
+{{>layouts/header}}
+<head>
+    <link href="/css/summernote.css" rel="stylesheet">
+</head>
+<div class="container">
+<br>
+<h4>🤔QnA 상세페이지</h4>
+<br>
+
+{{#post.deleted}}
+        <h5>삭제된 게시글입니다.</h5>
+{{/post.deleted}}
+{{^post.deleted}}
+        <h3>{{post.title}}</h3>
+        <div class="post-info">
+            <p>작성자: <strong>{{post.authorNickname}}</strong> | <span class="post-time">{{post.appendTime}}</span></p>
+        </div>
+
+        <div class="post-content">
+            <div>{{{post.content}}}</div>
+        </div>
+        {{#edit}}
+        <a href="/qna/{{post.id}}/edit" class="btn btn-primary">수정</a>
+        <form method="post" action="/qna/{{post.id}}/delete" style="display:inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+            <button type="submit" class="btn btn-sm btn-outline-danger">삭제</button>
+        </form>
+        {{/edit}}
+{{/post.deleted}}
+<hr>
+    <h4>답변</h4>
+    <ul>
+        {{#replies}}
+            <div class="reply">
+                {{#deleted}}
+                    <p>삭제된 답변입니다.</p>
+                {{/deleted}}
+                {{^deleted}}
+                    <p><strong>{{title}}</strong></p>
+                    <p>작성자:{{authorNickname}} | <span class="post-time">{{appendTime}}</span></p>
+                    <div class="reply-content">{{{content}}}</div>
+                    {{#write}}
+                    <a href="/qna/{{post.id}}/reply/{{id}}/edit" class="btn btn-primary">수정</a>
+                    <form method="post" action="/qna/{{post.id}}/reply/{{id}}/delete" style="display:inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">삭제</button>
+                    </form>
+                    {{/write}}
+                {{/deleted}}
+            </div>
+        {{/replies}}
+    </ul>
+
+    <!-- 답글 작성 버튼 및 폼 -->
+    {{#write}}
+    <div class="reply-form-container">
+        <button id="replyButton" class="btn-reply">답변 작성</button>
+        <form id="replyForm" method="post" action="/qna/{{post.id}}/reply" style="display:none;">
+            <input type="hidden" name="parentId" value="{{post.id}}" required>
+            <div class="form-group">
+                <label for="title">제목</label>
+                <input type="text" name="title" id="title" required>
+            </div>
+            <div class="form-group summernote-container">
+                <label for="content">답변 내용</label>
+                <textarea id="summernote" name="content" id="content" required></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit" class="btn btn-primary">작성 완료</button>
+        </form>
+    </div>
+    {{/write}}
+
+</div>
+{{>layouts/footer}}
+<script src="/js/jquery-3.7.1.min.js"></script>
+<script src="/js/summernote.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const times = document.querySelectorAll('.post-time');
+        times.forEach(function(timeElement) {
+            const time = new Date(timeElement.textContent);
+            timeElement.textContent = time.toLocaleString(); // 시간을 읽기 쉬운 형식으로 변환
+        });
+
+        // 답글 작성 폼 토글
+        const replyButton = document.getElementById("replyButton");
+        const replyForm = document.getElementById("replyForm");
+
+        if(replyButton){
+            replyButton.addEventListener("click", function() {
+                // 답글 작성 폼이 보이지 않으면 보여주고, 보이면 숨김
+                if (replyForm.style.display === "none" || replyForm.style.display === "") {
+                    replyForm.style.display = "block";
+                } else {
+                    replyForm.style.display = "none";
+                }
+            });
+        }
+        
+    });
+
+    $(document).ready(function() {
+        $('#summernote').summernote({
+            height: 300,
+            lang: 'ko-KR'
+        });
+    });
+</script>
+<style>
+    form {
+        margin-top: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: #555;
+    }
+
+    .form-group input, .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        font-size: 1em;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    p {
+        font-size: 1em;
+        margin: 8px 0;
+    }
+
+    .post-info strong {
+        color: #555;
+    }
+
+    .post-content {
+        background-color: #fafafa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 15px;
+        word-wrap: break-word;
+    }
+
+
+    button {
+        padding: 8px 16px;
+        background-color: #dc3545;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    button:hover {
+        background-color: #c82333;
+    }
+
+    .reply {
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .reply .reply-content {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f1f1f1;
+        border-radius: 8px;
+    }
+
+    .reply-form-container {
+        margin-top: 20px;
+    }
+
+    .btn-reply {
+        padding: 10px 20px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-reply:hover {
+        background-color: #218838;
+    }
+
+    .btn-submit {
+        padding: 10px 20px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 15px;
+    }
+
+    .btn-submit:hover {
+        background-color: #0056b3;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 600px) {
+        .container {
+            padding: 15px;
+        }
+
+        h1 {
+            font-size: 1.5em;
+        }
+
+        a, button {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .reply-form-container {
+            padding: 0;
+        }
+    }
+</style>

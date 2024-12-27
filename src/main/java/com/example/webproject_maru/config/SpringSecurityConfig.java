@@ -30,7 +30,7 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         //.requestMatchers("/", "/**").permitAll()
 
-                        .requestMatchers("/","/error", "/login", "/loginProc","/join","/joinProc","/joined","/findpassword","/articles/anime/**","/api/comments/article/*").permitAll()
+                        .requestMatchers("/","/error", "/login", "/loginProc","/join","/joinProc","/joined","/findpassword","/articles/anime/**","/api/comments/article/*","/qna/**", "/js/**", "/css/**").permitAll()
                         //h2용
                         //.requestMatchers("/h2-console/**").permitAll() 
 

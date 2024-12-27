@@ -1,0 +1,218 @@
+{{>layouts/header}}
+<head>
+    <link href="/css/summernote.css" rel="stylesheet">
+    <script src="/js/jquery-3.7.1.min.js"></script>
+    <script src="/js/summernote.min.js"></script>
+</head>
+
+<div class="container">
+<br>
+<h3>🤔QnA와 공지</h3>
+<br>
+
+<div>
+    <button type="button" class="btn btn-sm btn-success" id="qnaCreateBtn">QnA 작성</button>
+</div>
+<br>
+{{#member_id}}
+      <input type="hidden" id="member-id" value="{{.}}">
+{{/member_id}}
+<div>
+    <form method="get" action="/qna/search">
+        <select name="searchField">
+            <option value="title">제목</option>
+            <option value="author">작성자</option>
+        </select>
+        <input type="text" name="keyword" placeholder="검색어를 입력하세요">
+        <button type="submit">검색</button>
+    </form>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>순번</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>작성시간</th>
+            <th>답변여부</th>
+        </tr>
+    </thead>
+    <tbody>
+    {{#questions.content}}
+        <tr>
+            <td>
+            {{#isNotice}}
+            공지
+            {{/isNotice}}
+            {{^isNotice}}
+            {{id}}
+            {{/isNotice}}
+            </td>
+            <td><a class="a" href="/qna/{{id}}">{{#isNotice}}<strong>{{title}}</strong>{{/isNotice}}{{^isNotice}}{{title}}{{/isNotice}}</a></td>
+            <td>{{authorNickname}}</td>
+            <td class="post-time">{{appendTime}}</td>
+            <td>{{^isNotice}}{{#answered}}답변완료{{/answered}}{{^answered}}확인중{{/answered}}{{/isNotice}}</td>
+        </tr>
+    {{/questions.content}}
+    </tbody>
+</table>
+
+<div class="pagination">
+    <!-- 이전 버튼 -->
+    <a href="/qna?page={{previousPage}}" class="btn btn-sm btn-primary {{#isFirstPage}}disabled{{/isFirstPage}}">
+        이전
+    </a>
+
+    <!-- 페이지 번호들 -->
+    {{#pageNumbers}}
+        <a href="/qna?page={{.}}" class="btn btn-sm btn-secondary {{#isCurrentPage}}active{{/isCurrentPage}}">
+            {{.}}
+        </a>
+    {{/pageNumbers}}
+
+    <!-- 다음 버튼 -->
+    <a href="/qna?page={{nextPage}}" class="btn btn-sm btn-primary {{#isLastPage}}disabled{{/isLastPage}}">
+        다음
+    </a>
+</div>
+</div>
+{{>layouts/footer}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const times = document.querySelectorAll('.post-time');
+        times.forEach(function(timeElement) {
+            const time = new Date(timeElement.textContent);
+            timeElement.textContent = time.toLocaleString(); // 시간을 읽기 쉬운 형식으로 변환
+        });
+
+    
+    //qna작성 버튼 변수화
+    const qnaCreateBtn=document.querySelector("#qnaCreateBtn");
+    if(qnaCreateBtn){
+        qnaCreateBtn.addEventListener("click", function(){
+            const memberIdElement=document.querySelector("#member-id");
+            //member_id없을 경우 로그인 페이지로 이동
+            if(!memberIdElement || !memberIdElement.value){
+                const currentUrl=window.location.href;//현재 url
+                alert('로그인이 필요합니다.');
+                window.location.href="/login?continue="+encodeURIComponent(currentUrl);//로그인페이지 이동 완료시 돌아오기
+                return;
+            }
+            window.location.href="/qna/create";
+            return;
+        })
+    }
+});
+</script>
+<style>
+
+    form {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        align-items: center;
+    }
+
+    form select, form input {
+        padding: 8px;
+        font-size: 1em;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        width: 48%;
+    }
+
+    form button {
+        padding: 8px 16px;
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1em;
+        transition: background-color 0.3s;
+    }
+
+    form button:hover {
+        background-color: #0056b3;
+    }
+
+    /* 테이블에 스크롤 추가 */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        overflow-x: auto;
+        display: block;
+    }
+
+    table th, table td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        white-space: nowrap; /* 내용이 길어지면 한 줄로 표시 */
+    }
+
+    th:nth-child(2), td:nth-child(2) {
+        width: 55%; /* 제목부분 너비 비율을 설정 */
+    }
+
+    table th {
+        background-color: #f4f4f9;
+    }
+
+    table td a {
+        color: #007BFF;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    table td a:hover {
+        color: #0056b3;
+    }
+
+    .pagination {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .pagination a {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007BFF;
+        color: #fff;
+        border-radius: 4px;
+        text-decoration: none;
+        margin: 0 5px;
+        transition: background-color 0.3s;
+    }
+
+    .pagination a:hover {
+        background-color: #0056b3;
+    }
+
+    .pagination a.disabled {
+        background-color: #ccc;
+        pointer-events: none;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 600px) {
+        .container {
+            padding: 15px;
+        }
+
+        table th, table td {
+            padding: 10px;
+        }
+
+        form {
+            flex-direction: column;
+        }
+
+        form select, form input, form button {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    }
+</style>
