@@ -53,16 +53,19 @@
             height: 300,
             lang: 'ko-KR',
             toolbar: [
-				['fontname', ['fontname']],
-				['fontsize', ['fontsize']],
-				['style', ['bold', 'italic', 'underline', 'clear']],
-				['color', ['color']],
-				['para', ['paragraph']],
-				['insert', ['picture', 'link', 'video']],
-				['view', ['codeview']]
-			],
-			fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Helvetica neue', 'Helvetica', 'Impact', 'Lucida Grande', 'Tahoma', 'Times New Roman', 'Verdana', 'Tahoma', 'Courier New', '맑은 고딕', '굴림', '돋움'],
-			fontNamesIgnoreCheck: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Helvetica neue', 'Helvetica', 'Impact', 'Lucida Grande', 'Tahoma', 'Times New Roman', 'Verdana', 'Tahoma', 'Courier New',  '맑은 고딕', '굴림', '돋움'],
+            //['fontname', ['fontname']],
+            //['fontsize', ['fontsize']],
+            ['style', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript']],
+            ['color', ['color']],
+            ['para', ['ul','ol']],
+            //['para', ['ul','ol','paragraph']],
+            //['insert', ['picture', 'link']],
+            ['insert', ['link']],
+            ['view', ['codeview']]
+        ],
+        fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Helvetica neue', 'Helvetica', 'Impact', 'Lucida Grande', 'Tahoma', 'Times New Roman', 'Verdana', 'Tahoma', 'Courier New', '맑은 고딕', '굴림', '돋움'],
+        fontNamesIgnoreCheck: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Helvetica neue', 'Helvetica', 'Impact', 'Lucida Grande', 'Tahoma', 'Times New Roman', 'Verdana', 'Tahoma', 'Courier New',  '맑은 고딕', '굴림', '돋움'],
+        fontSizes: ['8', '10', '12', '14', '16', '18', '20', '24', '28', '36'], // 글자 크기 설정
         });
     });
 
