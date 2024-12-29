@@ -75,7 +75,7 @@ public class ReviewService {
         Boolean isReviewExists = redisTemplate.hasKey(redisKey);
 
         if (Boolean.TRUE.equals(isReviewExists)) {
-            throw new IllegalStateException("You have already reviewed this article.");
+            throw new IllegalStateException("이미 이 작품에 대해 리뷰하였습니다.");
         }
 
         // 0.1. DB에서 중복 확인 (예외 처리)
