@@ -51,6 +51,20 @@
 			],
 			fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Helvetica neue', 'Helvetica', 'Impact', 'Lucida Grande', 'Tahoma', 'Times New Roman', 'Verdana', 'Tahoma', 'Courier New', '맑은 고딕', '굴림', '돋움'],
             fontSizes: ['8', '10', '12', '14', '16', '18', '20', '24', '28', '36'], // 글자 크기 설정
+            //작품요청용 템플릿
+            callbacks: {
+                onInit: function() {
+                    // 기본 내용 추가
+                    $('#summernote').summernote('code', `
+                        ---아래는 작품요청용 기본 템플릿이며 무관할 경우 지우셔도 됩니다!---
+                        <p><strong>애니 제목(필수)</strong>: </p>
+                        <p><strong>주요 등장인물 5명</strong>: </p>
+                        <p><strong>줄거리나 매력적인 키워드 (가급적 3개 이상)</strong>: </p>
+                        <p><strong>작품의 장르</strong>: </p>
+                        <p><strong>원작자(다른 작품과의 구분 위함)</strong>: </p>
+                    `);
+                }
+            }
         });
     });
 
