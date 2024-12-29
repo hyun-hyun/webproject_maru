@@ -1,11 +1,13 @@
 package com.example.webproject_maru.service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.example.webproject_maru.dto.ReviewDto;
@@ -38,6 +40,10 @@ public class ReviewService {
     private Map_a_tService map_a_tService;
     @Autowired
     private TagService tagService;
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    private static final String REVIEW_EXISTS_KEY = "review:exists:"; // Redis 키 prefix
 
     //리뷰 조회(전체)
     public List<ReviewDto> reviews(Long articleId){
@@ -64,6 +70,19 @@ public class ReviewService {
     //리뷰 생성
     @Transactional
     public ReviewForm create(ReviewForm dto){
+        // 0. Redis에서 중복 확인
+        String redisKey = REVIEW_EXISTS_KEY + dto.getMember_id() + ":" + dto.getArticle_id();
+        Boolean isReviewExists = redisTemplate.hasKey(redisKey);
+
+        if (Boolean.TRUE.equals(isReviewExists)) {
+            throw new IllegalStateException("You have already reviewed this article.");
+        }
+
+        // 0.1. DB에서 중복 확인 (예외 처리)
+        if (reviewRepository.existsByMember_idAndArticle_id(dto.getMember_id(), dto.getArticle_id())) {
+            throw new IllegalStateException("이미 이 작품에 대해 리뷰하였습니다.");
+        }
+
         //1. 게시글 조회 및 예외 발생
         Article article=articleRepository.findById(dto.getArticle_id())
                 .orElseThrow(() -> new IllegalArgumentException("리뷰 생성 실패!"+
@@ -95,6 +114,10 @@ public class ReviewService {
             map_r_tService.saveMap_r_t(review, tag);
             }
         }
+
+        //0.2. Redis에 작성 여부 캐싱 (TTL 설정: 1시간)
+        redisTemplate.opsForValue().set(redisKey, true, Duration.ofMinutes(1));
+
         //4. DTO로 변환해 반환
         return resultR;
     }
@@ -154,6 +177,13 @@ public class ReviewService {
         //1.리뷰 조회 및 예외발생
         Review target=reviewRepository.findById(id)
                 .orElseThrow(()->new IllegalArgumentException("리뷰 삭제 실패!"+"대상이 없습니다."));
+
+        // 0.3. Redis 중복 확인용 키 삭제
+        String redisKey = REVIEW_EXISTS_KEY + target.getMember().getId() + ":" + target.getArticle().getId();
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(redisKey))) {
+            redisTemplate.delete(redisKey);
+        }
+
         //2. 리뷰 삭제
         //연관된 Map_r_t삭제
         map_r_tService.deleteByReviewId(id);
@@ -183,6 +213,7 @@ public class ReviewService {
                 }
             }
         }
+        
 
         //3. 삭제 리뷰를 dto로 변환 및 반환
         return ReviewForm.createReviewForm(target);

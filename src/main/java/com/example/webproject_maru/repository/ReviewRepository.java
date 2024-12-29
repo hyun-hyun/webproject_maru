@@ -15,6 +15,9 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
     ArrayList<Review> findAll();//Iterabel -> ArrayList수정
     Double getScoreAverage(Long articleId);
 
+    //redis 중복확인위해
+    boolean existsByMember_idAndArticle_id(Long member_id, Long article_id);
+
     //특정 게시글의 모든 리뷰 조회
     @Query(value=
                 "SELECT * "+
