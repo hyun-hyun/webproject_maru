@@ -324,7 +324,7 @@
     
     
         //review객체를 확인하기 위해 콘솔에 출력(디버깅용, 추후 삭제하기)
-        console.log(review);
+        //console.log(review);
         //review객체 서버에 post, 비동기 통신을 위한 fetch API
         const url="/api/articles/"+review.article_id+"/create_r"
         fetch(url,{
@@ -376,7 +376,7 @@
         reviewEditModal.addEventListener("show.bs.modal", function(event){
             //1. 트리거 버튼 선택(event.target은 모달 자체)
             const triggerBtn=event.relatedTarget;
-            console.log("data-bs-tags:", triggerBtn.getAttribute("data-bs-tags")); // data-bs-tags 값 확인
+            //console.log("data-bs-tags:", triggerBtn.getAttribute("data-bs-tags")); // data-bs-tags 값 확인
             //2. 데이터 가져오기
             const id=triggerBtn.getAttribute("data-bs-id");
             const score=triggerBtn.getAttribute("data-bs-score");
@@ -387,11 +387,11 @@
 
             // JSON 문자열에서 마지막 쉼표 제거
             tagsData = tagsData.replace(/,\s*([\]}])/g, '$1');
-            console.log("tagsData:", tagsData); // tagsData 값을 확인
+            //console.log("tagsData:", tagsData); // tagsData 값을 확인
             let tags;
             try {
                 tags = JSON.parse(tagsData); // JSON으로 변환
-                console.log("Parsed tags:", tags); // 파싱된 태그 배열 확인
+                //console.log("Parsed tags:", tags); // 파싱된 태그 배열 확인
             } catch (error) {
                 console.error("Error parsing tagsData:", error);
                 tags = []; // JSON 파싱 오류 발생 시 빈 배열로 설정
@@ -429,7 +429,7 @@
             selectingTags: Array.from(document.querySelectorAll('input[name="selectingTags"]:checked'))
                                 .map(checkbox=>checkbox.value)
         };
-        console.log(review);
+        //console.log(review);
         //수정 REST API 호출
         const url="/api/reviews/"+review.id;
         fetch(url, {
@@ -464,7 +464,7 @@
             reviewTitle=reviewDeleteBtn.getAttribute("data-review-title");
             reviewNickname=reviewDeleteBtn.getAttribute("data-review-nickname");
             articleId=reviewDeleteBtn.getAttribute("data-article-id");
-            console.log(`삭제 버튼 클릭: ${reviewId}번 댓글`);
+            //console.log(`삭제 버튼 클릭: ${reviewId}번 댓글`);
 
             //삭제 확인 모달 띄우기
             const reviewDeleteConfirmModal=new bootstrap.Modal(document.getElementById('review-delete-confirm-modal'));

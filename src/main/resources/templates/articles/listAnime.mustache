@@ -143,9 +143,9 @@
 
         if (!isNaN(scrollPosition)) {
             window.scrollTo(0, scrollPosition);
-            console.log('스크롤 이동 완료');
+            //console.log('스크롤 이동 완료');
         } else {
-            console.log('유효하지 않은 스크롤 위치');
+            //console.log('유효하지 않은 스크롤 위치');
         }
 
         sessionStorage.removeItem('scrollPosition'); // 복구 후 제거
@@ -168,7 +168,7 @@
             for (let i = 0; i <= currentPage; i++) {
                 await loadArticles(i, currentSort, direction); // 저장된 상태로 목록 로드
             }
-            console.log(currentPage);
+            //console.log(currentPage);
             updateSortIcons(); // 정렬 아이콘 업데이트
         
             // 모든 리소스가 로드된 후 스크롤 위치 복구

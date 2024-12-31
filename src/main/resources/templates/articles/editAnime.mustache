@@ -164,9 +164,9 @@
         
         //let usedTagsData=document.querySelectorAll('#tagList button');
         let usedTagsData=document.getElementById('usedTags').value;
-        console.log("usedTagsData: ", usedTagsData);
+        //console.log("usedTagsData: ", usedTagsData);
         usedTagsData=usedTagsData.replace(/,\s*([\]}])/g, '$1');
-        console.log("usedTagsData: ", usedTagsData);
+        //console.log("usedTagsData: ", usedTagsData);
         let uTags;
         try{
             uTags=JSON.parse(usedTagsData);

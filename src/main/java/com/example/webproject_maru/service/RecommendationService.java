@@ -43,6 +43,7 @@ public class RecommendationService {
             // Redis에서 가져온 값을 List<Long>로 캐스팅
             Object cachedRecommendation = redisTemplate.opsForValue().get(redisKey);
             if (cachedRecommendation instanceof List<?>) {
+                log.info("*********** 캐싱활용**********");
                 // 리스트가 List<Long>인 경우만 캐스팅하여 반환
                 return (List<Long>) cachedRecommendation;
             } else {
@@ -50,6 +51,7 @@ public class RecommendationService {
                 return new ArrayList<>();
             }
         }
+        log.info("!!!!!! 캐싱no!!!!!!!!!!!");
 
         // 1단계: 멤버의 태그 데이터 가져오기
         List<TagDto> memberTags = map_r_tService.getTagSelectionsByMemberId(memberId);
