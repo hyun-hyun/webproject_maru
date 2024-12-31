@@ -134,12 +134,12 @@ public class MemberApiController {
     @PostMapping("/send-verification")
     public ResponseEntity<String> sendVerification(@RequestParam String email) throws MessagingException {
         String code = generateVerificationCode();
-        redisTemplate.opsForValue().set(email, code, 5, TimeUnit.MINUTES); // 5분 후 만료
+        redisTemplate.opsForValue().set("auth:"+email, code, 5, TimeUnit.MINUTES); // 5분 후 만료
         //verificationCodes.put(email, code);
-        try{
+        try {
             emailService.sendVerificationEmail(email, code);
-        }catch(Exception e){
-            System.out.println("email send Error: "+e);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이메일 전송 실패");
         }
         return ResponseEntity.ok("인증번호 메일 전송 완료");
     }
@@ -147,7 +147,7 @@ public class MemberApiController {
     @PostMapping("/verify-code")
     public ResponseEntity<Boolean> verifyCode(@RequestParam String email, @RequestParam String code) {
         //String correctCode = verificationCodes.get(email);
-        String correctCode = redisTemplate.opsForValue().get(email);
+        String correctCode = redisTemplate.opsForValue().get("auth:"+email);
 
         if (correctCode != null && correctCode.equals(code)) {
             return ResponseEntity.ok(true);

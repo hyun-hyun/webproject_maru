@@ -44,6 +44,7 @@ public class ReviewService {
     private RedisTemplate<String, Object> redisTemplate;
 
     private static final String REVIEW_EXISTS_KEY = "review:exists:"; // Redis 키 prefix
+    private static final String RECOMMEND_EXISTS_KEY = "recommend:exists:"; // Redis 키 prefix
 
     //리뷰 조회(전체)
     public List<ReviewDto> reviews(Long articleId){
@@ -83,6 +84,13 @@ public class ReviewService {
             throw new IllegalStateException("이미 이 작품에 대해 리뷰하였습니다.");
         }
 
+        // 0.3. Redis 추천용 키 삭제
+        String redisKey_recommend = RECOMMEND_EXISTS_KEY + dto.getMember_id();
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(redisKey_recommend))) {
+            redisTemplate.delete(redisKey_recommend);
+        }
+
+
         //1. 게시글 조회 및 예외 발생
         Article article=articleRepository.findById(dto.getArticle_id())
                 .orElseThrow(() -> new IllegalArgumentException("리뷰 생성 실패!"+
@@ -115,8 +123,8 @@ public class ReviewService {
             }
         }
 
-        //0.2. Redis에 작성 여부 캐싱 (TTL 설정: 1시간)
-        redisTemplate.opsForValue().set(redisKey, true, Duration.ofMinutes(1));
+        //0.2. Redis에 작성 여부 캐싱 (TTL 설정: 2분)
+        redisTemplate.opsForValue().set(redisKey, true, Duration.ofMinutes(2));
 
         //4. DTO로 변환해 반환
         return resultR;
