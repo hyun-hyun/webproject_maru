@@ -3,7 +3,7 @@
 <br>
 
 <form id="commentForm">
-    <textarea class="col-auto form-control" type="text" id="body" placeholder="댓글을 입력하세요"></textarea>
+    <textarea class="col-auto form-control" type="text" id="body" placeholder="댓글을 입력하세요" maxlength="220"></textarea>
     <button type="button" class="btn btn-primary" id="commentCreateBtn">댓글 작성</button>
     <input type="hidden" name="article-id" value="{{article.id}}">
     {{#member_id}}
@@ -31,7 +31,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <textarea class="form-control" id="editCommentContent" placeholder="수정할 댓글을 입력하세요"></textarea>
+        <textarea class="form-control" id="editCommentContent" placeholder="수정할 댓글을 입력하세요" maxlength="220"></textarea>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소✖️</button>
