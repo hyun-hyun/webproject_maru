@@ -19,6 +19,7 @@
 ## 1) 회원가입 및 회원정보 수정
 - 닉네임 중복 확인
 - 이메일 중복 확인
+- 비밀번호 암호화
 - 임시비밀번호로 변경
 - 계정 삭제(비밀번호 확인 후)
 - 이메일로 인증코드 발송
@@ -29,10 +30,11 @@
 
 
 ## 2) 회원별 조회 및 추천기능(마이페이지)
-- 회원별 키워드 워드 클라우드
+- 회원별 키워드 워드 클라우드(외부 API인 anychart 활용)
 - 회원별 찜목록 5개(전체보기)
 - 회원별 리뷰목록 5개(전체보기)
 - 회원별 추천목록
+- Pageable을 활용한 무한스크롤 구현
 
 ![image](https://github.com/user-attachments/assets/5699e80c-f0f4-464d-9b40-d5f11f9fe4b7)
 
@@ -52,3 +54,11 @@
 - 댓글 등록, 수정, 삭제(회원)
 
   ![image](https://github.com/user-attachments/assets/583d743c-36d0-42f5-8d47-99fd5d79c65b)
+
+## 5) QnA 페이지
+- QnA 등록, 수정, 삭제, 답글, 공지여부 구현
+- 권한별 공지, 답글, 수정, 삭제 제한
+- Pageable을 활용한 페이지 구현
+
+![image](https://github.com/user-attachments/assets/015b491e-65be-4349-902c-1d20b3fb7080)
+
