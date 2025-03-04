@@ -36,7 +36,7 @@ jobs:
 
     - name: NAS에서 기존 컨테이너 중지 & 재시작
       run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.NAS_USER }}@${{ secrets.NAS_HOST }} -p 2222 << 'EOF'
+          ssh -P 2222 -i ~/.ssh/id_rsa ${{ secrets.NAS_USER }}@${{ secrets.NAS_HOST }} << 'EOF'
           docker exec -it tomcat-1 bash -c "
           cd /usr/local/tomcat/webapps/maru_project && \
           pkill -f 'webproject_maru.war' || true && \
