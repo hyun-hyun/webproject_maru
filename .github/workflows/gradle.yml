@@ -32,8 +32,8 @@ jobs:
         username: ${{ secrets.NAS_USER }}
         key: ${{ secrets.NAS_SSH_KEY }}
         port: 2222
-        source: "build/libs/webproject_maru-0.0.1-SNAPSHOT.jar"
-        target: "/volume1/docker/app/app.jar"
+        source: "build/libs/*.jar"
+        target: "/volume1/docker/app/"
 
     - name: NAS에서 기존 컨테이너 중지 & 재시작
       uses: appleboy/ssh-action@v0.1.0
