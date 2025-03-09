@@ -1,19 +1,12 @@
 plugins {
 	id 'java'
-	id 'war'
 	id 'org.springframework.boot' version '3.2.3'
 	id 'io.spring.dependency-management' version '1.1.4'
 }
 
-bootWar{
-	archiveBaseName='webproject_maru'//패키징 이름
-	archiveFileName='webproject_maru.war'
-	archiveVersion="0.0.0"
-}
-
-
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
+
 
 java {
 	sourceCompatibility = '17'
@@ -51,9 +44,6 @@ dependencies {
 	//email인증용 Redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-	//------배포시 수정부분------
-	//내장 톰켓 안씀(providedRuntime) war 배포 위함
-	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 }
 
 tasks.named('test') {
