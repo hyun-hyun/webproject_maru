@@ -40,7 +40,8 @@ jobs:
       with:
         host: ${{ secrets.NAS_HOST }}
         username: ${{ secrets.NAS_USERNAME }}
-        password: ${{ secrets.NAS_PASSWORD }}
+        key: ${{ secrets.NAS_SSH_KEY }}
+        port: 2222
         script: |
           cd /volume1/docker
           docker-compose down
