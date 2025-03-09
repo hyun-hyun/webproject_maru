@@ -55,8 +55,8 @@ public class ArticleService {
     private CommentService commentService;
 
 
-    @Value("${file.upload-dir}")
-    private String uploadDir;
+    //@Value("${file.upload-dir}")
+    private String uploadDir="/app/images/pic/";
 
     //게시글 생성
     @Transactional
