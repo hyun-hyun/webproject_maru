@@ -1,0 +1,50 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
+
+name: Deploy to NAS
+
+on:
+  push:
+    branches: [ "main" ] # main 브랜치에 push할 때 실행
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 코드 체크아웃
+      uses: actions/checkout@v4
+
+    - name: Gradle 실행권한 추가
+      run: chmod +x gradlew
+
+    - name: Gradle 빌드
+      run: ./gradlew build -x test
+
+    - name: NAS에 WAR 파일 전송
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: ${{ secrets.NAS_HOST }}
+        username: ${{ secrets.NAS_USER }}
+        key: ${{ secrets.NAS_SSH_KEY }}
+        port: 2222
+        source: "build/libs/webproject_maru.war"
+        target: "/volume1/docker/tomcat10/webapps/maru_project"
+
+    - name: NAS에서 기존 컨테이너 중지 & 재시작
+      run: |
+          ssh -P 2222 -i ~/.ssh/id_rsa ${{ secrets.NAS_USER }}@${{ secrets.NAS_HOST }} << 'EOF'
+          docker exec -it tomcat-1 bash -c "
+          cd /usr/local/tomcat/webapps/maru_project && \
+          pkill -f 'webproject_maru.war' || true && \
+          nohup java -jar webproject_maru.war > /dev/null 2>&1 &"
+          EOF
+    - name: 배포 완료 후 GitHub Releases 태그 추가
+      run: |
+        VERSION=$(date +"%Y%m%d-%H%M%S")
+        git tag $VERSION
+        git push origin $VERSION
