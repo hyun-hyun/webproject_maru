@@ -44,8 +44,8 @@ jobs:
         port: 2222
         script: |
           cd /volume1/docker
-          docker-compose down
-          docker-compose up -d
+          /usr/local/bin/docker-compose down
+          /usr/local/bin/docker-compose up -d
 
 #    - name: NAS에서 기존 컨테이너 중지 & 재시작
  #     run: |
