@@ -47,17 +47,10 @@ jobs:
           /usr/local/bin/docker-compose down
           /usr/local/bin/docker-compose up -d
 
-#    - name: NAS에서 기존 컨테이너 중지 & 재시작
- #     run: |
-  #        ssh -p 2222 -i ${{ secrets.NAS_SSH_KEY }} ${{ secrets.NAS_USER }}@${{ secrets.NAS_HOST }} << 'EOF'
-   #       cd /volume1/docker/app
-    #      docker-compose down
-     #     docker-compose up -d --build
-      #    EOF
           
     - name: 배포 완료 후 GitHub Releases 태그 추가
       run: |
         VERSION=$(date +"%Y%m%d-%H%M%S")
         git tag $VERSION
-        git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} --tags  # 생성한 태그를 원격에 푸시
+        git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }} --tags  # 생성한 태그를 원격에 푸시
         git push origin $VERSION
