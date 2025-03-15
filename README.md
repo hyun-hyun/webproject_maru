@@ -1,6 +1,7 @@
 # 1. 개요
 ## 1) 구성
-![image](https://github.com/user-attachments/assets/e15a8091-8e9f-4c43-99f4-2d4e8ffc7763)
+![image](https://github.com/user-attachments/assets/c182ac6b-0e86-4abe-98e4-8cef1533187f)
+
 
 1. local_deploy.bat을 활용해 build 및 로컬 내 Docker 배포
 
