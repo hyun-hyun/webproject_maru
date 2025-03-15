@@ -1,6 +1,18 @@
 # 1. 개요
 ## 1) 구성
-![image](https://github.com/user-attachments/assets/72de97d0-cf70-4194-af06-aa8e9cd26415)
+![image](https://github.com/user-attachments/assets/e15a8091-8e9f-4c43-99f4-2d4e8ffc7763)
+
+1. local_deploy.bat을 활용해 build 및 로컬 내 Docker 배포
+
+2. git develop branch에 commit, push
+
+3. main에 pull request 후 merge
+
+4. main에 push되면 GitHub Actions 동작
+
+5. SSH를 통해 JAR파일 복사, 도커 재실행하여 배포 완료
+
+6. 해당 commit으로 tag 생성(버전관리)
 
 ## 2) 사용기술
 
@@ -10,7 +22,7 @@
 
 + 데이터베이스: MySQL, Redis
 
-+ 서버 및 배포: Docker, Linux (Synology NAS)
++ 서버 및 배포: Docker, GitHub Actions, Linux (Synology NAS)
 
 # 2. ERD
 ![real_erd](https://github.com/user-attachments/assets/028fbf25-ff2e-44e9-9ecf-c69ed7761e86)
