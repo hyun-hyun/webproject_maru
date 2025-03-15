@@ -7,13 +7,13 @@
 
 2. git develop branch에 commit, push
 
-3. main에 pull request 후 merge
+3-1. main에 pull request 후 merge
 
-4. main에 push되면 GitHub Actions 동작
+3-2. main에 push되면 GitHub Actions 동작
 
-5. SSH를 통해 JAR파일 복사, 도커 재실행하여 배포 완료
+4-1. SSH를 통해 JAR파일 복사, 도커 재실행하여 배포 완료
 
-6. 해당 commit으로 tag 생성(버전관리)
+4-2. 해당 commit으로 tag 생성(버전관리)
 
 ## 2) 사용기술
 
